@@ -1,0 +1,155 @@
+AIC (Akaikeho informacní kritérium):
+  def: Míra kvality modelu, která penalizuje složitost - cím nižší AIC, tím lepší
+    pomer mezi presností modelu a poctem jeho parametru.
+ANOVA (analýza rozptylu):
+  def: Statistický test porovnávající prumery trí a více skupin zároven; testuje,
+    zda se alespon jedna skupina prumerem liší od ostatních.
+Binární promenná:
+  def: Promenná nabývající práve dvou hodnot, nejcasteji 0/1, prítomnost/neprítomnost,
+    ano/ne.
+Boxplot (krabicový graf):
+  def: 'Graf zobrazující pet souhrnných statistik najednou: minimum, Q1, medián, Q3
+    a maximum; krabice ohranicuje interkvartilový rozsah (IQR).'
+Diagnostika modelu:
+  def: 'Soubor grafických a numerických kontrol overujících, zda jsou splneny predpoklady
+    modelu: linearita, normalita reziduí, homoskedasticita, absence vlivných bodu.'
+Efekt:
+  def: Kvantitativní popis toho, jak silne prediktor ovlivnuje odezvu - zahrnuje smer,
+    velikost a nejistotu (interval spolehlivosti).
+F-statistika:
+  def: Testová statistika porovnávající rozptyl vysvetlený modelem s rozptylem nevysvetleným
+    (reziduálním); vyšší F = vyšší pomer signal:šum.
+GLM (zobecnený lineární model):
+  def: Rozšírení lineárního modelu pro prípady, kdy odezva není normálne rozložena;
+    skládá se z náhodné složky, systematické složky a link funkce.
+Heteroskedasticita:
+  def: Jev, kdy rozptyl reziduí není konstantní podél hodnot prediktoru - typicky
+    se rozptyl zvyšuje s rostoucí predikovanou hodnotou.
+Hierarchická data:
+  def: Data, kde pozorování nejsou zcela nezávislá - jsou seskupena do vyšší úrovne
+    (lokality, bloky, jedinci s opakovanými mereními).
+Histogram:
+  def: 'Graf zobrazující rozdelení hodnot numerické promenné: hodnoty jsou serazeny
+    do tríd, výška sloupce udává cetnost v dané tríde.'
+Hladina významnosti:
+  def: Predem zvolená pravdepodobnostní hranice (typicky a = 0,05), pod níž prohlásíme
+    výsledek za statisticky významný.
+IQR (interkvartilový rozsah):
+  def: Rozdíl mezi 3. kvartilem (Q3) a 1. kvartilem (Q1); pokrývá prostredních 50
+    % dat a je robustní vuci odlehlým pozorováním.
+Intercept (prusecík):
+  def: 'Parametr modelu: hodnota odezvy predikovaná modelem, když jsou všechny prediktory
+    rovno nule.'
+Interval spolehlivosti:
+  def: Rozsah hodnot, v nemž se s danou spolehlivostí (typicky 95 %) nachází odhadovaný
+    parametr.
+Interakce prediktoru:
+  def: Situace, kdy efekt jednoho prediktoru na odezvu závisí na hodnote jiného prediktoru.
+Kategoriální promenná:
+  def: Promenná nabývající hodnot z omezeného poctu kategorií; muže být nominální
+    (bez poradí) nebo ordinální (s poradím).
+Koeficient determinace (R²):
+  def: Podíl variability odezvy vysvetlený modelem (0 = model nevysvetluje nic, 1
+    = model vysvetluje vše).
+Konfundování:
+  def: Jev, kdy zdánlivý efekt jednoho prediktoru je (zcela nebo zcásti) zpusoben
+    tretí promennou korelující s obema.
+Korelace prediktoru:
+  def: Situace, kdy dva nebo více prediktoru v modelu navzájem korelují; silná korelace
+    zpusobuje nestabilitu odhadu.
+Lineární model:
+  def: Statistický model predpokládající, že odezva je lineární funkcí prediktoru
+    plus chybový clen s normálním rozdelením (y = a + b·x + e).
+Link funkce:
+  def: Matematická funkce v GLM propojující lineární prediktor s ocekávanou hodnotou
+    odezvy; zajištuje, že predikované hodnoty jsou v platném rozsahu.
+Logistická regrese:
+  def: GLM pro binární odezvu (0/1, prítomnost/neprítomnost); modeluje pravdepodobnost
+    výskytu pomocí logit link funkce.
+Medián:
+  def: Hodnota rozdelující serazená data na dve stejne pocetné poloviny; 50. percentil.
+Minimální adekvátní model:
+  def: Nejjednodušší model, který adekvátne vysvetluje data - odstranuje nepotrebné
+    parametry bez výrazného zhoršení shody s daty (princip parsimonie).
+Náhodný faktor (náhodný efekt):
+  def: Faktor v smíšeném modelu, jehož úrovne jsou náhodným vzorkem z vetšího souboru;
+    zajímá nás rozptyl, který prináší, ne konkrétní úrovne.
+Nejistota:
+  def: Rozsah, v nemž nevíme presnou hodnotu parametru kvuli omezenému a variabilnímu
+    vzorku; kvantifikuje se pomocí intervalu spolehlivosti nebo smerodatných chyb.
+Nelinearita:
+  def: Situace, kdy vztah mezi prediktorem a odezvou není dobre popsatelný prímkou
+    - má zakrivení nebo jinou nelineární formu.
+Neparametrický test:
+  def: Test, který nespocívá na predpokladu konkrétního rozdelení dat; pracuje s poradími
+    místo s puvodními hodnotami.
+Nulová hypotéza:
+  def: Výchozí predpoklad, který testujeme - typicky 'efekt je nulový' nebo 'skupiny
+    se neliší'; p-hodnota udává pravdepodobnost dat za predpokladu platnosti H0.
+Numerická promenná:
+  def: Promenná nabývající libovolných císelných hodnot na spojité nebo diskrétní
+    císelné stupnici (délky, hmotnosti, teploty, pocty).
+Odezva:
+  def: Promenná, jejíž variabilitu se snažíme vysvetlit nebo predpovedet; v notaci
+    modelu `y ~ x` je odezva `y`.
+Odlehlá pozorování:
+  def: Hodnota, která se výrazne odlišuje od ostatních pozorování; muže být zpusobena
+    chybou merení nebo jít o skutecne extrémní prípad.
+Opakovaná merení:
+  def: Data, kde stejná jednotka (jedinec, lokalita) je merena opakovane v case nebo
+    v ruzných podmínkách; vytvárí korelaci mezi pozorováními.
+P-hodnota:
+  def: Pravdepodobnost, že bychom pri platnosti nulové hypotézy pozorovali data alespon
+    tak extrémní jako naše skutecná data.
+Parametry modelu:
+  def: Císelné hodnoty odhadnuté z dat definující tvar modelu; v lineárním modelu
+    jsou to intercept a sklon(y).
+Pevný faktor (pevný efekt):
+  def: Faktor v modelu, jehož konkrétní úrovne jsou pro analýzu relevantní a vycerpávají
+    (nebo reprezentují) všechny zájmové kategorie.
+Poissonova regrese:
+  def: GLM pro odezvu tvorenou pocty (nezáporná celá císla); predpokládá Poissonovo
+    rozdelení odezvy a logaritmický link.
+Porovnání modelu:
+  def: Postup výberu nejlepšího modelu z množiny kandidátu pomocí kritérií jako AIC
+    nebo likelihood ratio test.
+Post-hoc test:
+  def: Test provádený po signifikantní ANOVA k identifikaci, které konkrétní páry
+    skupin se od sebe liší; opravuje p-hodnoty pro mnohonásobné porovnávání.
+Prediktor:
+  def: Promenná, pomocí níž vysvetlujeme variabilitu odezvy; v notaci `y ~ x` je prediktor
+    `x`.
+Prumer:
+  def: Soucet hodnot vydelený jejich poctem; nejbežnejší míra polohy (strední hodnoty).
+Residuum:
+  def: 'Rozdíl mezi pozorovanou hodnotou odezvy a hodnotou predikovanou modelem: e<U+1D62>
+    = y<U+1D62> - y<U+1D62>.'
+Rozdelení (pravdepodobnostní):
+  def: Matematický popis, jak jsou hodnoty promenné rozloženy; klícové parametry závisí
+    na konkrétním rozdelení (prumer a rozptyl pro normální, <U+03BB> pro Poissonovo).
+Rozptyl:
+  def: Prumer ctvercu odchylek od prumeru; míra variability dat. Odmocnina rozptylu
+    je smerodatná odchylka.
+Sklon (regresní koeficient):
+  def: Parametr lineárního modelu udávající, o kolik se zmení odezva, pokud prediktor
+    vzroste o jednu jednotku (pri zachování ostatních prediktoru).
+Smerodatná odchylka:
+  def: Odmocnina rozptylu; vyjadruje prumernou vzdálenost hodnot od prumeru ve stejných
+    jednotkách jako puvodní data.
+Stupne volnosti:
+  def: Pocet nezávislých informací dostupných pro odhad parametru; pocet pozorování
+    minus pocet odhadovaných parametru.
+T-test:
+  def: Statistický test porovnávající prumery dvou skupin (nebo prumer s konstantou);
+    ekvivalent lineárního modelu se dvema úrovnemi faktoru.
+Transformace:
+  def: Matematická operace použitá na hodnoty promenné s cílem splnit predpoklady
+    modelu nebo zlepšit linearitu vztahu.
+Variabilita:
+  def: Obecný termín pro rozsah, v nemž se hodnoty promenné liší od sebe navzájem;
+    kvantifikuje se pomocí rozptylu, SD, IQR nebo rozsahu.
+Cetnost:
+  def: Pocet výskytu urcité hodnoty nebo kategorie v datové sade; pro kategoriální
+    promenné je cetnost základní deskriptivní statistikou.
+Zobecnený lineární model:
+  def: Viz heslo GLM.

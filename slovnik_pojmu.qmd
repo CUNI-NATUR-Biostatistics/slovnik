@@ -1,0 +1,92 @@
+---
+title: "Slovník statistických pojmů"
+subtitle: "Biostatistika (MB120P163)"
+lang: cs
+date-modified: last-modified
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    toc-title: "Obsah"
+    number-sections: false
+    embed-resources: true
+    theme: flatly
+    code-fold: false
+---
+
+```{r}
+#| label: setup
+#| echo: false
+#| message: false
+#| warning: false
+
+library(here)
+library(yaml)
+library(purrr)
+library(stringr)
+library(stringi)
+library(knitr)
+
+here::i_am("slovnik_pojmu.qmd")
+
+source(here::here("R/Functions", "get_sort_key.R"))
+source(here::here("R/Functions", "format_field_as_markdown.R"))
+source(here::here("R/Functions", "format_see_also.R"))
+source(here::here("R/Functions", "render_glossary_entry.R"))
+source(here::here("R/Functions", "get_first_letter.R"))
+```
+
+```{r}
+#| label: nacti-data
+#| echo: false
+#| message: false
+
+entries <-
+  here::here("glossary_data.yaml") |>
+  readr::read_file() |>
+  yaml::yaml.load()
+
+entries_sorted <-
+  entries |>
+  purrr::map(get_sort_key) |>
+  purrr::map(
+    .f = ~ {
+      entry <-
+        purrr::keep(
+          entries, function(e) get_sort_key(e) == .x
+        )
+      entry[[1]]
+    }
+  )
+
+
+```
+
+```{r}
+#| label: render-hesla
+#| echo: false
+#| message: false
+#| results: asis
+
+letters_present <-
+  purrr::map_chr(entries_sorted, get_first_letter) |>
+  unique()
+
+letters_present |>
+  purrr::walk(
+    .f = function(letter) {
+      group <-
+        purrr::keep(
+          .x = entries_sorted,
+          .p = function(e) get_first_letter(e) == letter
+        )
+      cat(paste0("\n## ", letter, "\n"))
+      purrr::walk(
+        .x = group,
+        .f = function(entry) {
+          cat(render_glossary_entry(entry, entries))
+        }
+      )
+    }
+  )
+```
