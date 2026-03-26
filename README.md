@@ -2,8 +2,9 @@
 
 Repozitář obsahuje **slovník statistických pojmů** pro kurz Biostatistika (MB120P163) na Přírodovědecké fakultě Univerzity Karlovy.
 
-Slovník je primárně určen vyučujícím jako kanonický zdroj terminologie – zaručuje konzistentní používání českých a anglických termínů napříč přednáškami, skripty a cvičeními.
-Studentům je distribuován přes Moodle jako renderovaný HTML soubor.
+Slovník slouží jako kanonický zdroj terminologie – zaručuje konzistentní používání českých a anglických termínů napříč přednáškami, skripty a cvičeními.
+
+🌐 **Renderovaný slovník online:** <https://cuni-natur-biostatistics.github.io/slovnik/>
 
 ---
 
@@ -16,8 +17,7 @@ slovnik/
 ├── slovnik_pojmu.qmd        # Quarto dokument renderující HTML slovník
 ├── _quarto.yml              # Konfigurace Quarto projektu
 ├── R/
-│   ├── generate_glossary_yaml.R   # Přegeneruje pojmy.yaml z glossary_data.yaml
-│   ├── render_slovnik.R           # Renderuje slovnik_pojmu.qmd do docs/
+│   ├── render_slovnik.R           # Přegeneruje pojmy.yaml a renderuje slovnik_pojmu.qmd
 │   └── Functions/                 # Pomocné R funkce (řazení, formátování, rendering)
 │       ├── format_field_as_markdown.R
 │       ├── format_see_also.R
@@ -25,7 +25,7 @@ slovnik/
 │       ├── get_sort_key.R
 │       └── render_glossary_entry.R
 └── docs/
-    └── slovnik_pojmu.html   # Renderovaný HTML slovník (distribuovaný přes Moodle)
+    └── slovnik_pojmu.html   # Renderovaný HTML slovník
 ```
 
 ---
@@ -54,13 +54,10 @@ Veškeré změny se provádějí **výhradně v `glossary_data.yaml`**. Ostatní
 ### Postup po každé změně
 
 ```r
-# 1. Regenerovat pojmy.yaml (formát pro R balíček glossary)
-source("R/generate_glossary_yaml.R")
-
-# 2. Renderovat HTML slovník do docs/
+# Přegenerovat pojmy.yaml a renderovat HTML slovník do docs/
 source("R/render_slovnik.R")
 
-# 3. Commitnout glossary_data.yaml, pojmy.yaml i docs/slovnik_pojmu.html
+# Commitnout glossary_data.yaml, pojmy.yaml i docs/slovnik_pojmu.html
 ```
 
 ---
@@ -87,4 +84,4 @@ Nikdy neodkazujte na lokální kopii `pojmy.yaml` – vždy používejte výše 
 | Kurz | Biostatistika (MB120P163) |
 | Organizace | [`CUNI-NATUR-Biostatistics`](https://github.com/CUNI-NATUR-Biostatistics) |
 | Koordinátor | Ondřej Mottl |
-| Vizibilita repozitáře | Privátní |
+| Vizibilita repozitáře | veřejný |
