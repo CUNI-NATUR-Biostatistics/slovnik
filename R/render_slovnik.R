@@ -18,6 +18,10 @@ library(here)
 
 here::i_am("R/render_slovnik.R")
 
+#----# Download brand theme ----#
+
+source(here::here("R/generate_theme.R"))
+
 #----# Generate pojmy.yaml ----#
 
 message("Generating pojmy.yaml from glossary_data.yaml...\n")
