@@ -106,7 +106,7 @@
   def_full: |
     Kvantitativní popis toho, jak silně prediktor ovlivňuje odezvu. Zahrnuje **směr** (kladný/záporný), **velikost** (v jednotkách odezvy na jednotku prediktoru) a **nejistotu** (interval spolehlivosti).
   usage: |
-    - Efekt ≠ statistická významnost. P-hodnota říká, zda efekt pravděpodobně není nula; velikost efektu říká, jak velký je.
+    - Efekt ≠ statistická významnost. P-hodnota měří, jak kompatibilní jsou data s nulovou hypotézou (efekt = 0); velikost efektu říká, jak velký efekt je.
     - V lineárním modelu je efekt kvantitativního prediktoru roven [sklonu](#sklon) (koeficient b).
     - Vždy interpretujeme efekt věcně: 'o kolik se změní odezva, pokud prediktor vzroste o 1 jednotku?'
   synonyms: "Velikost efektu (*effect size*) je v některých kontextech míněna jako standardizovaná míra (Cohenovo d, η²) - to v tomto kurzu nepoužíváme, raději pracujeme s nestandardizovanými odhady v původních jednotkách."
@@ -222,9 +222,9 @@
 - id: "intercept"
   cz: "Intercept (průsečík)"
   en: "intercept, constant"
-  def_short: "Parametr modelu: hodnota odezvy predikovaná modelem, když jsou všechny prediktory rovno nule."
+  def_short: "Parametr modelu: hodnota odezvy predikovaná modelem, když jsou všechny prediktory rovno nule; geometricky jde o úsek na ose y (kde regresní přímka protíná osu y)."
   def_full: |
-    Parametr modelu: hodnota odezvy predikovaná modelem, když jsou všechny prediktory rovno nule. V R je označen jako `(Intercept)` ve výstupu `summary(model)`.
+    Parametr modelu: hodnota odezvy predikovaná modelem, když jsou všechny prediktory rovno nule. Geometricky jde o **úsek na ose y** — bod, kde regresní přímka protíná osu y. V R je označen jako `(Intercept)` ve výstupu `summary(model)`.
   usage: |
     - Biologická interpretovatelnost interceptu záleží na kontextu - nulová hodnota prediktoru nemusí být smysluplná.
     - V kódu a textu používáme termín **intercept** (anglický výraz je uzuální i v české statistice) nebo **průsečík**.
@@ -244,8 +244,9 @@
   usage: |
     - Interpretujeme jako míru **nejistoty odhadu**, nikoli jako pravděpodobnost, že parametr leží uvnitř.
     - Klíčová alternativa k p-hodnotě: CI říká, kde parametr *pravděpodobně leží*, zatímco p-hodnota pouze testuje, zda je nula uvnitř.
+    - **95 % je konvence, nikoliv zákon** — v principu lze použít jakoukoli hladinu (90 %, 99 %); volba záleží na kontextu a konvencích oboru.
     - Zkratka CI je přípustná ve všech kontextech.
-  synonyms: "*Konfidenční interval* (méně doporučený výraz v češtině). *95% CI* = nejčastěji používaná úroveň."
+  synonyms: "*Konfidenční interval* (méně doporučený výraz v češtině). *95% CI* = nejčastěji používaná úroveň, ale pouze z konvence."
   see_also:
     - "p-hodnota"
     - "efekt"
@@ -394,9 +395,10 @@
   en: "minimal adequate model"
   def_short: "Nejjednodušší model, který adekvátně vysvětluje data - odstraňuje nepotřebné parametry bez výrazného zhoršení shody s daty (princip parsimonie)."
   def_full: |
-    Nejjednodušší model, který adekvátně vysvětluje data - odstraňuje nepotřebné parametry bez výrazného zhoršení shody s daty. Princip parsimonie (Occamova břitva).
+    Nejjednodušší model, který adekvátně vysvětluje data — odstraňuje nepotřebné parametry bez výrazného zhoršení shody s daty. Vychází z principu **parsimonie** neboli **Occamovy břitvy**: pokud dva modely vysvětlují data stejně dobře, preferujeme ten jednodušší (s menším počtem parametrů).
   usage: |
     - Výběr pomocí [AIC](#aic) nebo postupného odstraňování nesignifikantních členů.
+    - Occamova břitva (parsimonie): zbytečně nerozmnožuj parametry modelu — přidávej prediktory jen tehdy, pokud prokazatelně zlepšují popis dat.
     - Cíl: vyvážit přesnost a interpretovatelnost.
   synonyms: "*Parsimoniózní model*. Nezaměňovat s nulovým modelem (model bez prediktorů)."
   see_also:
@@ -717,12 +719,29 @@
     - Standardní míra variability pro symetrická rozdělení.
     - Zkratka **SD** je přípustná ve všech kontextech (tabulky, grafy, text).
     - V R: `sd(x)`.
-  synonyms: "*Standardní odchylka* (anglicismus, méně doporučený). SD ≠ SEM (standardní chyba průměru, *standard error of the mean*)."
+  synonyms: "*Standardní odchylka* (anglicismus, méně doporučený). **SD ≠ SE/SEM**: SD je odhad variability dat (jak moc jsou hodnoty rozptýleny kolem průměru); SE/SEM ([standardní chyba](#standardni-chyba)) je míra kvality odhadu parametru (jak přesně odhadujeme průměr nebo koeficient modelu z omezeného vzorku)."
   see_also:
     - "rozptyl"
     - "iqr"
     - "prumer"
+    - "standardni-chyba"
   avoid: "standardní odchylka"
+
+- id: "standardni-chyba"
+  cz: "Standardní chyba"
+  en: "standard error (SE), standard error of the mean (SEM)"
+  def_short: "Míra přesnosti odhadu parametru (typicky průměru) z dat; udává, jak moc by se odhadnutý parametr lišil při opakovaném vzorkování ze stejné populace."
+  def_full: |
+    Míra přesnosti odhadu parametru (typicky průměru) z dat. Udává, jak moc by se odhadnutý parametr lišil při opakovaném vzorkování ze stejné populace. Pro průměr platí: SEM = SD / √n — čím větší vzorek, tím přesnější odhad.
+  usage: |
+    - **SE ≠ SD**: SD popisuje variabilitu dat (spread hodnot v souboru); SE popisuje kvalitu odhadu parametru (jak přesně odhadujeme průměr nebo koeficient modelu).
+    - SE koeficientů modelu se zobrazuje ve výstupu `summary(lm(...))` ve sloupci `Std. Error`.
+    - Preferujeme reportovat [interval spolehlivosti](#interval-spolehlivosti) (odvozený ze SE) místo samotné SE.
+  synonyms: "*SEM* (standard error of the mean) = SE průměru. *Standardní chyba průměru*. SE je obecnější termín — platí i pro SE koeficientu modelu, SE predikce atd."
+  see_also:
+    - "smerodatna-odchylka"
+    - "interval-spolehlivosti"
+    - "nejistota"
 
 - id: "stupne-volnosti"
   cz: "Stupně volnosti"

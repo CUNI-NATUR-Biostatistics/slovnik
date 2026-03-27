@@ -39,7 +39,7 @@ iqr:
     % dat a je robustní vuci odlehlým pozorováním.
 intercept:
   def: 'Parametr modelu: hodnota odezvy predikovaná modelem, když jsou všechny prediktory
-    rovno nule.'
+    rovno nule; geometricky jde o úsek na ose y (kde regresní prímka protíná osu y).'
 interval-spolehlivosti:
   def: Rozsah hodnot, v nemž se s danou spolehlivostí (typicky 95 %) nachází odhadovaný
     parametr.
@@ -136,6 +136,9 @@ sklon:
 smerodatna-odchylka:
   def: Odmocnina rozptylu; vyjadruje prumernou vzdálenost hodnot od prumeru ve stejných
     jednotkách jako puvodní data.
+standardni-chyba:
+  def: Míra presnosti odhadu parametru (typicky prumeru) z dat; udává, jak moc by
+    se odhadnutý parametr lišil pri opakovaném vzorkování ze stejné populace.
 stupne-volnosti:
   def: Pocet nezávislých informací dostupných pro odhad parametru; pocet pozorování
     minus pocet odhadovaných parametru.
