@@ -35,7 +35,10 @@ purrr::walk(
       here::here("theme", .x)
     tryCatch(
       expr = {
-        download.file(url_src, path_dest, quiet = TRUE, mode = "wb")
+        tmp <- tempfile(fileext = paste0(".", tools::file_ext(.x)))
+        download.file(url_src, tmp, quiet = TRUE, mode = "wb")
+        file.copy(tmp, path_dest, overwrite = TRUE)
+        file.remove(tmp)
         message("  Downloaded: ", .x, "\n")
       },
       error = function(e) {
