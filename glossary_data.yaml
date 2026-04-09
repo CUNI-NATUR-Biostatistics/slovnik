@@ -315,6 +315,24 @@
     - "korelace-predikatoru"
     - "interakce-predikatoru"
 
+- id: "kovariance"
+  cz: "Kovariance"
+  en: "covariance"
+  def_short: "Míra toho, nakolik se dvě numerické proměnné odchylují od svých průměrů společně; kladná kovariance značí, že mají tendenci růst spolu, záporná že se pohybují opačně."
+  def_full: |
+    Míra toho, nakolik se dvě numerické proměnné odchylují od svých průměrů společně. Pokud mají pozorování s nadprůměrnou hodnotou jedné proměnné tendenci mít i nadprůměrnou hodnotu druhé proměnné, vychází kovariance kladná; pokud se jedna proměnná zvyšuje a druhá má tendenci klesat, vychází záporná.
+
+    Kovariance je citlivá na měřítko a jednotky obou proměnných, takže se obtížně porovnává mezi různými datovými sadami. Proto ji často převádíme na bezrozměrný Pearsonův korelační koeficient.
+  usage: |
+    - Užíváme ji hlavně jako intuitivní mezikrok mezi [rozptylem](#rozptyl) jedné proměnné a Pearsonovým korelačním koeficientem dvou proměnných.
+    - V R: `cov(x, y)`.
+    - Samotná velikost kovariance se interpretuje opatrně, protože závisí na jednotkách obou proměnných.
+  synonyms: "Kovariance ≠ korelace. Korelace je normalizovaná kovariance, a proto vždy leží v intervalu od -1 do 1."
+  see_also:
+    - "prumer"
+    - "rozptyl"
+    - "smerodatna-odchylka"
+
 - id: "korelace-predikatoru"
   cz: "Korelace prediktorů"
   en: "predictor correlation, collinearity, multicollinearity"

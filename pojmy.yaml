@@ -54,6 +54,9 @@ r2:
 konfundovani:
   def: Jev, kdy zdánlivý efekt jednoho prediktoru je (zcela nebo zcásti) zpusoben
     tretí promennou korelující s obema.
+kovariance:
+  def: Míra toho, nakolik se dve numerické promenné odchylují od svých prumeru spolecne;
+    kladná kovariance znací, že mají tendenci rust spolu, záporná že se pohybují opacne.
 korelace-predikatoru:
   def: Situace, kdy dva nebo více prediktoru v modelu navzájem korelují; silná korelace
     zpusobuje nestabilitu odhadu.
