@@ -4,6 +4,10 @@ Repozitář obsahuje **slovník statistických pojmů** pro kurz Biostatistika (
 
 Slovník slouží jako kanonický zdroj terminologie – zaručuje konzistentní používání českých a anglických termínů napříč přednáškami, skripty a cvičeními.
 
+## Doporučený pracovní prostor
+
+Tento repozitář je určený pro práci v multi-root workspace `CUNI-NATUR-Biostatistics`. Sdílený kontext kurzu a kanonické instrukce pro AI asistenty spravuje soukromý repozitář `_internal`; doporučené nastavení je popsané v `_internal/workspace-setup.md`. Při samostatném otevření tohoto repozitáře nemusí mít AI asistent k dispozici úplný kontext kurzu.
+
 🌐 **Renderovaný slovník online:** <https://cuni-natur-biostatistics.github.io/slovnik/>
 
 ---
