@@ -347,6 +347,25 @@
     - "konfundovani"
     - "min-adekvat-model"
 
+- id: "kvantil"
+  cz: "Kvantil"
+  en: "quantile"
+  def_short: "Hodnota, pod níž leží určený podíl seřazených dat; medián je 50% kvantil."
+  def_full: |
+    Hodnota, která rozděluje seřazená data podle zvoleného podílu. Například
+    25% kvantil odděluje dolní čtvrtinu dat a medián je 50% kvantil. U malého
+    vzorku může přesná vypočtená hodnota záviset na použitém pravidle
+    interpolace.
+  usage: |
+    - Kvartily jsou 25%, 50% a 75% kvantily.
+    - Hranice 2,5% a 97,5% často vymezují prostředních 95 % empirického rozdělení.
+    - V R: `quantile(x, probs = c(0.025, 0.5, 0.975))`.
+  synonyms: "*Percentil* vyjadřuje pořadí v procentech; kvartil je zvláštní případ kvantilu."
+  see_also:
+    - "median"
+    - "iqr"
+    - "rozdeleni"
+
 - id: "linearni-model"
   cz: "Lineární model"
   en: "linear model"
