@@ -70,9 +70,9 @@
 - id: "boxplot"
   cz: "Boxplot (krabicový graf)"
   en: "boxplot, box-and-whisker plot"
-  def_short: "Graf zobrazující pět souhrnných statistik najednou: minimum, Q1, medián, Q3 a maximum; krabice ohraničuje interkvartilový rozsah (IQR)."
+  def_short: "Graf, jehož krabice sahá od Q1 do Q3 a obsahuje medián; vousy vymezují hodnoty podle zvoleného pravidla a body za nimi upozorňují na možná odlehlá pozorování."
   def_full: |
-    Graf zobrazující pět souhrnných statistik najednou: minimum, 1. kvartil (Q1), medián, 3. kvartil (Q3) a maximum (resp. meze pro odlehlá pozorování). 'Krabice' ohraničuje interkvartilový rozsah (IQR).
+    Graf shrnující polohu a variabilitu numerické proměnné. Dolní a horní okraj krabice tvoří 1. kvartil (Q1) a 3. kvartil (Q3), čára uvnitř označuje medián a výška krabice odpovídá interkvartilovému rozsahu (IQR). Vousy obvykle sahají k nejvzdálenějším hodnotám, které ještě leží nejvýše 1,5 IQR od krabice. Vzdálenější hodnoty se kreslí samostatně jako možná odlehlá pozorování; vousy proto nemusí být minimum a maximum.
   usage: |
     - Výchozí volba pro zobrazení numerické proměnné v jedné nebo více skupinách.
     - V R: `boxplot(y ~ skupina)` nebo `ggplot2::geom_boxplot()`.
@@ -102,9 +102,9 @@
 - id: "efekt"
   cz: "Efekt"
   en: "effect, effect size"
-  def_short: "Kvantitativní popis toho, jak silně prediktor ovlivňuje odezvu - zahrnuje směr, velikost a nejistotu (interval spolehlivosti)."
+  def_short: "Kvantitativní popis toho, jak se podle modelu mění odezva s prediktorem; zahrnuje směr, velikost a nejistotu odhadu, ale sám o sobě nedokládá příčinu."
   def_full: |
-    Kvantitativní popis toho, jak silně prediktor ovlivňuje odezvu. Zahrnuje **směr** (kladný/záporný), **velikost** (v jednotkách odezvy na jednotku prediktoru) a **nejistotu** (interval spolehlivosti).
+    Kvantitativní popis toho, jak se podle zvoleného modelu mění odezva s prediktorem. Zahrnuje **směr** (kladný/záporný), **velikost** (v jednotkách odezvy na jednotku prediktoru) a **nejistotu odhadu** (například interval spolehlivosti). Efekt odhadnutý z observačních dat je popisem vztahu podmíněným modelem. Příčinný účinek z něj lze vyvozovat jen s odpovídajícím designem studie a dalšími předpoklady.
   usage: |
     - Efekt ≠ statistická významnost. P-hodnota měří, jak kompatibilní jsou data s nulovou hypotézou (efekt = 0); velikost efektu říká, jak velký efekt je.
     - V lineárním modelu je efekt kvantitativního prediktoru roven [sklonu](#sklon) (koeficient b).
@@ -514,14 +514,17 @@
 - id: "numericka-promenna"
   cz: "Numerická proměnná"
   en: "numeric variable, continuous variable, quantitative variable"
-  def_short: "Proměnná nabývající libovolných číselných hodnot na spojité nebo diskrétní číselné stupnici (délky, hmotnosti, teploty, počty)."
+  def_short: "Proměnná, jejíž hodnoty jsou čísla se smysluplnou velikostí nebo rozdílem; může být diskrétní, například počet, nebo spojitá, například délka."
   def_full: |
-    Proměnná nabývající libovolných číselných hodnot na spojité (nebo diskrétní číselné) stupnici. Patří sem délky, hmotnosti, teploty, počty.
+    Proměnná, jejíž hodnoty jsou čísla se smysluplnou velikostí nebo rozdílem. Může být **diskrétní**, například počet jedinců, nebo **spojitá**, například délka, hmotnost či teplota. Toto rozlišení popisuje význam měřené veličiny, nikoli technický způsob uložení hodnot v R.
   usage: |
-    - V R: typ `numeric` (spojité) nebo `integer` (celá čísla/počty).
+    - V R mohou být hodnoty uloženy jako `numeric` nebo `integer`, ale úložný typ sám neurčuje, zda je proměnná spojitá nebo diskrétní.
     - Popis: průměr/medián, SD/IQR, histogram/boxplot.
   synonyms: "*Spojitá proměnná* (pro skutečně spojité hodnoty), *kvantitativní proměnná*. Diskrétní počty jsou technicky numerické, ale jiné analytické přístupy - [GLM Poisson](#poissonova-regrese)."
   see_also:
+    - "promenna"
+    - "diskretni-promenna"
+    - "spojita-promenna"
     - "kategoricka-promenna"
     - "histogram"
   avoid: "kvantitativní proměnná"
@@ -702,15 +705,15 @@
     - "heteroskedasticita"
 
 - id: "rozdeleni"
-  cz: "Rozdělení (pravděpodobnostní)"
-  en: "distribution, probability distribution"
-  def_short: "Matematický popis, jak jsou hodnoty proměnné rozloženy; klíčové parametry závisí na konkrétním rozdělení (průměr a rozptyl pro normální, λ pro Poissonovo)."
+  cz: "Rozdělení hodnot"
+  en: "distribution, empirical distribution, probability distribution"
+  def_short: "Popis toho, jaké hodnoty proměnná nabývá a jak často se vyskytují; může jít o pozorované rozdělení dat nebo o teoretické pravděpodobnostní rozdělení."
   def_full: |
-    Matematický popis, jak jsou hodnoty proměnné rozloženy. Klíčové parametry závisí na konkrétním rozdělení (průměr a rozptyl pro normální; λ pro Poissonovo; p pro binomické).
+    Popis toho, jaké hodnoty proměnná nabývá a jak často se vyskytují. **Pozorované neboli empirické rozdělení** shrnuje konkrétní data, například histogramem, četnostmi nebo kvantily. **Pravděpodobnostní rozdělení** je teoretický model možných hodnot a jejich pravděpodobností, například normální, binomické nebo Poissonovo rozdělení. Tyto dva významy spolu souvisejí, ale nejsou totožné.
   usage: |
-    - Normální rozdělení: předpoklad lineárního modelu pro reziua.
-    - Binomické: odezva 0/1 v logistické regresi.
-    - Poissonovo: počty v Poissonově regresi.
+    - Rozdělení pozorovaných hodnot posuzujeme grafem a souhrnnými statistikami.
+    - Pravděpodobnostní rozdělení popisuje proces, z něhož mohou hodnoty vznikat.
+    - Normální rozdělení se používá mimo jiné při formulaci některých předpokladů lineárního modelu.
   see_also:
     - "glm"
     - "linearni-model"
@@ -862,3 +865,324 @@
     Viz heslo [GLM](#glm).
   see_also:
     - "glm"
+
+- id: "bodovy-graf"
+  cz: "Bodový graf"
+  en: "scatter plot, scatterplot"
+  def_short: "Graf vztahu dvou numerických proměnných, v němž každý bod představuje jedno pozorování a jeho dvě hodnoty určují polohu na osách."
+  def_full: |
+    Graf vztahu dvou numerických proměnných. Každý bod představuje jedno pozorování: hodnota první proměnné určuje polohu na vodorovné ose a hodnota druhé proměnné polohu na svislé ose. Bodový graf ukazuje směr, tvar a těsnost vztahu, shluky i možná odlehlá pozorování.
+  usage: |
+    - Bodový graf je obvyklý první krok před výpočtem korelace nebo fitováním lineárního modelu.
+    - V R: `plot(x, y)` nebo `ggplot2::geom_point()`.
+    - Barva, tvar nebo panely mohou doplnit třetí proměnnou, ale nemají být pouhou dekorací.
+  synonyms: "Anglicky *scatter plot*. Jednorozměrný *beeswarm plot* také používá body, ale není totéž co bodový graf vztahu dvou proměnných."
+  see_also:
+    - "numericka-promenna"
+    - "korelace"
+    - "odlehla-pozorovani"
+
+- id: "diskretni-promenna"
+  cz: "Diskrétní proměnná"
+  en: "discrete variable"
+  def_short: "Numerická proměnná s oddělenými, spočetnými možnými hodnotami, například počet jedinců nebo počet událostí."
+  def_full: |
+    Numerická proměnná, jejíž možné hodnoty jsou od sebe oddělené a lze je vyjmenovat nebo spočítat. Typickým příkladem je počet jedinců, návštěv nebo událostí. Mezi hodnotami 2 a 3 u počtu jedinců neleží smysluplná hodnota 2,5 jedince.
+  usage: |
+    - Diskrétnost popisuje význam veličiny, ne úložný typ `integer` v R.
+    - Počty často vyžadují jiný model než spojitá měření.
+  see_also:
+    - "numericka-promenna"
+    - "spojita-promenna"
+    - "cetnost"
+
+- id: "hladina-spolehlivosti"
+  cz: "Hladina spolehlivosti"
+  en: "confidence level"
+  def_short: "Zvolená dlouhodobá úspěšnost postupu pro konstrukci intervalu spolehlivosti, například 95 %, při opakování za srovnatelných podmínek a splnění předpokladů."
+  def_full: |
+    Zvolená dlouhodobá úspěšnost postupu, kterým vytváříme intervaly spolehlivosti. Při 95% hladině a splnění předpokladů by přibližně 95 % intervalů získaných z mnoha srovnatelných výběrů pokrylo skutečnou hodnotu odhadovaného parametru. Hladina se vztahuje k postupu, nikoli k pravděpodobnosti, že jeden již vypočtený interval obsahuje parametr.
+  usage: |
+    - Vyšší hladina při stejných datech vytváří širší interval.
+    - Běžné volby jsou 90 %, 95 % a 99 %.
+  synonyms: "*Konfidenční hladina*; v kurzu preferujeme **hladinu spolehlivosti**."
+  see_also:
+    - "interval-spolehlivosti"
+    - "pokryti-intervalu"
+    - "kriticka-hodnota"
+
+- id: "jednotka-pozorovani"
+  cz: "Jednotka pozorování"
+  en: "observational unit, unit of observation"
+  def_short: "Entita nebo děj, o kterém jedno pozorování nese informace, například jedinec, plocha, vzorek vody nebo jedna erupce."
+  def_full: |
+    Entita nebo děj, o kterém pozorování nese informace. Jednotkou pozorování může být jedinec, experimentální nádoba, plocha, vzorek vody nebo jedna erupce. V jednoduché tabulce odpovídá jednotce často jeden řádek, ale při opakovaných měřeních může mít tatáž jednotka více pozorování a více řádků.
+  usage: |
+    - Jednotku pozorování určujeme dříve, než počítáme souhrny nebo volíme model.
+    - Nezaměňujeme ji automaticky s řádkem tabulky ani s jednotlivým měřením.
+  synonyms: "*Pozorovací jednotka*, *statistická jednotka*."
+  see_also:
+    - "pozorovani"
+    - "promenna"
+    - "opakovana-mereni"
+
+- id: "korelace"
+  cz: "Korelace (korelační koeficient)"
+  en: "correlation, correlation coefficient"
+  def_short: "Bezrozměrné číslo popisující směr a těsnost vztahu dvou proměnných; Pearsonova korelace shrnuje lineární vztah a Spearmanova monotónní vztah podle pořadí."
+  def_full: |
+    Bezrozměrný číselný souhrn směru a těsnosti vztahu dvou proměnných. Hodnota blízko +1 označuje silný kladný vztah, hodnota blízko -1 silný záporný vztah a hodnota blízko 0 nepřítomnost vztahu daného typu. **Pearsonova korelace** pracuje s původními hodnotami a shrnuje lineární vztah. **Spearmanova korelace** pracuje s pořadím hodnot a shrnuje monotónní vztah. Korelace sama o sobě neprokazuje příčinu.
+  usage: |
+    - Nejprve vždy prohlédneme bodový graf; stejné číslo může skrývat velmi odlišné tvary vztahu.
+    - V R: `cor(x, y, method = "pearson")` nebo `cor(x, y, method = "spearman")`.
+    - Korelace se nezmění pouhým prohozením os ani změnou jednotek.
+  synonyms: "*Pearsonovo r*, *Spearmanovo rho* jsou konkrétní korelační koeficienty."
+  see_also:
+    - "bodovy-graf"
+    - "kovariance"
+    - "korelace-predikatoru"
+    - "konfundovani"
+
+- id: "kriticka-hodnota"
+  cz: "Kritická hodnota"
+  en: "critical value"
+  def_short: "Násobek standardní chyby použitý při konstrukci intervalu nebo testu; závisí například na hladině spolehlivosti, stupních volnosti a zvoleném rozdělení."
+  def_full: |
+    Číslo určující, kolik standardních chyb přidáme na každou stranu odhadu při konstrukci intervalu spolehlivosti. Kritická hodnota závisí na zvolené hladině spolehlivosti, stupních volnosti a použitém pravděpodobnostním rozdělení, například t-rozdělení. Vyšší požadovaná hladina obvykle znamená větší kritickou hodnotu a širší interval.
+  usage: |
+    - Polovina šířky intervalu se často vypočte jako kritická hodnota × standardní chyba.
+    - Kritická hodnota není odhad efektu ani míra variability původních dat.
+  see_also:
+    - "standardni-chyba"
+    - "hladina-spolehlivosti"
+    - "mez-chyby"
+    - "stupne-volnosti"
+
+- id: "mez-chyby"
+  cz: "Mez chyby (polovina šířky intervalu)"
+  en: "margin of error"
+  def_short: "Vzdálenost od bodového odhadu k jedné hranici symetrického intervalu, často vypočtená jako kritická hodnota krát standardní chyba."
+  def_full: |
+    Vzdálenost od bodového odhadu k dolní nebo horní hranici symetrického intervalu spolehlivosti. Často se vypočte jako součin kritické hodnoty a standardní chyby. Celková šířka intervalu je potom dvojnásobkem této vzdálenosti.
+  usage: |
+    - Mez chyby popisuje nejistotu odhadu, nikoli chybu měření jednotlivého pozorování.
+    - Při stejných datech roste s požadovanou hladinou spolehlivosti.
+  synonyms: "*Polovina šířky intervalu*, anglicky *margin of error*."
+  see_also:
+    - "interval-spolehlivosti"
+    - "kriticka-hodnota"
+    - "standardni-chyba"
+
+- id: "nominalni-promenna"
+  cz: "Nominální proměnná"
+  en: "nominal variable"
+  def_short: "Kategoriální proměnná, jejíž kategorie nemají přirozené pořadí, například druh, ostrov nebo barva."
+  def_full: |
+    Kategoriální proměnná, jejíž kategorie nemají přirozené pořadí. Druh, lokalita nebo barva jsou pouze různé názvy skupin; přeskládání jejich pořadí nemění význam dat.
+  usage: |
+    - Popisujeme ji četnostmi nebo relativními četnostmi.
+    - V R se obvykle ukládá jako `factor` bez uspořádaných úrovní.
+  see_also:
+    - "kategoricka-promenna"
+    - "ordinalni-promenna"
+    - "cetnost"
+    - "relativni-cetnost"
+
+- id: "odhad"
+  cz: "Odhad (bodový odhad)"
+  en: "estimate, point estimate"
+  def_short: "Číslo vypočtené z pozorovaných dat jako přiblížení neznámé vlastnosti nebo parametru; jiný srovnatelný výběr může dát jiný odhad."
+  def_full: |
+    Číslo vypočtené z pozorovaných dat jako přiblížení neznámé vlastnosti nebo parametru širšího procesu. Průměr výběru může odhadovat průměr populace a sklon fitovaného modelu může odhadovat velikost vztahu. Jeden takový výsledek se nazývá bodový odhad. Jiný srovnatelný výběr obvykle poskytne trochu jiný odhad.
+  usage: |
+    - Odhad vždy uvádíme v příslušných jednotkách a s informací o nejistotě.
+    - Nezaměňujeme odhad parametru s odhadnutou hodnotou jednotlivého pozorování.
+  see_also:
+    - "vyber"
+    - "vyberova-variabilita"
+    - "standardni-chyba"
+    - "interval-spolehlivosti"
+    - "odhadnuta-hodnota"
+
+- id: "odhadnuta-hodnota"
+  cz: "Odhadnutá hodnota"
+  en: "fitted value"
+  def_short: "Hodnota odezvy, kterou fitovaný model přiřadí pozorování na základě jeho hodnot prediktorů; značí se často ŷ."
+  def_full: |
+    Hodnota odezvy, kterou fitovaný model přiřadí konkrétnímu pozorování na základě jeho hodnot prediktorů. V lineárním modelu leží odhadnutá hodnota na modelové přímce a často se značí \(\hat{y}_i\). Rozdíl mezi naměřenou a odhadnutou hodnotou je residuum.
+  usage: |
+    - V R: `fitted(model)` nebo `predict(model)` pro data použitá při fitování.
+    - Pro nové nebo dosud nepozorované případy používáme termín **predikovaná hodnota**.
+  synonyms: "*Fitovaná hodnota*; v kurzu preferujeme **odhadnutá hodnota** pro pozorování použitá k odhadu modelu."
+  see_also:
+    - "odhad"
+    - "residuum"
+    - "linearni-model"
+
+- id: "ordinalni-promenna"
+  cz: "Ordinální proměnná"
+  en: "ordinal variable"
+  def_short: "Kategoriální proměnná s přirozeně seřazenými kategoriemi, jejichž vzájemné vzdálenosti však nemusí být stejné nebo známé."
+  def_full: |
+    Kategoriální proměnná s přirozeným pořadím kategorií, například nízký-střední-vysoký nebo mírné-střední-silné poškození. Pořadí nese informaci, ale rozdíl mezi sousedními kategoriemi není automaticky stejně velký. Kategorie proto nelze bez dalšího považovat za běžná čísla.
+  usage: |
+    - V R se často ukládá jako uspořádaný faktor (`ordered`).
+    - Graf musí zachovat přirozené pořadí kategorií.
+  see_also:
+    - "kategoricka-promenna"
+    - "nominalni-promenna"
+
+- id: "pokryti-intervalu"
+  cz: "Pokrytí intervalu"
+  en: "confidence-interval coverage, coverage probability"
+  def_short: "Podíl intervalů, které při opakování stejného postupu obsahují cílovou hodnotu; u správně kalibrovaného 95% postupu očekáváme přibližně 95% pokrytí."
+  def_full: |
+    Podíl intervalů, které při mnoha opakováních stejného postupu obsahují cílovou hodnotu parametru. Pokud jsou splněny předpoklady, měl by postup pro 95% interval spolehlivosti dosahovat přibližně 95% dlouhodobého pokrytí. Skutečné pokrytí může být horší, pokud model nebo způsob výběru neodpovídá realitě.
+  usage: |
+    - Vyšší požadované pokrytí při stejných datech vede k širším intervalům.
+    - Pokrytí hodnotíme napříč mnoha intervaly, ne jako vlastnost jediného realizovaného intervalu.
+  see_also:
+    - "hladina-spolehlivosti"
+    - "interval-spolehlivosti"
+    - "vyberova-variabilita"
+
+- id: "pozorovani"
+  cz: "Pozorování"
+  en: "observation, data record"
+  def_short: "Jeden zaznamenaný případ v datech, který obsahuje hodnoty jedné nebo více proměnných."
+  def_full: |
+    Jeden zaznamenaný případ v datech. Pozorování může obsahovat hodnoty více proměnných, například druh, délku a hmotnost jednoho jedince. V jednoduché obdélníkové tabulce bývá jedno pozorování na jednom řádku. Při opakovaných měřeních však může stejná jednotka pozorování přispět více řádky.
+  usage: |
+    - Počet pozorování se často značí \(n\).
+    - Pozorování není totéž co jedna číselná hodnota; může zahrnovat více měřených znaků.
+  see_also:
+    - "jednotka-pozorovani"
+    - "promenna"
+    - "vyber"
+
+- id: "promenna"
+  cz: "Proměnná"
+  en: "variable"
+  def_short: "Vlastnost zaznamenaná u pozorování, která může mezi pozorováními nabývat různých hodnot, například druh, délka nebo počet."
+  def_full: |
+    Vlastnost zaznamenaná u pozorování, která může nabývat různých hodnot. Proměnnou může být druh organismu, délka, teplota nebo počet událostí. V jednoduché datové tabulce odpovídají proměnné obvykle sloupce a jednotlivé hodnoty proměnné jsou zapsány v řádcích pozorování.
+  usage: |
+    - Před výpočtem nebo grafem určujeme význam a typ každé proměnné.
+    - Typ proměnné omezuje, které souhrny, grafy a modely dávají smysl.
+  synonyms: "*Znak* je běžné biologické synonymum; samotný sloupec je technické uložení proměnné, ne její úplná definice."
+  see_also:
+    - "pozorovani"
+    - "numericka-promenna"
+    - "kategoricka-promenna"
+    - "prediktor"
+    - "odezva"
+
+- id: "relativni-cetnost"
+  cz: "Relativní četnost (podíl)"
+  en: "relative frequency, proportion"
+  def_short: "Podíl pozorování v určité kategorii, vypočtený jako její četnost dělená celkovým počtem relevantních pozorování."
+  def_full: |
+    Podíl pozorování v určité kategorii. Vypočte se jako absolutní četnost kategorie dělená celkovým počtem pozorování v porovnávaném souboru. Relativní četnost leží mezi 0 a 1 a často se vyjadřuje v procentech.
+  usage: |
+    - Podíly usnadňují porovnání složení skupin různé velikosti.
+    - Samotný podíl může skrýt, zda vychází z deseti nebo z tisíce pozorování; uvádíme proto i počty.
+  synonyms: "*Proporce*, *podíl*, *procentuální zastoupení*."
+  see_also:
+    - "cetnost"
+    - "kategoricka-promenna"
+    - "sloupcovy-graf"
+
+- id: "rezidualni-smerodatna-odchylka"
+  cz: "Reziduální směrodatná odchylka"
+  en: "residual standard error (RSE), residual standard deviation"
+  def_short: "Odhad typické velikosti residuí v jednotkách odezvy; popisuje rozptýlení pozorování kolem hodnot odhadnutých modelem."
+  def_full: |
+    Odhad typické velikosti residuí v jednotkách odezvy. V lineárním modelu se získá jako odmocnina součtu čtverců residuí děleného příslušným počtem stupňů volnosti. Popisuje, jak daleko bývají pozorované hodnoty od hodnot odhadnutých modelem.
+  usage: |
+    - V R se ve výstupu `summary(lm(...))` označuje jako `Residual standard error`.
+    - Není to standardní chyba koeficientu: RSE popisuje residuální rozptýlení, zatímco SE koeficientu přesnost jeho odhadu.
+  synonyms: "*Reziduální standardní chyba* je doslovný překlad RSE; v kurzu preferujeme **reziduální směrodatná odchylka**, protože jde o odhad směrodatné odchylky residuí."
+  see_also:
+    - "residuum"
+    - "soucet-ctvercu-residui"
+    - "standardni-chyba"
+    - "stupne-volnosti"
+
+- id: "sloupcovy-graf"
+  cz: "Sloupcový graf"
+  en: "bar chart, bar plot"
+  def_short: "Graf kategoriální proměnné, v němž výška nebo délka oddělených sloupců představuje četnosti, podíly nebo jiný souhrn kategorií."
+  def_full: |
+    Graf pro kategoriální proměnnou. Každý oddělený sloupec představuje jednu kategorii a jeho výška nebo délka ukazuje četnost, relativní četnost nebo jiný jasně uvedený souhrn. Mezery mezi sloupci zdůrazňují, že kategorie nejsou spojité číselné intervaly.
+  usage: |
+    - V R: `barplot(table(x))` nebo `ggplot2::geom_bar()`.
+    - Skupinové a skládané varianty mohou porovnávat dvě kategoriální proměnné.
+    - Nezaměňujeme s histogramem, jehož sousední sloupce představují intervaly numerické proměnné.
+  synonyms: "*Bar chart*, *bar plot*."
+  see_also:
+    - "kategoricka-promenna"
+    - "cetnost"
+    - "relativni-cetnost"
+    - "histogram"
+
+- id: "soucet-ctvercu-residui"
+  cz: "Součet čtverců residuí"
+  en: "residual sum of squares (RSS), sum of squared errors (SSE)"
+  def_short: "Součet druhých mocnin všech residuí; vyjadřuje celkovou čtvercovou odchylku pozorovaných hodnot od hodnot odhadnutých modelem."
+  def_full: |
+    Součet druhých mocnin všech residuí. Každé residuum je rozdíl mezi pozorovanou a odhadnutou hodnotou; umocnění zabrání rušení kladných a záporných rozdílů a více zvýrazní velké odchylky. Metoda nejmenších čtverců volí parametry lineárního modelu tak, aby byl tento součet co nejmenší.
+  usage: |
+    - Zkratka **RSS** odpovídá *residual sum of squares* a je v kurzu preferovaná.
+    - Zkratka **SSE** (*sum of squared errors*) se často používá pro stejný výpočet; zde „error“ označuje residuum, nikoli známou chybu měření.
+    - Hodnota je v druhé mocnině jednotek odezvy a roste s počtem pozorování, proto ji neporovnáváme bez kontextu.
+  synonyms: "*Reziduální součet čtverců*, *součet čtvercových chyb*; preferujeme formulaci s residui."
+  see_also:
+    - "residuum"
+    - "odhadnuta-hodnota"
+    - "rezidualni-smerodatna-odchylka"
+    - "linearni-model"
+
+- id: "spojita-promenna"
+  cz: "Spojitá proměnná"
+  en: "continuous variable"
+  def_short: "Numerická proměnná, která může v principu nabývat libovolné hodnoty v určitém intervalu, například délka, hmotnost nebo čas."
+  def_full: |
+    Numerická proměnná, která může v principu nabývat libovolné hodnoty v určitém intervalu. Délka, hmotnost, teplota nebo čas jsou spojité, i když je přístroj zaznamená s omezeným počtem desetinných míst. Zaokrouhlení měření z ní samo o sobě nedělá diskrétní proměnnou.
+  usage: |
+    - Spojitost popisuje význam veličiny, ne úložný typ `numeric` v R.
+    - Rozdělení spojité proměnné často zobrazujeme histogramem, grafem hustoty nebo boxplotem.
+  see_also:
+    - "numericka-promenna"
+    - "diskretni-promenna"
+    - "histogram"
+
+- id: "vyber"
+  cz: "Výběr (výběrový soubor)"
+  en: "sample"
+  def_short: "Soubor pozorování, z něhož počítáme statistiky a pomocí něhož se snažíme popsat širší populaci nebo proces."
+  def_full: |
+    Soubor pozorování použitý pro výpočet statistik a odhadů. Výběr obvykle představuje jen část širší populace nebo procesu, o kterém chceme něco zjistit. Způsob získání výběru rozhoduje o tom, kam lze výsledky zobecnit; označení „výběr“ samo o sobě neznamená, že pozorování byla vybrána náhodně.
+  usage: |
+    - Česky se používá také **výběrový soubor** nebo méně formálně **vzorek**.
+    - Velikost výběru se často značí \(n\).
+  synonyms: "*Výběrový soubor*, *vzorek*; anglicky *sample*."
+  see_also:
+    - "pozorovani"
+    - "odhad"
+    - "vyberova-variabilita"
+
+- id: "vyberova-variabilita"
+  cz: "Výběrová variabilita"
+  en: "sampling variability, sampling variation"
+  def_short: "Proměnlivost odhadu mezi možnými srovnatelnými výběry získanými stejným postupem."
+  def_full: |
+    Proměnlivost statistiky nebo odhadu mezi možnými srovnatelnými výběry. Kdybychom stejným postupem opakovaně získávali nová pozorování, pokaždé bychom obvykle vypočetli trochu jiný průměr, sklon nebo jiný odhad. Výběrová variabilita proto popisuje proměnlivost výsledku postupu, nikoli pouze rozdíly mezi jednotlivými hodnotami v jednom souboru dat.
+  usage: |
+    - Standardní chyba vyjadřuje typickou velikost výběrové variability odhadu.
+    - S větším a informativnějším výběrem bývá výběrová variabilita menší.
+  see_also:
+    - "vyber"
+    - "odhad"
+    - "variabilita"
+    - "standardni-chyba"
+    - "pokryti-intervalu"

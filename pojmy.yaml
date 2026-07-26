@@ -8,14 +8,14 @@ binarni-promenna:
   def: Proměnná nabývající právě dvou hodnot, nejčastěji 0/1, přítomnost/nepřítomnost,
     ano/ne.
 boxplot:
-  def: 'Graf zobrazující pět souhrnných statistik najednou: minimum, Q1, medián, Q3
-    a maximum; krabice ohraničuje interkvartilový rozsah (IQR).'
+  def: Graf, jehož krabice sahá od Q1 do Q3 a obsahuje medián; vousy vymezují hodnoty
+    podle zvoleného pravidla a body za nimi upozorňují na možná odlehlá pozorování.
 diagnostika-modelu:
   def: 'Soubor grafických a numerických kontrol ověřujících, zda jsou splněny předpoklady
     modelu: linearita, normalita reziduí, homoskedasticita, absence vlivných bodů.'
 efekt:
-  def: Kvantitativní popis toho, jak silně prediktor ovlivňuje odezvu - zahrnuje směr,
-    velikost a nejistotu (interval spolehlivosti).
+  def: Kvantitativní popis toho, jak se podle modelu mění odezva s prediktorem; zahrnuje
+    směr, velikost a nejistotu odhadu, ale sám o sobě nedokládá příčinu.
 f-statistika:
   def: Testová statistika porovnávající rozptyl vysvětlený modelem s rozptylem nevysvětleným
     (reziduálním); vyšší F = vyšší poměr signal:šum.
@@ -92,8 +92,8 @@ nulova-hypoteza:
   def: Výchozí předpoklad, který testujeme - typicky 'efekt je nulový' nebo 'skupiny
     se neliší'; p-hodnota udává pravděpodobnost dat za předpokladu platnosti H₀.
 numericka-promenna:
-  def: Proměnná nabývající libovolných číselných hodnot na spojité nebo diskrétní
-    číselné stupnici (délky, hmotnosti, teploty, počty).
+  def: Proměnná, jejíž hodnoty jsou čísla se smysluplnou velikostí nebo rozdílem;
+    může být diskrétní, například počet, nebo spojitá, například délka.
 odezva:
   def: Proměnná, jejíž variabilitu se snažíme vysvětlit nebo předpovědět; v notaci
     modelu `y ~ x` je odezva `y`.
@@ -130,8 +130,8 @@ residuum:
   def: 'Rozdíl mezi pozorovanou hodnotou odezvy a hodnotou predikovanou modelem: eᵢ
     = yᵢ − ŷᵢ.'
 rozdeleni:
-  def: Matematický popis, jak jsou hodnoty proměnné rozloženy; klíčové parametry závisí
-    na konkrétním rozdělení (průměr a rozptyl pro normální, λ pro Poissonovo).
+  def: Popis toho, jaké hodnoty proměnná nabývá a jak často se vyskytují; může jít
+    o pozorované rozdělení dat nebo o teoretické pravděpodobnostní rozdělení.
 rozptyl:
   def: Průměr čtverců odchylek od průměru; míra variability dat. Odmocnina rozptylu
     je směrodatná odchylka.
@@ -161,3 +161,64 @@ cetnost:
     proměnné je četnost základní deskriptivní statistikou.
 zobecneny-linearni-model:
   def: Viz heslo GLM.
+bodovy-graf:
+  def: Graf vztahu dvou numerických proměnných, v němž každý bod představuje jedno
+    pozorování a jeho dvě hodnoty určují polohu na osách.
+diskretni-promenna:
+  def: Numerická proměnná s oddělenými, spočetnými možnými hodnotami, například počet
+    jedinců nebo počet událostí.
+hladina-spolehlivosti:
+  def: Zvolená dlouhodobá úspěšnost postupu pro konstrukci intervalu spolehlivosti,
+    například 95 %, při opakování za srovnatelných podmínek a splnění předpokladů.
+jednotka-pozorovani:
+  def: Entita nebo děj, o kterém jedno pozorování nese informace, například jedinec,
+    plocha, vzorek vody nebo jedna erupce.
+korelace:
+  def: Bezrozměrné číslo popisující směr a těsnost vztahu dvou proměnných; Pearsonova
+    korelace shrnuje lineární vztah a Spearmanova monotónní vztah podle pořadí.
+kriticka-hodnota:
+  def: Násobek standardní chyby použitý při konstrukci intervalu nebo testu; závisí
+    například na hladině spolehlivosti, stupních volnosti a zvoleném rozdělení.
+mez-chyby:
+  def: Vzdálenost od bodového odhadu k jedné hranici symetrického intervalu, často
+    vypočtená jako kritická hodnota krát standardní chyba.
+nominalni-promenna:
+  def: Kategoriální proměnná, jejíž kategorie nemají přirozené pořadí, například druh,
+    ostrov nebo barva.
+odhad:
+  def: Číslo vypočtené z pozorovaných dat jako přiblížení neznámé vlastnosti nebo
+    parametru; jiný srovnatelný výběr může dát jiný odhad.
+odhadnuta-hodnota:
+  def: Hodnota odezvy, kterou fitovaný model přiřadí pozorování na základě jeho hodnot
+    prediktorů; značí se často ŷ.
+ordinalni-promenna:
+  def: Kategoriální proměnná s přirozeně seřazenými kategoriemi, jejichž vzájemné
+    vzdálenosti však nemusí být stejné nebo známé.
+pokryti-intervalu:
+  def: Podíl intervalů, které při opakování stejného postupu obsahují cílovou hodnotu;
+    u správně kalibrovaného 95% postupu očekáváme přibližně 95% pokrytí.
+pozorovani:
+  def: Jeden zaznamenaný případ v datech, který obsahuje hodnoty jedné nebo více proměnných.
+promenna:
+  def: Vlastnost zaznamenaná u pozorování, která může mezi pozorováními nabývat různých
+    hodnot, například druh, délka nebo počet.
+relativni-cetnost:
+  def: Podíl pozorování v určité kategorii, vypočtený jako její četnost dělená celkovým
+    počtem relevantních pozorování.
+rezidualni-smerodatna-odchylka:
+  def: Odhad typické velikosti residuí v jednotkách odezvy; popisuje rozptýlení pozorování
+    kolem hodnot odhadnutých modelem.
+sloupcovy-graf:
+  def: Graf kategoriální proměnné, v němž výška nebo délka oddělených sloupců představuje
+    četnosti, podíly nebo jiný souhrn kategorií.
+soucet-ctvercu-residui:
+  def: Součet druhých mocnin všech residuí; vyjadřuje celkovou čtvercovou odchylku
+    pozorovaných hodnot od hodnot odhadnutých modelem.
+spojita-promenna:
+  def: Numerická proměnná, která může v principu nabývat libovolné hodnoty v určitém
+    intervalu, například délka, hmotnost nebo čas.
+vyber:
+  def: Soubor pozorování, z něhož počítáme statistiky a pomocí něhož se snažíme popsat
+    širší populaci nebo proces.
+vyberova-variabilita:
+  def: Proměnlivost odhadu mezi možnými srovnatelnými výběry získanými stejným postupem.
