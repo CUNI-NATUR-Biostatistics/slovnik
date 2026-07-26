@@ -21,8 +21,8 @@
 #' @param value Character. The field content. \code{NULL} or
 #'   whitespace-only values are treated as absent.
 #'
-#' @return A character string of the form
-#'   \code{"\n**label:** value\n"}, or \code{NULL}
+#' @return A character string with a bold label followed by
+#'   inline prose or a Markdown list, or \code{NULL}
 #'   invisibly when value is missing or blank.
 format_field_as_markdown <- function(label, value) {
   if (
@@ -31,12 +31,23 @@ format_field_as_markdown <- function(label, value) {
   ) {
     return(invisible(NULL))
   }
-  res <- paste0(
-    "\n**",
-    label,
-    ":** ",
-    trimws(value),
-    "\n"
-  )
+  value_trimmed <- trimws(value)
+  if (stringr::str_starts(value_trimmed, "- ")) {
+    res <- paste0(
+      "\n**",
+      label,
+      ":**\n\n",
+      value_trimmed,
+      "\n"
+    )
+  } else {
+    res <- paste0(
+      "\n**",
+      label,
+      ":** ",
+      value_trimmed,
+      "\n"
+    )
+  }
   return(res)
 }

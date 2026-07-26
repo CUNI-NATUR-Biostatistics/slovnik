@@ -47,17 +47,11 @@ entries <-
   yaml::yaml.load()
 
 entries_sorted <-
-  entries |>
-  purrr::map(get_sort_key) |>
-  purrr::map(
-    .f = ~ {
-      entry <-
-        purrr::keep(
-          entries, function(e) get_sort_key(e) == .x
-        )
-      entry[[1]]
-    }
-  )
+  entries[
+    base::order(
+      purrr::map_chr(entries, get_sort_key)
+    )
+  ]
 
 
 ```
