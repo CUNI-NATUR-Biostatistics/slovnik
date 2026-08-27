@@ -89,3 +89,7 @@ Nikdy neodkazujte na lokální kopii `pojmy.yaml` – vždy používejte výše 
 | Organizace | [`CUNI-NATUR-Biostatistics`](https://github.com/CUNI-NATUR-Biostatistics) |
 | Koordinátor | Ondřej Mottl |
 | Vizibilita repozitáře | veřejný |
+
+## Licence
+
+Původní text slovníku a renderovaný obsah jsou licencovány pod CC BY 4.0, zatímco kód a renderovací nástroje pod licencí MIT. Přesné vymezení, doporučená citace a výjimky jsou v [`LICENSE.md`](LICENSE.md).
