@@ -98,6 +98,8 @@
     - "heteroskedasticita"
     - "odlehla-pozorovani"
     - "linearni-model"
+    - "qq-graf"
+    - "cookova-vzdalenost"
 
 - id: "efekt"
   cz: "Efekt"
@@ -558,6 +560,8 @@
   see_also:
     - "diagnostika-modelu"
     - "boxplot"
+    - "pakovy-efekt"
+    - "cookova-vzdalenost"
 
 - id: "opakovana-mereni"
   cz: "Opakovaná měření"
@@ -882,6 +886,23 @@
     - "korelace"
     - "odlehla-pozorovani"
 
+- id: "cookova-vzdalenost"
+  cz: "Cookova vzdálenost"
+  en: "Cook's distance"
+  def_short: "Míra vlivu jednoho pozorování na model: vyjadřuje, jak moc by se změnily odhadnuté hodnoty, kdybychom toto pozorování vynechali."
+  def_full: |
+    Míra vlivu jednoho pozorování na odhadnutý model. Vyjadřuje, jak moc by se změnily odhadnuté hodnoty všech pozorování, kdybychom dané pozorování vynechali a model odhadli znovu. Velkou hodnotu mívá hlavně pozorování, které má zároveň velké residuum a velký pákový efekt.
+  usage: |
+    - V R: `cooks.distance(model)`.
+    - Orientační hodnota \(4/n\) pouze upozorňuje na pozorování, která si zaslouží bližší kontrolu; není to test ani pravidlo pro mazání dat.
+    - Citlivost závěru ověříme tak, že model odhadneme s pozorováním i bez něj a porovnáme koeficienty.
+  synonyms: "Anglicky *Cook's distance* nebo *Cook's D*."
+  see_also:
+    - "pakovy-efekt"
+    - "odlehla-pozorovani"
+    - "residuum"
+    - "diagnostika-modelu"
+
 - id: "diskretni-promenna"
   cz: "Diskrétní proměnná"
   en: "discrete variable"
@@ -1032,6 +1053,23 @@
     - "kategoricka-promenna"
     - "nominalni-promenna"
 
+- id: "pakovy-efekt"
+  cz: "Pákový efekt"
+  en: "leverage"
+  def_short: "Míra toho, jak neobvyklé hodnoty prediktorů má jedno pozorování ve srovnání s ostatními; nezávisí na naměřené odezvě."
+  def_full: |
+    Míra toho, jak neobvyklé hodnoty prediktorů má jedno pozorování ve srovnání s ostatními. S jediným numerickým prediktorem roste se vzdáleností jeho hodnoty od průměru prediktoru, a to na obě strany. Naměřená odezva ani residuum na pákový efekt vliv nemají. Pozorování s velkým pákovým efektem může odhadnutou přímku naklonit snáz než pozorování uprostřed rozsahu dat.
+  usage: |
+    - V R: `hatvalues(model)`.
+    - Pákový efekt nemá jednotky.
+    - Velký pákový efekt sám neznamená problém; silně vlivné bývá hlavně pozorování, které má zároveň velké residuum (viz [Cookova vzdálenost](#cookova-vzdalenost)).
+  synonyms: "Anglicky *leverage*; v R také *hat values*."
+  see_also:
+    - "cookova-vzdalenost"
+    - "prediktor"
+    - "odlehla-pozorovani"
+    - "diagnostika-modelu"
+
 - id: "pokryti-intervalu"
   cz: "Pokrytí intervalu"
   en: "confidence-interval coverage, coverage probability"
@@ -1076,6 +1114,23 @@
     - "kategoricka-promenna"
     - "prediktor"
     - "odezva"
+
+- id: "qq-graf"
+  cz: "Q–Q graf"
+  en: "Q–Q plot, quantile–quantile plot"
+  def_short: "Graf, který porovnává seřazené hodnoty (typicky residua) s kvantily očekávanými u zvoleného rozdělení, nejčastěji normálního."
+  def_full: |
+    Graf, který porovnává seřazené hodnoty, v lineárním modelu typicky residua, s [kvantily](#kvantil), které bychom na stejném místě pořadí čekali u zvoleného teoretického rozdělení, nejčastěji normálního. Leží-li body blízko referenční přímky, tvar hodnot se od zvoleného rozdělení výrazně neliší.
+  usage: |
+    - V R: `qqnorm()` a `qqline()`; v `{ggplot2}` `stat_qq()` a `stat_qq_line()`.
+    - Konce odklánějící se od přímky opačnými směry ukazují na víc velkých kladných i záporných odchylek; oblouk ukazuje na nesouměrnost.
+    - Nejde o test; u malých souborů se konce grafu vlní i u hodnot z normálního rozdělení.
+  synonyms: "Anglicky *Q–Q plot* nebo *quantile–quantile plot*; česky také *kvantilový graf*."
+  see_also:
+    - "kvantil"
+    - "residuum"
+    - "rozdeleni"
+    - "diagnostika-modelu"
 
 - id: "relativni-cetnost"
   cz: "Relativní četnost (podíl)"
