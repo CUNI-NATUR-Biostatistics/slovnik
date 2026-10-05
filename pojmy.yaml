@@ -164,6 +164,9 @@ zobecneny-linearni-model:
 bodovy-graf:
   def: Graf vztahu dvou numerických proměnných, v němž každý bod představuje jedno
     pozorování a jeho dvě hodnoty určují polohu na osách.
+cookova-vzdalenost:
+  def: 'Míra vlivu jednoho pozorování na model: vyjadřuje, jak moc by se změnily odhadnuté
+    hodnoty, kdybychom toto pozorování vynechali.'
 diskretni-promenna:
   def: Numerická proměnná s oddělenými, spočetnými možnými hodnotami, například počet
     jedinců nebo počet událostí.
@@ -194,6 +197,9 @@ odhadnuta-hodnota:
 ordinalni-promenna:
   def: Kategoriální proměnná s přirozeně seřazenými kategoriemi, jejichž vzájemné
     vzdálenosti však nemusí být stejné nebo známé.
+pakovy-efekt:
+  def: Míra toho, jak neobvyklé hodnoty prediktorů má jedno pozorování ve srovnání
+    s ostatními; nezávisí na naměřené odezvě.
 pokryti-intervalu:
   def: Podíl intervalů, které při opakování stejného postupu obsahují cílovou hodnotu;
     u správně kalibrovaného 95% postupu očekáváme přibližně 95% pokrytí.
@@ -202,6 +208,9 @@ pozorovani:
 promenna:
   def: Vlastnost zaznamenaná u pozorování, která může mezi pozorováními nabývat různých
     hodnot, například druh, délka nebo počet.
+qq-graf:
+  def: Graf, který porovnává seřazené hodnoty (typicky residua) s kvantily očekávanými
+    u zvoleného rozdělení, nejčastěji normálního.
 relativni-cetnost:
   def: Podíl pozorování v určité kategorii, vypočtený jako její četnost dělená celkovým
     počtem relevantních pozorování.
