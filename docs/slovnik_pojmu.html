@@ -2409,7 +2409,7 @@ src: url(data:font/ttf;base64,AAEAAAAQAQAABAAAR0RFRmToZOQAAAIwAAABckdQT1OZIZVrAA
 <li>V R: <code>boxplot(y ~ skupina)</code> nebo <code>ggplot2::geom_boxplot()</code>.</li>
 </ul>
 <p><strong>Synonyma a záměny:</strong> Krabicový diagram, krabicový graf - oba jsou správné překlady. V kódu používáme anglický název <code>boxplot</code>.</p>
-<p><strong>Viz také:</strong> <a href="#iqr">IQR (interkvartilový rozsah)</a>, <a href="#median">Medián</a>, <a href="#odlehla-pozorovani">Odlehlá pozorování</a></p>
+<p><strong>Viz také:</strong> <a href="#iqr">IQR (mezikvartilové rozpětí)</a>, <a href="#median">Medián</a>, <a href="#odlehla-pozorovani">Odlehlá pozorování</a></p>
 <hr>
 </section>
 </section>
@@ -2635,7 +2635,7 @@ src: url(data:font/ttf;base64,AAEAAAAQAQAABAAAR0RFRmToZOQAAAIwAAABckdQT1OZIZVrAA
 <hr>
 </section>
 <section id="iqr" class="level3">
-<h3 class="anchored" data-anchor-id="iqr">IQR (interkvartilový rozsah)</h3>
+<h3 class="anchored" data-anchor-id="iqr">IQR (mezikvartilové rozpětí)</h3>
 <p><strong>EN:</strong> <em>IQR (Interquartile Range)</em></p>
 <p><strong>Definice:</strong> Rozdíl mezi 3. kvartilem (Q3) a 1. kvartilem (Q1). Pokrývá prostředních 50 % dat a je robustní vůči odlehlým pozorováním.</p>
 <p><strong>Použití v kurzu:</strong></p>
@@ -2643,6 +2643,7 @@ src: url(data:font/ttf;base64,AAEAAAAQAQAABAAAR0RFRmToZOQAAAIwAAABckdQT1OZIZVrAA
 <li>Preferovaná míra variability pro šikmá rozdělení nebo data s odlehlými hodnotami (místo SD).</li>
 <li>V R: <code>IQR(x)</code>.</li>
 </ul>
+<p><strong>Synonyma a záměny:</strong> Interkvartilové rozpětí, interkvartilový rozsah - v kurzu používáme mezikvartilové rozpětí.</p>
 <p><strong>Viz také:</strong> <a href="#smerodatna-odchylka">Směrodatná odchylka</a>, <a href="#median">Medián</a>, <a href="#boxplot">Boxplot (krabicový graf)</a></p>
 <hr>
 </section>
@@ -2770,7 +2771,7 @@ src: url(data:font/ttf;base64,AAEAAAAQAQAABAAAR0RFRmToZOQAAAIwAAABckdQT1OZIZVrAA
 <li>V R: <code>quantile(x, probs = c(0.025, 0.5, 0.975))</code>.</li>
 </ul>
 <p><strong>Synonyma a záměny:</strong> <em>Percentil</em> vyjadřuje pořadí v procentech; kvartil je zvláštní případ kvantilu.</p>
-<p><strong>Viz také:</strong> <a href="#median">Medián</a>, <a href="#iqr">IQR (interkvartilový rozsah)</a>, <a href="#rozdeleni">Rozdělení hodnot</a></p>
+<p><strong>Viz také:</strong> <a href="#median">Medián</a>, <a href="#iqr">IQR (mezikvartilové rozpětí)</a>, <a href="#rozdeleni">Rozdělení hodnot</a></p>
 <hr>
 </section>
 </section>
@@ -2828,7 +2829,7 @@ src: url(data:font/ttf;base64,AAEAAAAQAQAABAAAR0RFRmToZOQAAAIwAAABckdQT1OZIZVrAA
 <li>Preferovaná míra polohy pro šikmá rozdělení nebo data s odlehlými hodnotami (místo průměru).</li>
 <li>V R: <code>median(x)</code>.</li>
 </ul>
-<p><strong>Viz také:</strong> <a href="#prumer">Průměr</a>, <a href="#iqr">IQR (interkvartilový rozsah)</a>, <a href="#boxplot">Boxplot (krabicový graf)</a></p>
+<p><strong>Viz také:</strong> <a href="#prumer">Průměr</a>, <a href="#iqr">IQR (mezikvartilové rozpětí)</a>, <a href="#boxplot">Boxplot (krabicový graf)</a></p>
 <hr>
 </section>
 <section id="mez-chyby" class="level3">
@@ -3312,7 +3313,7 @@ src: url(data:font/ttf;base64,AAEAAAAQAQAABAAAR0RFRmToZOQAAAIwAAABckdQT1OZIZVrAA
 <li>V R: <code>sd(x)</code>.</li>
 </ul>
 <p><strong>Synonyma a záměny:</strong> <em>Standardní odchylka</em> (anglicismus, méně doporučený). <strong>SD ≠ SE/SEM</strong>: SD je odhad variability dat (jak moc jsou hodnoty rozptýleny kolem průměru); SE/SEM (<a href="#standardni-chyba">standardní chyba</a>) je míra kvality odhadu parametru (jak přesně odhadujeme průměr nebo koeficient modelu z omezeného vzorku).</p>
-<p><strong>Viz také:</strong> <a href="#rozptyl">Rozptyl</a>, <a href="#iqr">IQR (interkvartilový rozsah)</a>, <a href="#prumer">Průměr</a>, <a href="#standardni-chyba">Standardní chyba</a></p>
+<p><strong>Viz také:</strong> <a href="#rozptyl">Rozptyl</a>, <a href="#iqr">IQR (mezikvartilové rozpětí)</a>, <a href="#prumer">Průměr</a>, <a href="#standardni-chyba">Standardní chyba</a></p>
 <hr>
 </section>
 <section id="soucet-ctvercu-residui" class="level3">
@@ -3408,7 +3409,7 @@ src: url(data:font/ttf;base64,AAEAAAAQAQAABAAAR0RFRmToZOQAAAIwAAABckdQT1OZIZVrAA
 <ul>
 <li>Ústřední pojem kurzu: statistická analýza je v jádru o dekompozici variability na ‘vysvětlenou’ a ‘nevysvětlenou’ složku.</li>
 </ul>
-<p><strong>Viz také:</strong> <a href="#rozptyl">Rozptyl</a>, <a href="#smerodatna-odchylka">Směrodatná odchylka</a>, <a href="#iqr">IQR (interkvartilový rozsah)</a>, <a href="#residuum">Residuum</a></p>
+<p><strong>Viz také:</strong> <a href="#rozptyl">Rozptyl</a>, <a href="#smerodatna-odchylka">Směrodatná odchylka</a>, <a href="#iqr">IQR (mezikvartilové rozpětí)</a>, <a href="#residuum">Residuum</a></p>
 <hr>
 </section>
 <section id="vyber" class="level3">

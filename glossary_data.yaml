@@ -208,8 +208,9 @@
     - "nulova-hypoteza"
 
 - id: "iqr"
-  cz: "IQR (interkvartilový rozsah)"
+  cz: "IQR (mezikvartilové rozpětí)"
   en: "IQR (Interquartile Range)"
+  synonyms: "Interkvartilové rozpětí, interkvartilový rozsah - v kurzu používáme mezikvartilové rozpětí."
   def_short: "Rozdíl mezi 3. kvartilem (Q3) a 1. kvartilem (Q1); pokrývá prostředních 50 % dat a je robustní vůči odlehlým pozorováním."
   def_full: |
     Rozdíl mezi 3. kvartilem (Q3) a 1. kvartilem (Q1). Pokrývá prostředních 50 % dat a je robustní vůči odlehlým pozorováním.
