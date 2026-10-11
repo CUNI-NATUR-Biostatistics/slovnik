@@ -3072,6 +3072,20 @@ src: url(data:font/ttf;base64,AAEAAAAQAQAABAAAR0RFRmToZOQAAAIwAAABckdQT1OZIZVrAA
 <p><strong>Viz také:</strong> <a href="#intercept">Intercept (průsečík)</a>, <a href="#sklon">Sklon (regresní koeficient)</a>, <a href="#linearni-model">Lineární model</a></p>
 <hr>
 </section>
+<section id="pas-spolehlivosti" class="level3">
+<h3 class="anchored" data-anchor-id="pas-spolehlivosti">Pás spolehlivosti</h3>
+<p><strong>EN:</strong> <em>confidence band</em></p>
+<p><strong>Definice:</strong> Pás kolem odhadnuté přímky (nebo křivky) modelu. Pro každou hodnotu prediktoru ukazuje interval spolehlivosti pro <strong>průměrnou</strong> hodnotu odezvy, kterou model odhaduje. Vyjadřuje tedy nejistotu polohy průměrného trendu, nikoli rozptýlení jednotlivých pozorování kolem něj. U lineárního modelu s jedním numerickým prediktorem je pás nejužší u průměrné hodnoty prediktoru a směrem k okrajům se rozšiřuje, protože nejistota sklonu se tam projeví nejvíc.</p>
+<p><strong>Použití v kurzu:</strong></p>
+<ul>
+<li>V R: <code>predict(model, newdata = ..., interval = &quot;confidence&quot;)</code> vrací sloupce <code>fit</code>, <code>lwr</code> a <code>upr</code>; v <code>{ggplot2}</code> jej vykreslí <code>geom_smooth(method = &quot;lm&quot;, se = TRUE)</code>.</li>
+<li>Většina pozorování obvykle leží <strong>mimo</strong> pás; to není chyba modelu.</li>
+<li>Rozsah pro jedno nové pozorování musí zahrnout i jeho rozptýlení kolem trendu, a je proto širší (anglicky <em>prediction interval</em>).</li>
+</ul>
+<p><strong>Synonyma a záměny:</strong> Anglicky <em>confidence band</em>; v grafech také <em>pás nejistoty</em> (neformálně).</p>
+<p><strong>Viz také:</strong> <a href="#interval-spolehlivosti">Interval spolehlivosti</a>, <a href="#odhadnuta-hodnota">Odhadnutá hodnota</a>, <a href="#nejistota">Nejistota</a></p>
+<hr>
+</section>
 <section id="pevny-faktor" class="level3">
 <h3 class="anchored" data-anchor-id="pevny-faktor">Pevný faktor (pevný efekt)</h3>
 <p><strong>EN:</strong> <em>fixed effect, fixed factor</em></p>

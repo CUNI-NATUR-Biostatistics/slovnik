@@ -200,6 +200,9 @@ ordinalni-promenna:
 pakovy-efekt:
   def: Míra toho, jak neobvyklé hodnoty prediktorů má jedno pozorování ve srovnání
     s ostatními; nezávisí na naměřené odezvě.
+pas-spolehlivosti:
+  def: Pás kolem odhadnuté přímky, který pro každou hodnotu prediktoru ukazuje interval
+    spolehlivosti pro průměrnou hodnotu odezvy; neukazuje, kde leží 95 % pozorování.
 pokryti-intervalu:
   def: Podíl intervalů, které při opakování stejného postupu obsahují cílovou hodnotu;
     u správně kalibrovaného 95% postupu očekáváme přibližně 95% pokrytí.

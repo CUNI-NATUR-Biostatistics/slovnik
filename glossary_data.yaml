@@ -1071,6 +1071,23 @@
     - "odlehla-pozorovani"
     - "diagnostika-modelu"
 
+- id: "pas-spolehlivosti"
+  cz: "Pás spolehlivosti"
+  en: "confidence band"
+  def_short: "Pás kolem odhadnuté přímky, který pro každou hodnotu prediktoru ukazuje interval spolehlivosti pro průměrnou hodnotu odezvy; neukazuje, kde leží 95 % pozorování."
+  def_full: |
+    Pás kolem odhadnuté přímky (nebo křivky) modelu. Pro každou hodnotu prediktoru ukazuje interval spolehlivosti pro **průměrnou** hodnotu odezvy, kterou model odhaduje. Vyjadřuje tedy nejistotu polohy průměrného trendu, nikoli rozptýlení jednotlivých pozorování kolem něj. U lineárního modelu s jedním numerickým prediktorem je pás nejužší u průměrné hodnoty prediktoru a směrem k okrajům se rozšiřuje, protože nejistota sklonu se tam projeví nejvíc.
+  usage: |
+    - V R: `predict(model, newdata = ..., interval = "confidence")` vrací sloupce `fit`, `lwr` a `upr`; v `{ggplot2}` jej vykreslí `geom_smooth(method = "lm", se = TRUE)`.
+    - Většina pozorování obvykle leží **mimo** pás; to není chyba modelu.
+    - Rozsah pro jedno nové pozorování musí zahrnout i jeho rozptýlení kolem trendu, a je proto širší (anglicky *prediction interval*).
+  synonyms: "Anglicky *confidence band*; v grafech také *pás nejistoty* (neformálně)."
+  see_also:
+    - "interval-spolehlivosti"
+    - "odhadnuta-hodnota"
+    - "nejistota"
+  avoid: "konfidenční pás"
+
 - id: "pokryti-intervalu"
   cz: "Pokrytí intervalu"
   en: "confidence-interval coverage, coverage probability"
