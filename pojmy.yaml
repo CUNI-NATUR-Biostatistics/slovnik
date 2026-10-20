@@ -11,46 +11,48 @@ boxplot:
   def: Graf, jehož krabice sahá od Q1 do Q3 a obsahuje medián; vousy vymezují hodnoty
     podle zvoleného pravidla a body za nimi upozorňují na možná odlehlá pozorování.
 diagnostika-modelu:
-  def: 'Soubor grafických a numerických kontrol ověřujících, zda jsou splněny předpoklady
-    modelu: linearita, normalita reziduí, homoskedasticita, absence vlivných bodů.'
+  def: 'Soubor grafických a numerických kontrol ověřujících, zda jsou rozumně splněny
+    předpoklady modelu: linearita, nezávislost pozorování, konstantní rozptyl a normalita
+    residuí, a zda závěr nestojí na několika vlivných pozorováních.'
 efekt:
   def: Kvantitativní popis toho, jak se podle modelu mění odezva s prediktorem; zahrnuje
     směr, velikost a nejistotu odhadu, ale sám o sobě nedokládá příčinu.
 f-statistika:
-  def: Testová statistika porovnávající rozptyl vysvětlený modelem s rozptylem nevysvětleným
-    (reziduálním); vyšší F = vyšší poměr signal:šum.
+  def: Testová statistika porovnávající variabilitu zachycenou modelem s variabilitou,
+    která zůstala v residuích; vyšší F = vyšší poměr signálu k šumu.
 glm:
   def: Rozšíření lineárního modelu pro případy, kdy odezva není normálně rozložena;
     skládá se z náhodné složky, systematické složky a link funkce.
 heteroskedasticita:
-  def: Jev, kdy rozptyl reziduí není konstantní podél hodnot prediktoru - typicky
-    se rozptyl zvyšuje s rostoucí predikovanou hodnotou.
+  def: Jev, kdy rozptyl residuí není konstantní podél hodnot prediktoru - typicky
+    se rozptýlení residuí zvětšuje s rostoucí odhadnutou hodnotou.
 hierarchicka-data:
   def: Data, kde pozorování nejsou zcela nezávislá - jsou seskupena do vyšší úrovně
     (lokality, bloky, jedinci s opakovanými měřeními).
 histogram:
-  def: 'Graf zobrazující rozdělení hodnot numerické proměnné: hodnoty jsou seřazeny
-    do tříd, výška sloupce udává četnost v dané třídě.'
+  def: 'Graf zobrazující rozdělení hodnot numerické proměnné: hodnoty jsou rozděleny
+    do sousedních intervalů (košů), výška sloupce udává četnost v daném koši.'
 hladina-vyznamnosti:
-  def: Předem zvolená pravděpodobnostní hranice (typicky α = 0,05), pod níž prohlásíme
-    výsledek za statisticky významný.
+  def: Předem zvolená hranice pro p-hodnotu (typicky α = 0,05); je to zároveň přijatelná
+    pravděpodobnost chyby I. typu, tedy zamítnutí platné nulové hypotézy.
 iqr:
   def: Rozdíl mezi 3. kvartilem (Q3) a 1. kvartilem (Q1); pokrývá prostředních 50
     % dat a je robustní vůči odlehlým pozorováním.
 intercept:
-  def: 'Parametr modelu: hodnota odezvy predikovaná modelem, když jsou všechny prediktory
-    rovno nule; geometricky jde o úsek na ose y (kde regresní přímka protíná osu y).'
+  def: 'Parametr modelu: odhadnutá hodnota odezvy, když jsou všechny numerické prediktory
+    rovny nule a kategoriální prediktory jsou v referenční skupině; geometricky jde
+    o úsek na ose y.'
 interval-spolehlivosti:
-  def: Rozsah hodnot, v němž se s danou spolehlivostí (typicky 95 %) nachází odhadovaný
-    parametr.
+  def: Rozsah hodnot vypočtený z dat postupem, který při opakovaných výběrech pokryje
+    skutečnou hodnotu parametru ve zvoleném podílu případů (typicky 95 %).
 interakce-predikatoru:
   def: Situace, kdy efekt jednoho prediktoru na odezvu závisí na hodnotě jiného prediktoru.
 kategoricka-promenna:
   def: Proměnná nabývající hodnot z omezeného počtu kategorií; může být nominální
     (bez pořadí) nebo ordinální (s pořadím).
 r2:
-  def: Podíl variability odezvy vysvětlený modelem (0 = model nevysvětluje nic, 1
-    = model vysvětluje vše).
+  def: 'Podíl variability odezvy zachycený modelem: R² = 1 − RSS / celkový součet
+    čtverců (0 = model nezachytí nic navíc oproti průměru, 1 = zachytí vše).'
 konfundovani:
   def: Jev, kdy zdánlivý efekt jednoho prediktoru je (zcela nebo zčásti) způsoben
     třetí proměnnou korelující s oběma.
@@ -63,25 +65,26 @@ korelace-predikatoru:
 kvantil:
   def: Hodnota, pod níž leží určený podíl seřazených dat; medián je 50% kvantil.
 linearni-model:
-  def: Statistický model předpokládající, že odezva je lineární funkcí prediktorů
-    plus chybový člen s normálním rozdělením (y = a + b·x + ε).
+  def: Statistický model, v němž je průměrná odezva součtem interceptu a prediktorů
+    násobených koeficienty; lineární je v koeficientech, takže nemusí jít jen o přímku.
 link-funkce:
-  def: Matematická funkce v GLM propojující lineární prediktor s očekávanou hodnotou
-    odezvy; zajišťuje, že predikované hodnoty jsou v platném rozsahu.
+  def: Matematická funkce v GLM propojující lineární část modelu s očekávanou hodnotou
+    odezvy; zajišťuje, že odhadnuté hodnoty leží v platném rozsahu.
 logisticka-regrese:
   def: GLM pro binární odezvu (0/1, přítomnost/nepřítomnost); modeluje pravděpodobnost
     výskytu pomocí logit link funkce.
 median:
-  def: Hodnota rozdělující seřazená data na dvě stejně početné poloviny; 50. percentil.
+  def: Hodnota rozdělující seřazená data na dvě stejně početné poloviny; 50% kvantil
+    (prostřední kvartil).
 min-adekvat-model:
-  def: Nejjednodušší model, který adekvátně vysvětluje data - odstraňuje nepotřebné
-    parametry bez výrazného zhoršení shody s daty (princip parsimonie).
+  def: Nejjednodušší model, který popisuje data přiměřeně dobře; neobsahuje koeficienty,
+    bez nichž se shoda s daty podstatně nezhorší (princip úspornosti).
 nahodny-faktor:
-  def: Faktor v smíšeném modelu, jehož úrovně jsou náhodným vzorkem z většího souboru;
-    zajímá nás rozptyl, který přináší, ne konkrétní úrovně.
+  def: Faktor ve smíšeném modelu, jehož úrovně považujeme za výběr z většího souboru
+    možných úrovní; zajímá nás rozptyl, který přináší, ne konkrétní úrovně.
 nejistota:
-  def: Rozsah, v němž nevíme přesnou hodnotu parametru kvůli omezenému a variabilnímu
-    vzorku; kvantifikuje se pomocí intervalů spolehlivosti nebo směrodatných chyb.
+  def: Rozsah, v němž nevíme přesnou hodnotu parametru kvůli omezenému výběru a výběrové
+    variabilitě; kvantifikuje se pomocí standardních chyb a intervalů spolehlivosti.
 nelinearita:
   def: Situace, kdy vztah mezi prediktorem a odezvou není dobře popsatelný přímkou
     - má zakřivení nebo jinou nelineární formu.
@@ -90,7 +93,8 @@ neparametricky-test:
     místo s původními hodnotami.
 nulova-hypoteza:
   def: Výchozí předpoklad, který testujeme - typicky 'efekt je nulový' nebo 'skupiny
-    se neliší'; p-hodnota udává pravděpodobnost dat za předpokladu platnosti H₀.
+    se neliší'; p-hodnota udává pravděpodobnost dat alespoň tak extrémních jako naše
+    za předpokladu platnosti H₀.
 numericka-promenna:
   def: Proměnná, jejíž hodnoty jsou čísla se smysluplnou velikostí nebo rozdílem;
     může být diskrétní, například počet, nebo spojitá, například délka.
@@ -98,8 +102,9 @@ odezva:
   def: Proměnná, jejíž variabilitu se snažíme vysvětlit nebo předpovědět; v notaci
     modelu `y ~ x` je odezva `y`.
 odlehla-pozorovani:
-  def: Hodnota, která se výrazně odlišuje od ostatních pozorování; může být způsobena
-    chybou měření nebo jít o skutečně extrémní případ.
+  def: Pozorování, které se výrazně odlišuje od ostatních - v hodnotě jedné proměnné,
+    nebo v modelu velkým residuem; může jít o chybu měření i o skutečně neobvyklý
+    případ.
 opakovana-mereni:
   def: Data, kde stejná jednotka (jedinec, lokalita) je měřena opakovaně v čase nebo
     v různých podmínkách; vytváří korelaci mezi pozorováními.
@@ -116,51 +121,50 @@ poissonova-regrese:
   def: GLM pro odezvu tvořenou počty (nezáporná celá čísla); předpokládá Poissonovo
     rozdělení odezvy a logaritmický link.
 porovnani-modelu:
-  def: Postup výběru nejlepšího modelu z množiny kandidátů pomocí kritérií jako AIC
-    nebo likelihood ratio test.
+  def: Postup, kterým na stejných datech srovnáváme předem určené kandidátní modely,
+    například pomocí AIC, adjustovaného R² nebo F-testu vnořených modelů.
 post-hoc-test:
-  def: Test prováděný po signifikantní ANOVA k identifikaci, které konkrétní páry
-    skupin se od sebe liší; opravuje p-hodnoty pro mnohonásobné porovnávání.
+  def: Párová porovnání skupin, která společně vyhodnotí celou rodinu otázek typu
+    'liší se skupina A od B?' a upraví p-hodnoty i intervaly pro mnohonásobné porovnávání.
 prediktor:
   def: Proměnná, pomocí níž vysvětlujeme variabilitu odezvy; v notaci `y ~ x` je prediktor
     `x`.
 prumer:
   def: Součet hodnot vydělený jejich počtem; nejběžnější míra polohy (střední hodnoty).
 residuum:
-  def: 'Rozdíl mezi pozorovanou hodnotou odezvy a hodnotou predikovanou modelem: eᵢ
+  def: 'Rozdíl mezi pozorovanou hodnotou odezvy a hodnotou odhadnutou modelem: eᵢ
     = yᵢ − ŷᵢ.'
 rozdeleni:
   def: Popis toho, jaké hodnoty proměnná nabývá a jak často se vyskytují; může jít
     o pozorované rozdělení dat nebo o teoretické pravděpodobnostní rozdělení.
 rozptyl:
-  def: Průměr čtverců odchylek od průměru; míra variability dat. Odmocnina rozptylu
-    je směrodatná odchylka.
+  def: Součet čtverců odchylek od průměru dělený n − 1; míra variability dat. Odmocnina
+    rozptylu je směrodatná odchylka.
 sklon:
-  def: Parametr lineárního modelu udávající, o kolik se změní odezva, pokud prediktor
-    vzroste o jednu jednotku (při zachování ostatních prediktorů).
+  def: Parametr lineárního modelu udávající, o kolik se v průměru liší odezva dvou
+    pozorování, jejichž prediktor se liší o jednu jednotku (při stejných hodnotách
+    ostatních prediktorů).
 smerodatna-odchylka:
-  def: Odmocnina rozptylu; vyjadřuje průměrnou vzdálenost hodnot od průměru ve stejných
+  def: Odmocnina rozptylu; vyjadřuje typickou vzdálenost hodnot od průměru ve stejných
     jednotkách jako původní data.
 standardni-chyba:
-  def: Míra přesnosti odhadu parametru (typicky průměru) z dat; udává, jak moc by
-    se odhadnutý parametr lišil při opakovaném vzorkování ze stejné populace.
+  def: Míra přesnosti odhadu parametru (průměru, sklonu…); odhaduje z jediného výběru,
+    jak moc by se odhady typicky lišily mezi opakovanými výběry stejné velikosti.
 stupne-volnosti:
   def: Počet nezávislých informací dostupných pro odhad parametru; počet pozorování
     minus počet odhadovaných parametrů.
 t-test:
-  def: Statistický test porovnávající průměry dvou skupin (nebo průměr s konstantou);
-    ekvivalent lineárního modelu se dvěma úrovněmi faktoru.
+  def: Test založený na t-statistice (odhad dělený standardní chybou); nejčastěji
+    porovnává průměry dvou skupin nebo testuje, zda je koeficient modelu nulový.
 transformace:
-  def: Matematická operace použitá na hodnoty proměnné s cílem splnit předpoklady
-    modelu nebo zlepšit linearitu vztahu.
+  def: Matematická operace použitá na hodnoty proměnné (např. logaritmus); mění tvar
+    rozdělení i to, jaký vztah model popisuje, například násobný místo součtového.
 variabilita:
   def: Obecný termín pro rozsah, v němž se hodnoty proměnné liší od sebe navzájem;
     kvantifikuje se pomocí rozptylu, SD, IQR nebo rozsahu.
 cetnost:
   def: Počet výskytů určité hodnoty nebo kategorie v datové sadě; pro kategoriální
     proměnné je četnost základní deskriptivní statistikou.
-zobecneny-linearni-model:
-  def: Viz heslo GLM.
 bodovy-graf:
   def: Graf vztahu dvou numerických proměnných, v němž každý bod představuje jedno
     pozorování a jeho dvě hodnoty určují polohu na osách.
@@ -180,8 +184,8 @@ korelace:
   def: Bezrozměrné číslo popisující směr a těsnost vztahu dvou proměnných; Pearsonova
     korelace shrnuje lineární vztah a Spearmanova monotónní vztah podle pořadí.
 kriticka-hodnota:
-  def: Násobek standardní chyby použitý při konstrukci intervalu nebo testu; závisí
-    například na hladině spolehlivosti, stupních volnosti a zvoleném rozdělení.
+  def: Násobitel standardní chyby použitý při konstrukci intervalu, nebo hranice testové
+    statistiky v testu; závisí na hladině, stupních volnosti a zvoleném rozdělení.
 mez-chyby:
   def: Vzdálenost od bodového odhadu k jedné hranici symetrického intervalu, často
     vypočtená jako kritická hodnota krát standardní chyba.
@@ -224,7 +228,7 @@ sloupcovy-graf:
   def: Graf kategoriální proměnné, v němž výška nebo délka oddělených sloupců představuje
     četnosti, podíly nebo jiný souhrn kategorií.
 soucet-ctvercu-residui:
-  def: Součet druhých mocnin všech residuí; vyjadřuje celkovou čtvercovou odchylku
+  def: Součet druhých mocnin všech residuí (RSS); vyjadřuje celkovou čtvercovou odchylku
     pozorovaných hodnot od hodnot odhadnutých modelem.
 spojita-promenna:
   def: Numerická proměnná, která může v principu nabývat libovolné hodnoty v určitém
@@ -234,3 +238,162 @@ vyber:
     širší populaci nebo proces.
 vyberova-variabilita:
   def: Proměnlivost odhadu mezi možnými srovnatelnými výběry získanými stejným postupem.
+absolutni-hodnota:
+  def: Velikost čísla bez ohledu na znaménko; zapisuje se |x|, například |−3| = 3.
+aditivni-model:
+  def: 'Model s více prediktory bez interakce: příspěvky prediktorů se sčítají, takže
+    vztah odezvy k jednomu prediktoru je stejný při všech hodnotách ostatních.'
+adjustovane-r2:
+  def: Úprava R², která přihlíží k počtu pozorování a koeficientů; na rozdíl od obyčejného
+    R² může po přidání zbytečného koeficientu klesnout.
+alternativni-hypoteza:
+  def: Tvrzení, které připouští to, co nulová hypotéza vylučuje - typicky 'efekt není
+    nulový' nebo 'skupiny se liší'; značí se H_A.
+celkovy-soucet-ctvercu:
+  def: Součet druhých mocnin odchylek pozorovaných hodnot odezvy od jejich průměru;
+    popisuje celkovou variabilitu odezvy před použitím prediktorů.
+centrovani:
+  def: Odečtení průměru (nebo jiné zvolené hodnoty) od všech hodnot proměnné; posune
+    polohu, ale nezmění tvar rozdělení ani rozptyl.
+chyba-i-typu:
+  def: Zamítnutí nulové hypotézy, která ve skutečnosti platí; její pravděpodobnost
+    je rovna zvolené hladině významnosti α.
+chyba-ii-typu:
+  def: Nezamítnutí nulové hypotézy, která ve skutečnosti neplatí - test skutečný efekt
+    nezachytí; její pravděpodobnost se značí β.
+collider:
+  def: Proměnná, kterou ovlivňují dvě jiné proměnné zároveň; zahrneme-li ji do modelu,
+    může mezi nimi vytvořit zdánlivý vztah.
+delta-aic:
+  def: Rozdíl AIC daného kandidátního modelu od nejnižšího AIC v porovnávané sadě;
+    nejlepší model má ΔAIC = 0.
+deskriptivni-statistika:
+  def: Číselné a grafické shrnutí dat, které popisuje jejich polohu, variabilitu a
+    tvar, aniž by z nich vyvozovalo závěry o širší populaci.
+extrapolace:
+  def: Použití modelu pro hodnoty prediktoru mimo rozsah pozorovaných dat; tvar vztahu
+    tam nemáme ověřený, a predikce proto může být zavádějící.
+geometricky-prumer:
+  def: n-tá odmocnina součinu n kladných hodnot; odpovídá zpětně transformovanému
+    průměru logaritmů a hodí se pro násobné, pravostranně šikmé veličiny.
+graf-hustoty:
+  def: Vyhlazená křivka zobrazující rozdělení numerické proměnné; plocha pod křivkou
+    je 1, takže výška ukazuje relativní hustotu hodnot, ne počet.
+graf-jednotlivych-hodnot:
+  def: Graf jedné numerické proměnné (případně po skupinách), v němž je každá hodnota
+    vykreslena jako samostatný bod podél jedné osy.
+graf-residui:
+  def: Diagnostický bodový graf residuí proti odhadnutým hodnotám (nebo prediktoru);
+    vzor v něm ukazuje na nelinearitu nebo nekonstantní rozptyl.
+hierarchicky-princip-modelu:
+  def: Pravidlo, že model s interakcí má obsahovat i hlavní efekty všech prediktorů,
+    které v interakci vystupují.
+hlavni-efekt:
+  def: Člen modelu pro jeden prediktor samotný (např. x1 v y ~ x1 * x2); v modelu
+    s interakcí popisuje efekt prediktoru v referenční situaci druhého prediktoru.
+homoskedasticita:
+  def: Předpoklad lineárního modelu, že rozptyl residuí je stejný pro všechny odhadnuté
+    hodnoty (a skupiny); v grafu residuí tvoří vodorovný pás stejné šířky.
+houslovy-graf:
+  def: Graf rozdělení numerické proměnné v jedné nebo více skupinách, který zrcadlově
+    kreslí graf hustoty; šířka 'houslí' ukazuje, kde jsou hodnoty nahuštěné.
+kandidatni-model:
+  def: Jeden z malé sady modelů, které před analýzou formulujeme podle biologických
+    hypotéz a pak porovnáme na stejných datech.
+kvadraticky-clen:
+  def: Druhá mocnina prediktoru přidaná do lineárního modelu (např. y ~ x + I(x^2));
+    umožní popsat oblouk, a model přitom zůstane lineární v koeficientech.
+kvartil:
+  def: 'Tři hodnoty, které dělí seřazená data na čtyři stejně početné části: dolní
+    kvartil (Q₁, 25 %), medián (Q₂, 50 %) a horní kvartil (Q₃, 75 %).'
+logaritmicka-skala:
+  def: Škála, na níž stejné vzdálenosti odpovídají stejným násobkům (např. 1, 10,
+    100); hodí se pro hodnoty rozprostřené přes několik řádů a pro násobné vztahy.
+mediator:
+  def: Proměnná, přes kterou prediktor ovlivňuje odezvu (A → M → Y); zahrneme-li ji
+    do modelu, koeficient prediktoru popisuje už jen přímou cestu.
+metoda-nejmensich-ctvercu:
+  def: Postup, který volí koeficienty modelu tak, aby byl součet čtverců residuí (RSS)
+    co nejmenší; takto odhaduje koeficienty funkce lm().
+mnohonasobne-testovani:
+  def: Situace, kdy provádíme mnoho testů najednou; s počtem testů roste šance, že
+    alespoň jeden vyjde statisticky významně jen náhodou.
+nahodny-vyber:
+  def: Výběr, v němž má každá jednotka populace známou (typicky stejnou) šanci být
+    vybrána; jen u takového výběru lze výsledky zobecnit bez dalších předpokladů.
+normalni-rozdeleni:
+  def: Souměrné zvonovité pravděpodobnostní rozdělení určené průměrem a směrodatnou
+    odchylkou; lineární model předpokládá přibližně normální rozdělení residuí.
+nulovy-model:
+  def: Model, který obsahuje jen intercept a všem pozorováním předpovídá průměr odezvy;
+    slouží jako výchozí bod pro srovnání ostatních modelů.
+populace:
+  def: Celá množina jednotek nebo širší proces, o kterém chceme pomocí výběru něco
+    zjistit; její vlastnosti (parametry) obvykle neznáme.
+predikce:
+  def: Hodnota odezvy, kterou model odhaduje pro nové pozorování nebo pro zvolenou
+    kombinaci prediktorů, která nebyla mezi daty použitými k odhadu modelu.
+predikcni-interval:
+  def: Interval, ve kterém při dané hodnotě prediktoru očekáváme jedno nové pozorování;
+    je širší než interval spolehlivosti průměru, protože zahrnuje i rozptýlení kolem
+    trendu.
+pricinnost:
+  def: Vztah, kdy změna jedné proměnné způsobí změnu druhé; samotná korelace nebo
+    koeficient modelu z pozorovacích dat příčinnost nedokazuje.
+princip-uspornosti:
+  def: Zásada, že ze dvou modelů, které popisují data podobně dobře, dáváme přednost
+    jednoduššímu.
+prumerny-ctverec:
+  def: Součet čtverců vydělený příslušnými stupni volnosti; podíl dvou průměrných
+    čtverců je F-statistika.
+prumerny-trend:
+  def: Průměrná hodnota odezvy, kterou model odhaduje pro danou hodnotu prediktoru;
+    graficky výška odhadnuté přímky.
+pseudoreplikace:
+  def: Chyba, kdy závislá pozorování (např. opakovaná měření téže jednotky) analyzujeme,
+    jako by byla nezávislá; nadhodnotí se tím množství informace v datech.
+referencni-skupina:
+  def: Úroveň kategoriálního prediktoru, vůči které model vyjadřuje rozdíly ostatních
+    skupin; její průměr (při nulových numerických prediktorech) je intercept.
+sikmost:
+  def: 'Nesouměrnost rozdělení: u pravostranně šikmého rozdělení se hodnoty táhnou
+    dlouhým koncem k vysokým hodnotám a průměr bývá větší než medián.'
+sila-testu:
+  def: Pravděpodobnost, že test zamítne nulovou hypotézu, když skutečný efekt dané
+    velikosti existuje; je to 1 − β.
+simulace:
+  def: Opakované vytváření umělých dat podle známého modelu na počítači; ukazuje,
+    jak se odhady, intervaly nebo testy chovají napříč mnoha výběry.
+simultanni-interval:
+  def: Interval z rodiny intervalů upravených tak, aby zvolené pokrytí (např. 95 %)
+    platilo pro všechna porovnání najednou; je širší než samostatný interval.
+statisticky-vyznamny:
+  def: Označení výsledku, jehož p-hodnota je nejvýše zvolená hladina významnosti α;
+    neříká nic o tom, zda je efekt velký nebo biologicky důležitý.
+t-rozdeleni:
+  def: Souměrné rozdělení podobné normálnímu, ale s těžšími konci; jeho tvar určují
+    stupně volnosti a používá se pro t-statistiku a intervaly spolehlivosti.
+t-statistika:
+  def: 'Testová statistika: rozdíl odhadu od hodnoty v nulové hypotéze (obvykle 0)
+    vydělený standardní chybou; říká, o kolik standardních chyb je odhad od nuly.'
+uroven-faktoru:
+  def: Jedna z kategorií kategoriální proměnné uložené v R jako faktor, například
+    jeden druh z proměnné druh.
+vektor:
+  def: 'Základní datová struktura v R: uspořádaná řada hodnot stejného typu, například
+    všechny délky v jednom sloupci tabulky.'
+vif:
+  def: Ukazatel, nakolik je rozptyl (nejistota) odhadu koeficientu zvětšen tím, že
+    prediktor koreluje s ostatními prediktory v modelu.
+vlivne-pozorovani:
+  def: Pozorování, jehož vynechání by výrazně změnilo odhadnutý model; vlivná bývají
+    hlavně pozorování s velkým pákovým efektem i velkým residuem.
+vnorene-modely:
+  def: Dvojice modelů, kde jednodušší vznikne ze složitějšího vynecháním některých
+    členů; jen takové modely lze porovnat F-testem pomocí anova().
+welchuv-t-test:
+  def: Varianta dvouvýběrového t-testu, která nepředpokládá shodné rozptyly obou skupin;
+    je výchozí volbou funkce t.test() v R.
+z-skore:
+  def: 'Hodnota převedená na počet směrodatných odchylek od průměru: z = (x − průměr)
+    / SD; mění polohu a měřítko, ne tvar rozdělení.'

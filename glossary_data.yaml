@@ -4,9 +4,12 @@
 # Vygenerované soubory (pojmy.yaml, docs/) se nikdy neupravují přímo.
 #
 # Po každé změně spusťte:
-#   source("R/generate_glossary_yaml.R")   # regeneruje pojmy.yaml
-#   source("R/render_slovnik.R")           # regeneruje docs/
+#   source("R/render_slovnik.R")   # regeneruje pojmy.yaml i docs/
 # Pak commitněte glossary_data.yaml, pojmy.yaml i docs/.
+#
+# Pravopis: residuum, residua, residuí, residuální (vždy s "s").
+# Slugy (id) jsou jen identifikátory a zůstávají beze změny,
+# i když se liší od nadpisu (např. rezidualni-smerodatna-odchylka).
 #
 # Schéma každé položky:
 #   id:        ASCII kebab-case identifikátor (bez diakritiky); slouží jako HTML kotva
@@ -26,12 +29,14 @@
   def_full: |
     Míra kvality modelu, která penalizuje složitost. Čím nižší AIC, tím lepší poměr mezi přesností modelu a počtem jeho parametrů. Absolutní hodnota AIC sama o sobě nemá smysl - porovnávají se vždy alespoň dvě hodnoty.
   usage: |
-    - Používáme k výběru mezi kandidátními modely (např. model s interakcí vs. bez ní).
-    - Pravidlo palce: rozdíl ΔAIC > 2 je považován za smysluplný; rozdíl > 10 za silný.
-    - V R: `AIC(model)`, nebo automaticky v rámci `dredge()` z balíčku `MuMIn`.
-  synonyms: "Někdy se setkáte s AICc (upravené AIC pro malé vzorky) - v kurzu používáme základní AIC, pokud není uvedeno jinak."
+    - Používáme k porovnání předem určených kandidátních modelů (např. model s interakcí vs. bez ní) na stejných datech se stejnou odezvou.
+    - Porovnáváme rozdíl od nejnižšího AIC v sadě ([ΔAIC](#delta-aic)); univerzální hranici, od které je rozdíl „významný“, v kurzu nepoužíváme.
+    - AIC počítá všechny odhadované veličiny modelu, u lineárního modelu včetně residuální směrodatné odchylky.
+    - V R: `AIC(model)`. Automatické prohledávání všech kombinací prediktorů (např. `dredge()`) v kurzu nepoužíváme.
+  synonyms: "Někdy se setkáte s AICc (upravené AIC pro malé výběry) - v kurzu používáme základní AIC, pokud není uvedeno jinak. Zkratka AIC je středního rodu: *to AIC, nejnižší AIC*."
   see_also:
-    - "min-adekvat-model"
+    - "delta-aic"
+    - "princip-uspornosti"
     - "porovnani-modelu"
 
 - id: "anova"
@@ -39,12 +44,13 @@
   en: "ANOVA (Analysis of Variance)"
   def_short: "Statistický test porovnávající průměry tří a více skupin zároveň; testuje, zda se alespoň jedna skupina průměrem liší od ostatních."
   def_full: |
-    Statistický test porovnávající průměry tří a více skupin zároveň. Testuje, zda alespoň jedna skupina se průměrem liší od ostatních.
+    Statistický test porovnávající průměry tří a více skupin zároveň. Testuje, zda se alespoň jedna skupina průměrem liší od ostatních. Rozkládá celkový součet čtverců na část mezi skupinami a část uvnitř skupin.
   usage: |
     - V tomto kurzu je ANOVA prezentována jako **speciální případ lineárního modelu** (`lm(y ~ skupina)`), kde prediktor je kategoriální proměnná.
-    - Výsledek ANOVA (F-test) odpovídá otázce: 'Má skupina jako celek vliv na odezvu?'
+    - Výsledek ANOVA (F-test) odpovídá otázce: 'Liší se skupiny jako celek v průměrné odezvě?'
     - Pro konkrétní páry skupin slouží [post-hoc testy](#post-hoc-test).
-  synonyms: "*Jednostranná ANOVA* (one-way ANOVA) = jeden kategoriální prediktor; *dvoucestná ANOVA* (two-way ANOVA) = dva prediktory. Termíny jsou historické a v kurzu jim dáváme přednost ve formulaci 'model s kategoriálním prediktorem'."
+    - Při prvním použití píšeme „analýza rozptylu (ANOVA)“.
+  synonyms: "*Jednofaktorová ANOVA* (one-way ANOVA) = jeden kategoriální prediktor; *dvoufaktorová ANOVA* (two-way ANOVA) = dva kategoriální prediktory. Pozor: nejde o *jednostranný* test. Termíny jsou historické; v kurzu dáváme přednost formulaci 'model s kategoriálním prediktorem'."
   see_also:
     - "linearni-model"
     - "kategoricka-promenna"
@@ -60,7 +66,7 @@
   usage: |
     - Typická odezva pro [logistickou regresi](#logisticka-regrese) (GLM s binomickým rozdělením).
     - Binární proměnná jako **prediktor** může vstupovat i do klasického lineárního modelu (kóduje se jako 0/1 nebo faktor).
-  synonyms: "*Dichotomická proměnná* (méně časté). Binární nezaměňujte s *nominální* - binární je speciální případ."
+  synonyms: "*Dichotomická proměnná* (méně časté). Kategoriální binární proměnná (např. samec/samice) je zvláštním případem nominální proměnné se dvěma kategoriemi."
   see_also:
     - "glm"
     - "logisticka-regrese"
@@ -72,11 +78,11 @@
   en: "boxplot, box-and-whisker plot"
   def_short: "Graf, jehož krabice sahá od Q1 do Q3 a obsahuje medián; vousy vymezují hodnoty podle zvoleného pravidla a body za nimi upozorňují na možná odlehlá pozorování."
   def_full: |
-    Graf shrnující polohu a variabilitu numerické proměnné. Dolní a horní okraj krabice tvoří 1. kvartil (Q1) a 3. kvartil (Q3), čára uvnitř označuje medián a výška krabice odpovídá interkvartilovému rozsahu (IQR). Vousy obvykle sahají k nejvzdálenějším hodnotám, které ještě leží nejvýše 1,5 IQR od krabice. Vzdálenější hodnoty se kreslí samostatně jako možná odlehlá pozorování; vousy proto nemusí být minimum a maximum.
+    Graf shrnující polohu a variabilitu numerické proměnné. Dolní a horní okraj krabice tvoří 1. kvartil (Q1) a 3. kvartil (Q3), čára uvnitř označuje medián a výška krabice odpovídá mezikvartilovému rozpětí (IQR). Vousy obvykle sahají k nejvzdálenějším hodnotám, které ještě leží nejvýše 1,5 IQR od krabice. Vzdálenější hodnoty se kreslí samostatně jako možná odlehlá pozorování; vousy proto nemusí být minimum a maximum.
   usage: |
     - Výchozí volba pro zobrazení numerické proměnné v jedné nebo více skupinách.
     - V R: `boxplot(y ~ skupina)` nebo `ggplot2::geom_boxplot()`.
-  synonyms: "Krabicový diagram, krabicový graf - oba jsou správné překlady. V kódu používáme anglický název `boxplot`."
+  synonyms: "Krabicový diagram, krabicový graf - oba jsou správné překlady. V textu píšeme při prvním použití „krabicový graf (boxplot)“ a dále držíme jeden tvar; v kódu používáme anglický název `boxplot`."
   see_also:
     - "iqr"
     - "median"
@@ -85,14 +91,14 @@
 - id: "diagnostika-modelu"
   cz: "Diagnostika modelu"
   en: "model diagnostics, residual diagnostics"
-  def_short: "Soubor grafických a numerických kontrol ověřujících, zda jsou splněny předpoklady modelu: linearita, normalita reziduí, homoskedasticita, absence vlivných bodů."
+  def_short: "Soubor grafických a numerických kontrol ověřujících, zda jsou rozumně splněny předpoklady modelu: linearita, nezávislost pozorování, konstantní rozptyl a normalita residuí, a zda závěr nestojí na několika vlivných pozorováních."
   def_full: |
-    Soubor grafických a numerických kontrol ověřujících, zda jsou splněny předpoklady modelu: linearita vztahu, normalita reziduí, homoskedasticita, absence vlivných bodů.
+    Soubor grafických a numerických kontrol ověřujících, zda jsou rozumně splněny předpoklady modelu: linearita vztahu, nezávislost pozorování, konstantní rozptyl residuí ([homoskedasticita](#homoskedasticita)) a přibližná normalita residuí. Součástí diagnostiky je i kontrola, zda závěr nestojí na několika [vlivných pozorováních](#vlivne-pozorovani).
   usage: |
     - Povinný krok po každém fitování modelu.
     - Základní sada grafů: `plot(model)` (4 diagnostické grafy v R).
-    - Hledáme: vzory v reziduích (nelinearita), rozšiřující se vějíř ([heteroskedasticita](#heteroskedasticita)), extrémní body.
-  synonyms: "Chybné: vynechata diagnostika = model se 'přijme' bez kontroly."
+    - Hledáme: vzory v residuích (nelinearita), rozšiřující se vějíř ([heteroskedasticita](#heteroskedasticita)), odlehlá a vlivná pozorování.
+  synonyms: "Častá chyba: vynechaná diagnostika = model se 'přijme' bez kontroly."
   see_also:
     - "residuum"
     - "heteroskedasticita"
@@ -103,15 +109,16 @@
 
 - id: "efekt"
   cz: "Efekt"
-  en: "effect, effect size"
+  en: "effect"
   def_short: "Kvantitativní popis toho, jak se podle modelu mění odezva s prediktorem; zahrnuje směr, velikost a nejistotu odhadu, ale sám o sobě nedokládá příčinu."
   def_full: |
     Kvantitativní popis toho, jak se podle zvoleného modelu mění odezva s prediktorem. Zahrnuje **směr** (kladný/záporný), **velikost** (v jednotkách odezvy na jednotku prediktoru) a **nejistotu odhadu** (například interval spolehlivosti). Efekt odhadnutý z observačních dat je popisem vztahu podmíněným modelem. Příčinný účinek z něj lze vyvozovat jen s odpovídajícím designem studie a dalšími předpoklady.
   usage: |
     - Efekt ≠ statistická významnost. P-hodnota měří, jak kompatibilní jsou data s nulovou hypotézou (efekt = 0); velikost efektu říká, jak velký efekt je.
-    - V lineárním modelu je efekt kvantitativního prediktoru roven [sklonu](#sklon) (koeficient b).
-    - Vždy interpretujeme efekt věcně: 'o kolik se změní odezva, pokud prediktor vzroste o 1 jednotku?'
-  synonyms: "Velikost efektu (*effect size*) je v některých kontextech míněna jako standardizovaná míra (Cohenovo d, η²) - to v tomto kurzu nepoužíváme, raději pracujeme s nestandardizovanými odhady v původních jednotkách."
+    - V lineárním modelu je efekt numerického prediktoru roven [sklonu](#sklon) (koeficient b).
+    - Vždy interpretujeme efekt věcně: 'o kolik se v průměru liší odezva dvou pozorování, jejichž prediktor se liší o 1 jednotku?'
+    - Slovo „efekt“ má v kurzu i jiné ustálené významy: [pevný](#pevny-faktor) a [náhodný efekt](#nahodny-faktor) jsou typy členů smíšeného modelu a [pákový efekt](#pakovy-efekt) je diagnostika jednoho pozorování.
+  synonyms: "Velikost efektu (*effect size*) je v některých kontextech míněna jako standardizovaná míra (Cohenovo d, η²) - to v tomto kurzu nepoužíváme, raději pracujeme s nestandardizovanými odhady v původních jednotkách („velikost vztahu“)."
   see_also:
     - "p-hodnota"
     - "interval-spolehlivosti"
@@ -120,9 +127,9 @@
 - id: "f-statistika"
   cz: "F-statistika"
   en: "F-statistic, F-ratio"
-  def_short: "Testová statistika porovnávající rozptyl vysvětlený modelem s rozptylem nevysvětleným (reziduálním); vyšší F = vyšší poměr signal:šum."
+  def_short: "Testová statistika porovnávající variabilitu zachycenou modelem s variabilitou, která zůstala v residuích; vyšší F = vyšší poměr signálu k šumu."
   def_full: |
-    Testová statistika porovnávající rozptyl 'vysvětlený modelem' s rozptylem 'nevysvětleným' (reziduálním). Vyšší F = vyšší poměr signal:šum.
+    Testová statistika porovnávající variabilitu zachycenou modelem s variabilitou, která zůstala v residuích. Počítá se jako podíl dvou [průměrných čtverců](#prumerny-ctverec). Vyšší F = vyšší poměr signálu k šumu.
   usage: |
     - Zobrazuje se ve výstupu `summary(lm(...))` a `anova(model)`.
     - Primárně používáme pro interpretaci ANOVA; v jedno-prediktorovém modelu odpovídá čtverci t-statistiky.
@@ -133,7 +140,7 @@
 
 - id: "glm"
   cz: "GLM (zobecněný lineární model)"
-  en: "GLM (Generalised Linear Model)"
+  en: "GLM (generalized linear model)"
   def_short: "Rozšíření lineárního modelu pro případy, kdy odezva není normálně rozložena; skládá se z náhodné složky, systematické složky a link funkce."
   def_full: |
     Rozšíření lineárního modelu pro případy, kdy odezva není normálně rozložena. Skládá se ze tří částí: (1) náhodná složka (rozdělení odezvy), (2) systematická složka (lineární prediktor), (3) link funkce (propojení mezi nimi).
@@ -141,24 +148,27 @@
     - Zavádíme pro binární odezvu (logistická regrese) a pro počty (Poissonova regrese).
     - V R: `glm(y ~ x, family = binomial())` nebo `glm(y ~ x, family = poisson())`.
     - Klíčová motivace: proč `lm` nestačí pro data 0/1 nebo pro počty.
-  synonyms: "Dříve překládán jako *zobecněný lineární model* - oba výrazy (GLM i zobecněný lineární model) jsou v kurzu přípustné. Nezaměňovat s *obecným lineárním modelem* (General Linear Model, který zahrnuje ANOVA/regrese se spojitou odezvou)."
+  synonyms: "*Zobecněný lineární model* - oba výrazy (GLM i zobecněný lineární model) jsou v kurzu přípustné. Nezaměňovat s *obecným lineárním modelem* (General Linear Model, který zahrnuje ANOVA/regrese se spojitou odezvou)."
   see_also:
     - "logisticka-regrese"
     - "poissonova-regrese"
     - "link-funkce"
     - "rozdeleni"
+  avoid: "obecný lineární model (ve významu GLM)"
 
 - id: "heteroskedasticita"
   cz: "Heteroskedasticita"
   en: "heteroscedasticity"
-  def_short: "Jev, kdy rozptyl reziduí není konstantní podél hodnot prediktoru - typicky se rozptyl zvyšuje s rostoucí predikovanou hodnotou."
+  def_short: "Jev, kdy rozptyl residuí není konstantní podél hodnot prediktoru - typicky se rozptýlení residuí zvětšuje s rostoucí odhadnutou hodnotou."
   def_full: |
-    Jev, kdy rozptyl reziduí není konstantní podél hodnot prediktoru nebo fittovaných hodnot - typicky se rozptyl zvyšuje s rostoucí predikovanou hodnotou.
+    Jev, kdy rozptyl residuí není konstantní podél hodnot prediktoru nebo odhadnutých hodnot - typicky se rozptýlení residuí zvětšuje s rostoucí odhadnutou hodnotou.
   usage: |
-    - Detekujeme graficky: v grafu 'Residuals vs. Fitted' hledáme vějířovitý tvar.
+    - Detekujeme graficky: v grafu residuí proti odhadnutým hodnotám ('Residuals vs. Fitted') hledáme tvar vějíře.
     - Porušuje předpoklady lineárního modelu; řešení: transformace odezvy ([logaritmická transformace](#transformace)), nebo GLM.
-  synonyms: "Opakem je *homoskedasticita* (konstantní rozptyl reziduí) - to je předpoklad lineárního modelu."
+    - Obrazné pojmenování: v kurzu používáme slovo **vějíř**; termín *heteroskedasticita* uvedeme alespoň jednou v každé lekci, kde se vzor objeví.
+  synonyms: "Opakem je [homoskedasticita](#homoskedasticita) (konstantní rozptyl residuí) - to je předpoklad lineárního modelu. Obrazně také *trychtýř*; v kurzu preferujeme *vějíř*."
   see_also:
+    - "homoskedasticita"
     - "diagnostika-modelu"
     - "residuum"
     - "transformace"
@@ -168,12 +178,12 @@
   en: "hierarchical data, nested data, clustered data"
   def_short: "Data, kde pozorování nejsou zcela nezávislá - jsou seskupena do vyšší úrovně (lokality, bloky, jedinci s opakovanými měřeními)."
   def_full: |
-    Data, kde pozorování nejsou zcela nezávislá - jsou seskupena do vyšší úrovně (lokality, bloky, jedinci s opakovanými měřeními). Ignorování hierarchie vede k pseudoreplikaci.
+    Data, kde pozorování nejsou zcela nezávislá - jsou seskupena do vyšší úrovně (lokality, bloky, jedinci s opakovanými měřeními). Ignorování hierarchie vede k [pseudoreplikaci](#pseudoreplikace).
   usage: |
     - Rozpoznání hierarchie je součástí L10.
     - Základní řešení: smíšené modely (mixed-effects models) s [náhodným faktorem](#nahodny-faktor).
     - V R: balíček `lme4` (`lmer()`, `glmer()`).
-  synonyms: "*Víceúrovňová data*, *hnízděná data* (nested data). Pseudoreplikace = chyba, kdy hierarchická data tratujeme jako nezávislá."
+  synonyms: "*Víceúrovňová data*, *vnořená data* (nested data). Pseudoreplikace = chyba, kdy hierarchická data analyzujeme jako nezávislá."
   see_also:
     - "opakovana-mereni"
     - "nahodny-faktor"
@@ -182,12 +192,12 @@
 - id: "histogram"
   cz: "Histogram"
   en: "histogram"
-  def_short: "Graf zobrazující rozdělení hodnot numerické proměnné: hodnoty jsou seřazeny do tříd, výška sloupce udává četnost v dané třídě."
+  def_short: "Graf zobrazující rozdělení hodnot numerické proměnné: hodnoty jsou rozděleny do sousedních intervalů (košů), výška sloupce udává četnost v daném koši."
   def_full: |
-    Graf zobrazující rozdělení hodnot numerické proměnné: hodnoty jsou seřazeny do tříd (binů), výška sloupce udává četnost (nebo hustotu) v dané třídě.
+    Graf zobrazující rozdělení hodnot numerické proměnné: hodnoty jsou rozděleny do sousedních intervalů (košů, anglicky *bins*), výška sloupce udává četnost (nebo hustotu) v daném koši.
   usage: |
     - Výchozí volba pro zobrazení jedné numerické proměnné.
-    - Volba šířky binu ovlivňuje vzhled grafu - vždy vyzkoušet více variant.
+    - Volba šířky koše ovlivňuje vzhled grafu - vždy vyzkoušet více variant.
     - V R: `hist(x)` nebo `ggplot2::geom_histogram()`.
   see_also:
     - "cetnost"
@@ -196,21 +206,26 @@
 - id: "hladina-vyznamnosti"
   cz: "Hladina významnosti"
   en: "significance level, alpha level"
-  def_short: "Předem zvolená pravděpodobnostní hranice (typicky α = 0,05), pod níž prohlásíme výsledek za statisticky významný."
+  def_short: "Předem zvolená hranice pro p-hodnotu (typicky α = 0,05); je to zároveň přijatelná pravděpodobnost chyby I. typu, tedy zamítnutí platné nulové hypotézy."
   def_full: |
-    Předem zvolená pravděpodobnostní hranice (typicky α = 0,05), pod níž prohlásíme výsledek za 'statisticky významný'. Není to pravděpodobnost, že hypotéza je pravdivá.
+    Předem zvolená hranice pro p-hodnotu (typicky α = 0,05). Je-li p-hodnota nejvýše α, nulovou hypotézu zamítáme a výsledek označíme za [statisticky významný](#statisticky-vyznamny). Hladina významnosti je zároveň pravděpodobnost [chyby I. typu](#chyba-i-typu), kterou jsme ochotni přijmout. Není to pravděpodobnost, že hypotéza je pravdivá.
   usage: |
     - Konvence α = 0,05 je jen konvence - vždy diskutujeme věcný kontext.
+    - Rozhodovací pravidlo zapisujeme v kurzu jako **p ≤ α**.
     - Důraz kurzu: interpretovat [efekt](#efekt) a [interval spolehlivosti](#interval-spolehlivosti), ne jen 'p < 0,05'.
+    - Hladina významnosti α a [hladina spolehlivosti](#hladina-spolehlivosti) 1 − α spolu souvisejí, ale popisují různé postupy (test vs. interval).
   synonyms: "*Alfa* (α). Hladina významnosti ≠ p-hodnota - α je pevně zvolená před testem, p-hodnota je vypočítána z dat."
   see_also:
     - "p-hodnota"
     - "nulova-hypoteza"
+    - "chyba-i-typu"
+    - "statisticky-vyznamny"
 
 - id: "iqr"
   cz: "IQR (mezikvartilové rozpětí)"
   en: "IQR (Interquartile Range)"
   synonyms: "Interkvartilové rozpětí, interkvartilový rozsah - v kurzu používáme mezikvartilové rozpětí."
+  avoid: "interkvartilové rozpětí, interkvartilový rozsah"
   def_short: "Rozdíl mezi 3. kvartilem (Q3) a 1. kvartilem (Q1); pokrývá prostředních 50 % dat a je robustní vůči odlehlým pozorováním."
   def_full: |
     Rozdíl mezi 3. kvartilem (Q3) a 1. kvartilem (Q1). Pokrývá prostředních 50 % dat a je robustní vůči odlehlým pozorováním.
@@ -225,13 +240,13 @@
 - id: "intercept"
   cz: "Intercept (průsečík)"
   en: "intercept, constant"
-  def_short: "Parametr modelu: hodnota odezvy predikovaná modelem, když jsou všechny prediktory rovno nule; geometricky jde o úsek na ose y (kde regresní přímka protíná osu y)."
+  def_short: "Parametr modelu: odhadnutá hodnota odezvy, když jsou všechny numerické prediktory rovny nule a kategoriální prediktory jsou v referenční skupině; geometricky jde o úsek na ose y."
   def_full: |
-    Parametr modelu: hodnota odezvy predikovaná modelem, když jsou všechny prediktory rovno nule. Geometricky jde o **úsek na ose y** — bod, kde regresní přímka protíná osu y. V R je označen jako `(Intercept)` ve výstupu `summary(model)`.
+    Parametr modelu: odhadnutá hodnota odezvy, když jsou všechny numerické prediktory rovny nule a kategoriální prediktory jsou v [referenční skupině](#referencni-skupina). Geometricky jde o **úsek na ose y** — bod, kde odhadnutá přímka protíná osu y. V R je označen jako `(Intercept)` ve výstupu `summary(model)`.
   usage: |
     - Biologická interpretovatelnost interceptu záleží na kontextu - nulová hodnota prediktoru nemusí být smysluplná.
     - V kódu a textu používáme termín **intercept** (anglický výraz je uzuální i v české statistice) nebo **průsečík**.
-  synonyms: "*Průsečík*, *konstantní člen*. Nezaměňovat se *sklonem* ([sklon / regresní koeficient](#sklon))."
+  synonyms: "*Průsečík*. Termín *konstantní člen* v kurzu nepoužíváme. Nezaměňovat se *sklonem* ([sklon / regresní koeficient](#sklon))."
   see_also:
     - "sklon"
     - "linearni-model"
@@ -239,31 +254,35 @@
   avoid: "konstantní člen"
 
 - id: "interval-spolehlivosti"
-  cz: "Interval spolehlivosti"
+  cz: "Interval spolehlivosti (CI)"
   en: "confidence interval (CI)"
-  def_short: "Rozsah hodnot, v němž se s danou spolehlivostí (typicky 95 %) nachází odhadovaný parametr."
+  def_short: "Rozsah hodnot vypočtený z dat postupem, který při opakovaných výběrech pokryje skutečnou hodnotu parametru ve zvoleném podílu případů (typicky 95 %)."
   def_full: |
-    Rozsah hodnot, v němž se s danou spolehlivostí (typicky 95 %) nachází odhadovaný parametr. Konkrétně: při opakovaném vzorkování by 95 % takto vypočtených intervalů obsahovalo skutečnou hodnotu parametru.
+    Rozsah hodnot vypočtený z dat kolem odhadu parametru. Spolehlivost (typicky 95 %) je vlastností postupu: při opakovaných výběrech by přibližně 95 % takto vypočtených intervalů obsahovalo skutečnou hodnotu parametru. Konkrétní vypočtený interval ji buď obsahuje, nebo ne. Krajním bodům intervalu říkáme **dolní a horní hranice**.
   usage: |
     - Interpretujeme jako míru **nejistoty odhadu**, nikoli jako pravděpodobnost, že parametr leží uvnitř.
     - Klíčová alternativa k p-hodnotě: CI říká, kde parametr *pravděpodobně leží*, zatímco p-hodnota pouze testuje, zda je nula uvnitř.
     - **95 % je konvence, nikoliv zákon** — v principu lze použít jakoukoli hladinu (90 %, 99 %); volba záleží na kontextu a konvencích oboru.
     - Zkratka CI je přípustná ve všech kontextech.
-  synonyms: "*Konfidenční interval* (méně doporučený výraz v češtině). *95% CI* = nejčastěji používaná úroveň, ale pouze z konvence."
+    - Krajní body nazýváme **hranice** intervalu (ne *meze*); vzdálenost hranice od odhadu je [mez chyby](#mez-chyby).
+  synonyms: "*Konfidenční interval* (v literatuře častý, v kurzu jen jako poznámka pro rozpoznání). *95% CI* = nejčastěji používaná úroveň, ale pouze z konvence. Anglicky se hranicím říká *confidence limits*."
   see_also:
     - "p-hodnota"
     - "efekt"
     - "nejistota"
-  avoid: "konfidenční interval"
+    - "hladina-spolehlivosti"
+    - "mez-chyby"
+  avoid: "konfidenční interval; meze intervalu (pro hranice)"
 
 - id: "interakce-predikatoru"
-  cz: "Interakce prediktorů"
+  cz: "Interakce (interakce prediktorů)"
   en: "interaction (of predictors), interaction term"
   def_short: "Situace, kdy efekt jednoho prediktoru na odezvu závisí na hodnotě jiného prediktoru."
   def_full: |
-    Situace, kdy efekt jednoho prediktoru na odezvu závisí na hodnotě jiného prediktoru. V modelu je interakce reprezentována součinovým členem (`x1:x2`).
+    Situace, kdy efekt jednoho prediktoru na odezvu závisí na hodnotě jiného prediktoru. V modelu je interakce reprezentována interakčním členem (`x1:x2`); jeho odhad je **interakční koeficient**.
   usage: |
-    - V R: `lm(y ~ x1 * x2)` zahrnuje oba hlavní efekty i interakci; `lm(y ~ x1 + x2)` interakci nezahrnuje.
+    - V R: `lm(y ~ x1 * x2)` zahrnuje oba [hlavní efekty](#hlavni-efekt) i interakci; `lm(y ~ x1 + x2)` interakci nezahrnuje ([aditivní model](#aditivni-model)).
+    - V běžném textu stačí „interakce“; „interakce prediktorů“ použijeme, kde by slovo mohlo být dvojznačné.
     - Interpretace: 'efekt x1 se mění v závislosti na x2' (nebo symetricky).
     - Vizualizujeme pomocí grafu efektů s oddělenými liniemi pro různé hodnoty druhého prediktoru.
   synonyms: "Interakce ≠ korelace prediktorů. Korelace popisuje vztah mezi prediktory; interakce popisuje, jak společně ovlivňují odezvu."
@@ -271,37 +290,46 @@
     - "korelace-predikatoru"
     - "efekt"
     - "linearni-model"
+    - "hlavni-efekt"
+    - "aditivni-model"
+    - "hierarchicky-princip-modelu"
 
 - id: "kategoricka-promenna"
   cz: "Kategoriální proměnná"
-  en: "categorical variable, factor"
+  en: "categorical variable"
   def_short: "Proměnná nabývající hodnot z omezeného počtu kategorií; může být nominální (bez pořadí) nebo ordinální (s pořadím)."
   def_full: |
     Proměnná nabývající hodnot z omezeného počtu kategorií (skupin). Může být nominální (bez pořadí: druh, pohlaví) nebo ordinální (s pořadím: stupeň poškození - nízký/střední/vysoký).
   usage: |
-    - V R musí být jako factor (`as.factor()`), jinak ji `lm` může špatně interpretovat.
-    - Jako prediktor v lineárním modelu: R automaticky vytvoří dummy proměnné (0/1 pro každou úroveň kromě referenční).
-  synonyms: "*Faktor*, *skupinová proměnná*. V R se formálně jmenuje `factor`. Nominální = neuspořádaná; ordinální = uspořádaná kategoriální proměnná."
+    - V R ji ukládáme jako faktor (`factor()`); jednotlivé kategorie jsou [úrovně faktoru](#uroven-faktoru).
+    - Jako prediktor v lineárním modelu: R automaticky vytvoří indikátorové proměnné („přepínače“ 0/1) pro každou úroveň kromě [referenční skupiny](#referencni-skupina).
+    - Prediktor tohoto typu nazýváme **kategoriální prediktor**.
+  synonyms: "*Faktor* (v R `factor`). Nominální = neuspořádaná; ordinální = uspořádaná kategoriální proměnná."
   see_also:
     - "numericka-promenna"
     - "binarni-promenna"
+    - "uroven-faktoru"
+    - "referencni-skupina"
     - "anova"
-  avoid: "kvalitativní proměnná"
+  avoid: "kvalitativní proměnná; skupinová proměnná, skupinový prediktor"
 
 - id: "r2"
   cz: "Koeficient determinace (R²)"
   en: "coefficient of determination, R-squared"
-  def_short: "Podíl variability odezvy vysvětlený modelem (0 = model nevysvětluje nic, 1 = model vysvětluje vše)."
+  def_short: "Podíl variability odezvy zachycený modelem: R² = 1 − RSS / celkový součet čtverců (0 = model nezachytí nic navíc oproti průměru, 1 = zachytí vše)."
   def_full: |
-    Podíl variability odezvy vysvětlený modelem (0 = model nevysvětluje nic, 1 = model vysvětluje vše). Výstup `summary(lm(...))` reportuje *Multiple R-squared* a *Adjusted R-squared*.
+    Podíl variability odezvy zachycený modelem. Počítá se jako R² = 1 − RSS / SS_total, kde RSS je [součet čtverců residuí](#soucet-ctvercu-residui) a SS_total [celkový součet čtverců](#celkovy-soucet-ctvercu). Hodnota 0 znamená, že model nezachytí nic navíc oproti předpovědi průměrem; hodnota 1, že zachytí veškerou variabilitu. Výstup `summary(lm(...))` reportuje *Multiple R-squared* a *Adjusted R-squared*.
   usage: |
     - Míra 'dobré shody' modelu s daty; nelze srovnávat napříč různými datovými sadami.
-    - Adjusted R² penalizuje za zbytečné prediktory - preferujeme ho při srovnávání modelů s různým počtem parametrů.
+    - Po přidání koeficientu se R² nikdy nezmenší; pro srovnání modelů s různým počtem koeficientů slouží [adjustované R²](#adjustovane-r2) nebo [AIC](#aic).
     - Pozor: vysoké R² ≠ dobrý model (model může přefitovat nebo mít diagnostické problémy).
+    - V kurzu říkáme „zachycený podíl variability“; „vysvětlený“ nese nechtěný příčinný podtón.
   synonyms: "*R na druhou*, *koeficient determinace*. Zkratka R² (nebo R2 v prostém textu) je standardní."
   see_also:
+    - "adjustovane-r2"
+    - "celkovy-soucet-ctvercu"
+    - "soucet-ctvercu-residui"
     - "linearni-model"
-    - "diagnostika-modelu"
     - "aic"
 
 - id: "konfundovani"
@@ -313,10 +341,13 @@
   usage: |
     - Řešení: zahrnout konfundující proměnnou do modelu jako další prediktor.
     - Příklad: vliv výšky na druhovou diverzitu může být konfundován srážkami (srážky korelují s výškou i diverzitou).
-  synonyms: "*Záměšnost* (méně užívané). Konfundování ≠ interakce: interakce popisuje skutečný kombinovaný efekt, konfundování popisuje artefakticiální vliv."
+  synonyms: "*Matoucí proměnná* (confounder) je ta třetí proměnná. Konfundování ≠ interakce: interakce popisuje skutečný kombinovaný efekt, konfundování zkresluje odhad efektu."
   see_also:
     - "korelace-predikatoru"
     - "interakce-predikatoru"
+    - "mediator"
+    - "collider"
+    - "pricinnost"
 
 - id: "kovariance"
   cz: "Kovariance"
@@ -343,28 +374,28 @@
   def_full: |
     Situace, kdy dva nebo více prediktorů v modelu navzájem korelují. Silná korelace (multikolinearita) způsobuje nestabilitu odhadů a ztěžuje interpretaci individuálních efektů.
   usage: |
-    - Diagnostika: korelační matice prediktorů, VIF (variance inflation factor).
-    - Řešení: odstranit jeden z korelovaných prediktorů, nebo použít PCA.
-  synonyms: "*Multikolinearita* = silná korelace více prediktorů. Kolinearita = korelace dvou prediktorů."
+    - Diagnostika: korelační matice prediktorů, [VIF](#vif).
+    - Korelované prediktory se v modelu dělí o společnou informaci: standardní chyby jejich koeficientů rostou a koeficienty popisují vztah **při stejné hodnotě** ostatních prediktorů.
+    - Prediktor automaticky neodstraňujeme jen kvůli korelaci; rozhoduje otázka, kterou model zodpovídá.
+  synonyms: "*Kolinearita*, *multikolinearita* (silná korelace více prediktorů). Nezaměňovat s korelací dvou proměnných obecně ([korelace](#korelace))."
   see_also:
     - "konfundovani"
-    - "min-adekvat-model"
+    - "vif"
+    - "korelace"
 
 - id: "kvantil"
   cz: "Kvantil"
   en: "quantile"
   def_short: "Hodnota, pod níž leží určený podíl seřazených dat; medián je 50% kvantil."
   def_full: |
-    Hodnota, která rozděluje seřazená data podle zvoleného podílu. Například
-    25% kvantil odděluje dolní čtvrtinu dat a medián je 50% kvantil. U malého
-    vzorku může přesná vypočtená hodnota záviset na použitém pravidle
-    interpolace.
+    Hodnota, která rozděluje seřazená data podle zvoleného podílu. Například 25% kvantil odděluje dolní čtvrtinu dat a medián je 50% kvantil. U malého výběru může přesná vypočtená hodnota záviset na použitém pravidle interpolace.
   usage: |
-    - Kvartily jsou 25%, 50% a 75% kvantily.
+    - [Kvartily](#kvartil) jsou 25%, 50% a 75% kvantily.
     - Hranice 2,5% a 97,5% často vymezují prostředních 95 % empirického rozdělení.
     - V R: `quantile(x, probs = c(0.025, 0.5, 0.975))`.
-  synonyms: "*Percentil* vyjadřuje pořadí v procentech; kvartil je zvláštní případ kvantilu."
+  synonyms: "*Percentil* je kvantil vyjádřený v procentech (např. 90. percentil = 90% kvantil); kvartil je zvláštní případ kvantilu."
   see_also:
+    - "kvartil"
     - "median"
     - "iqr"
     - "rozdeleni"
@@ -372,26 +403,28 @@
 - id: "linearni-model"
   cz: "Lineární model"
   en: "linear model"
-  def_short: "Statistický model předpokládající, že odezva je lineární funkcí prediktorů plus chybový člen s normálním rozdělením (y = a + b·x + ε)."
+  def_short: "Statistický model, v němž je průměrná odezva součtem interceptu a prediktorů násobených koeficienty; lineární je v koeficientech, takže nemusí jít jen o přímku."
   def_full: |
-    Statistický model předpokládající, že odezva je lineární funkcí prediktorů plus chybový člen s normálním rozdělením. Základní tvar: y = a + b·x + ε.
+    Statistický model, v němž je průměrná odezva součtem interceptu a prediktorů (případně jejich transformací či součinů) násobených koeficienty. Pozorované hodnoty se od této průměrné odezvy liší o náhodnou odchylku, kterou v datech vidíme jako residua. Základní tvar s jedním prediktorem: ŷ = b₀ + b₁·x. Model je lineární **v koeficientech**, takže může popsat i zakřivený vztah (např. s kvadratickým členem nebo po transformaci).
   usage: |
     - Ústřední nástroj kurzu; ANOVA, t-test a regrese jsou jeho speciální případy.
     - V R: `lm(odezva ~ prediktor)`.
-    - Předpoklady: linearita, normalita reziduí, homoskedasticita, nezávislost pozorování.
+    - Předpoklady: linearita, nezávislost pozorování, konstantní rozptyl residuí (homoskedasticita), přibližná normalita residuí.
   synonyms: "*Lineární regrese* (pokud je prediktor numerický), *regrese* (obecně). Termín 'lineární model' je preferovaný, protože zahrnuje i kategoriální prediktory."
   see_also:
     - "glm"
     - "anova"
     - "residuum"
     - "diagnostika-modelu"
+    - "parametry-modelu"
+  avoid: "lineární regrese (jako obecný termín)"
 
 - id: "link-funkce"
   cz: "Link funkce"
   en: "link function"
-  def_short: "Matematická funkce v GLM propojující lineární prediktor s očekávanou hodnotou odezvy; zajišťuje, že predikované hodnoty jsou v platném rozsahu."
+  def_short: "Matematická funkce v GLM propojující lineární část modelu s očekávanou hodnotou odezvy; zajišťuje, že odhadnuté hodnoty leží v platném rozsahu."
   def_full: |
-    Matematická funkce v GLM, která propojuje lineární prediktor (η = a + b·x) s očekávanou hodnotou odezvy (μ). Zajišťuje, že predikované hodnoty jsou v platném rozsahu (např. pravděpodobnosti 0-1 pro logistickou regresi).
+    Matematická funkce v GLM, která propojuje lineární část modelu (lineární prediktor η = a + b·x) s očekávanou hodnotou odezvy (μ). Zajišťuje, že odhadnuté hodnoty leží v platném rozsahu (např. pravděpodobnosti 0-1 pro logistickou regresi).
   usage: |
     - Logistická regrese: logit link, `log(p / (1-p))`.
     - Poissonova regrese: log link, `log(μ)`.
@@ -409,8 +442,8 @@
     GLM pro binární odezvu (0/1, přítomnost/nepřítomnost). Modeluje pravděpodobnost výskytu jako funkci prediktorů pomocí logit link funkce.
   usage: |
     - V R: `glm(y ~ x, family = binomial())`.
-    - Koeficienty jsou na stupnici log-odds; pro interpretaci je převádíme na odds ratios (`exp(coef(model))`).
-    - Motivace: proč `lm` selhává pro binární data (predikuje hodnoty mimo 0-1, porušuje normalitu reziduí).
+    - Koeficienty jsou na logaritmické škále šancí (log-odds); pro interpretaci je převádíme na poměry šancí (odds ratios, `exp(coef(model))`).
+    - Motivace: proč `lm` selhává pro binární data (odhaduje hodnoty mimo 0-1, porušuje předpoklady o residuích).
   see_also:
     - "glm"
     - "binarni-promenna"
@@ -419,9 +452,9 @@
 - id: "median"
   cz: "Medián"
   en: "median"
-  def_short: "Hodnota rozdělující seřazená data na dvě stejně početné poloviny; 50. percentil."
+  def_short: "Hodnota rozdělující seřazená data na dvě stejně početné poloviny; 50% kvantil (prostřední kvartil)."
   def_full: |
-    Hodnota, která rozděluje seřazená data na dvě stejně početné poloviny. 50. percentil.
+    Hodnota, která rozděluje seřazená data na dvě stejně početné poloviny. Je to 50% [kvantil](#kvantil), tedy prostřední [kvartil](#kvartil).
   usage: |
     - Preferovaná míra polohy pro šikmá rozdělení nebo data s odlehlými hodnotami (místo průměru).
     - V R: `median(x)`.
@@ -433,28 +466,28 @@
 - id: "min-adekvat-model"
   cz: "Minimální adekvátní model"
   en: "minimal adequate model"
-  def_short: "Nejjednodušší model, který adekvátně vysvětluje data - odstraňuje nepotřebné parametry bez výrazného zhoršení shody s daty (princip parsimonie)."
+  def_short: "Nejjednodušší model, který popisuje data přiměřeně dobře; neobsahuje koeficienty, bez nichž se shoda s daty podstatně nezhorší (princip úspornosti)."
   def_full: |
-    Nejjednodušší model, který adekvátně vysvětluje data — odstraňuje nepotřebné parametry bez výrazného zhoršení shody s daty. Vychází z principu **parsimonie** neboli **Occamovy břitvy**: pokud dva modely vysvětlují data stejně dobře, preferujeme ten jednodušší (s menším počtem parametrů).
+    Nejjednodušší model, který popisuje data přiměřeně dobře — neobsahuje koeficienty, bez nichž se shoda s daty podstatně nezhorší. Vychází z [principu úspornosti](#princip-uspornosti): pokud dva modely popisují data podobně dobře, preferujeme ten jednodušší.
   usage: |
-    - Výběr pomocí [AIC](#aic) nebo postupného odstraňování nesignifikantních členů.
-    - Occamova břitva (parsimonie): zbytečně nerozmnožuj parametry modelu — přidávej prediktory jen tehdy, pokud prokazatelně zlepšují popis dat.
-    - Cíl: vyvážit přesnost a interpretovatelnost.
-  synonyms: "*Parsimoniózní model*. Nezaměňovat s nulovým modelem (model bez prediktorů)."
+    - V kurzu porovnáváme malou sadu předem určených [kandidátních modelů](#kandidatni-model) pomocí [AIC](#aic); postupné automatické odstraňování „nevýznamných“ členů nepoužíváme.
+    - Cíl: vyvážit shodu s daty a interpretovatelnost.
+  synonyms: "*Parsimoniózní model*. Nezaměňovat s [nulovým modelem](#nulovy-model) (model bez prediktorů)."
   see_also:
+    - "princip-uspornosti"
     - "aic"
     - "porovnani-modelu"
 
 - id: "nahodny-faktor"
   cz: "Náhodný faktor (náhodný efekt)"
   en: "random effect, random factor"
-  def_short: "Faktor v smíšeném modelu, jehož úrovně jsou náhodným vzorkem z většího souboru; zajímá nás rozptyl, který přináší, ne konkrétní úrovně."
+  def_short: "Faktor ve smíšeném modelu, jehož úrovně považujeme za výběr z většího souboru možných úrovní; zajímá nás rozptyl, který přináší, ne konkrétní úrovně."
   def_full: |
-    Faktor v smíšeném modelu, jehož úrovně jsou náhodným vzorkem z většího souboru (lokality, jedinci, roky). Na rozdíl od [pevného faktoru](#pevny-faktor) nás nezajímají jeho konkrétní úrovně, ale rozptyl, který přináší.
+    Faktor ve smíšeném modelu (modelu s pevnými i náhodnými efekty), jehož úrovně považujeme za výběr z většího souboru možných úrovní (lokality, jedinci, roky). Na rozdíl od [pevného faktoru](#pevny-faktor) nás nezajímají jeho konkrétní úrovně, ale rozptyl, který přináší.
   usage: |
     - Zavádíme v L10 pro [hierarchická data](#hierarchicka-data).
     - V R: `(1 | lokalita)` v syntaxi balíčku `lme4`.
-  synonyms: "*Náhodný vliv*. Opakem je [pevný faktor](#pevny-faktor) (fixed effect)."
+  synonyms: "Opakem je [pevný faktor](#pevny-faktor) (fixed effect)."
   see_also:
     - "pevny-faktor"
     - "hierarchicka-data"
@@ -463,13 +496,15 @@
 - id: "nejistota"
   cz: "Nejistota"
   en: "uncertainty"
-  def_short: "Rozsah, v němž nevíme přesnou hodnotu parametru kvůli omezenému a variabilnímu vzorku; kvantifikuje se pomocí intervalů spolehlivosti nebo směrodatných chyb."
+  def_short: "Rozsah, v němž nevíme přesnou hodnotu parametru kvůli omezenému výběru a výběrové variabilitě; kvantifikuje se pomocí standardních chyb a intervalů spolehlivosti."
   def_full: |
-    Rozsah, v němž nevíme přesnou hodnotu parametru, kvůli omezenému a variabilnímu vzorku. Kvantifikuje se pomocí [intervalů spolehlivosti](#interval-spolehlivosti) nebo směrodatných chyb.
+    Rozsah, v němž nevíme přesnou hodnotu parametru, protože máme jen omezený [výběr](#vyber) a jiný výběr by dal jiný odhad ([výběrová variabilita](#vyberova-variabilita)). Kvantifikuje se pomocí [standardních chyb](#standardni-chyba) a [intervalů spolehlivosti](#interval-spolehlivosti).
   usage: |
     - Každý odhad efektu je doprovázen nejistotou - vždy reportujeme CI, ne jen bodový odhad.
   see_also:
+    - "standardni-chyba"
     - "interval-spolehlivosti"
+    - "vyberova-variabilita"
     - "efekt"
 
 - id: "nelinearita"
@@ -479,8 +514,8 @@
   def_full: |
     Situace, kdy vztah mezi prediktorem a odezvou není dobře popsatelný přímkou - má zakřivení, inflexní body nebo jinou nelineární formu.
   usage: |
-    - Detekujeme graficky (scatterplot, diagnostický graf reziduí).
-    - Řešení: [transformace](#transformace) prediktoru nebo odezvy (nejčastěji logaritmická), polynomiální člen, nebo specializované nelineární modely.
+    - Detekujeme graficky ([bodový graf](#bodovy-graf), [graf residuí](#graf-residui)); v textu ji popisujeme jako „zakřivený vztah“ nebo „oblouk“.
+    - Řešení: [transformace](#transformace) prediktoru nebo odezvy (nejčastěji logaritmická), [kvadratický člen](#kvadraticky-clen), nebo specializované nelineární modely.
   see_also:
     - "diagnostika-modelu"
     - "transformace"
@@ -503,66 +538,71 @@
 - id: "nulova-hypoteza"
   cz: "Nulová hypotéza"
   en: "null hypothesis (H₀)"
-  def_short: "Výchozí předpoklad, který testujeme - typicky 'efekt je nulový' nebo 'skupiny se neliší'; p-hodnota udává pravděpodobnost dat za předpokladu platnosti H₀."
+  def_short: "Výchozí předpoklad, který testujeme - typicky 'efekt je nulový' nebo 'skupiny se neliší'; p-hodnota udává pravděpodobnost dat alespoň tak extrémních jako naše za předpokladu platnosti H₀."
   def_full: |
-    Výchozí předpoklad, který testujeme - typicky 'efekt je nulový' nebo 'skupiny se neliší'. P-hodnota udává pravděpodobnost dat (nebo extrémnějších) za předpokladu platnosti nulové hypotézy.
+    Výchozí předpoklad, který testujeme - typicky 'efekt je nulový' nebo 'skupiny se neliší'. P-hodnota udává pravděpodobnost dat alespoň tak extrémních jako naše za předpokladu platnosti nulové hypotézy.
   usage: |
     - Explicitně formulujeme nulovou hypotézu před každou analýzou.
-    - Zamítnutí nulové hypotézy (p < α) ≠ potvrzení alternativy - pouze říká, že data jsou s H₀ špatně slučitelná.
-  synonyms: "H₀. Alternativní hypotéza: H₁ nebo Hₐ."
+    - Zamítnutí nulové hypotézy (p ≤ α) ≠ potvrzení alternativy - pouze říká, že data jsou s H₀ špatně slučitelná.
+    - Zápis v kurzu: $H_0$ a [alternativní hypotéza](#alternativni-hypoteza) $H_A$; v komentářích R kódu H0 a HA.
+  synonyms: "H₀."
   see_also:
+    - "alternativni-hypoteza"
     - "p-hodnota"
     - "hladina-vyznamnosti"
 
 - id: "numericka-promenna"
   cz: "Numerická proměnná"
-  en: "numeric variable, continuous variable, quantitative variable"
+  en: "numeric variable, quantitative variable"
   def_short: "Proměnná, jejíž hodnoty jsou čísla se smysluplnou velikostí nebo rozdílem; může být diskrétní, například počet, nebo spojitá, například délka."
   def_full: |
     Proměnná, jejíž hodnoty jsou čísla se smysluplnou velikostí nebo rozdílem. Může být **diskrétní**, například počet jedinců, nebo **spojitá**, například délka, hmotnost či teplota. Toto rozlišení popisuje význam měřené veličiny, nikoli technický způsob uložení hodnot v R.
   usage: |
     - V R mohou být hodnoty uloženy jako `numeric` nebo `integer`, ale úložný typ sám neurčuje, zda je proměnná spojitá nebo diskrétní.
     - Popis: průměr/medián, SD/IQR, histogram/boxplot.
-  synonyms: "*Spojitá proměnná* (pro skutečně spojité hodnoty), *kvantitativní proměnná*. Diskrétní počty jsou technicky numerické, ale jiné analytické přístupy - [GLM Poisson](#poissonova-regrese)."
+    - Prediktor tohoto typu nazýváme **numerický prediktor** (ne *číselný*).
+  synonyms: "[Spojitá](#spojita-promenna) a [diskrétní proměnná](#diskretni-promenna) jsou její podtypy. *Kvantitativní* a *číselná proměnná* v kurzu nepoužíváme. Diskrétní počty jsou technicky numerické, ale vyžadují jiné analytické přístupy - [GLM Poisson](#poissonova-regrese)."
   see_also:
     - "promenna"
     - "diskretni-promenna"
     - "spojita-promenna"
     - "kategoricka-promenna"
     - "histogram"
-  avoid: "kvantitativní proměnná"
+  avoid: "kvantitativní proměnná; číselná proměnná, číselný prediktor"
 
 - id: "odezva"
   cz: "Odezva"
-  en: "response variable, outcome variable, dependent variable"
+  en: "response variable, outcome variable"
   def_short: "Proměnná, jejíž variabilitu se snažíme vysvětlit nebo předpovědět; v notaci modelu `y ~ x` je odezva `y`."
   def_full: |
     Proměnná, jejíž variabilitu se snažíme vysvětlit nebo předpovědět. V notaci modelu `y ~ x` je odezva `y`.
   usage: |
     - **Preferovaný termín v kurzu je 'odezva'** - vyhneme se tím dvojznačnosti slova 'závislá' (které implikuje kauzalitu).
-    - Vždy první krok analýzy: 'Co je moje odezva? Jaký má typ?'"
-  synonyms: "*Závislá proměnná* (starší termín, nevhodný kvůli kauzální konotaci), *cílová proměnná*. V R syntaxi je odezva vlevo od `~`."
+    - Vždy první krok analýzy: 'Co je moje odezva? Jaký má typ?'
+  synonyms: "*Závislá proměnná* (anglicky *dependent variable*; starší termín, nevhodný kvůli kauzální konotaci), *vysvětlovaná proměnná*, *cílová proměnná*. V R syntaxi je odezva vlevo od `~`."
   see_also:
     - "prediktor"
     - "linearni-model"
   avoid: "závislá proměnná"
 
 - id: "odlehla-pozorovani"
-  cz: "Odlehlá pozorování"
-  en: "outlier, extreme observation"
-  def_short: "Hodnota, která se výrazně odlišuje od ostatních pozorování; může být způsobena chybou měření nebo jít o skutečně extrémní případ."
+  cz: "Odlehlé pozorování"
+  en: "outlier"
+  def_short: "Pozorování, které se výrazně odlišuje od ostatních - v hodnotě jedné proměnné, nebo v modelu velkým residuem; může jít o chybu měření i o skutečně neobvyklý případ."
   def_full: |
-    Hodnota, která se výrazně odlišuje od ostatních pozorování. Může být způsobena chybou měření, chybou záznamu, nebo jít o skutečně extrémní případ.
+    Pozorování, které se výrazně odlišuje od ostatních. U jedné proměnné jde o hodnotu daleko od většiny dat (např. bod za vousy krabicového grafu). V modelu jde o pozorování s velkým [residuem](#residuum), tedy daleko od odhadnuté přímky. Může být způsobeno chybou měření, chybou záznamu, nebo jít o skutečně neobvyklý případ. Zda hodnota vypadá jako odlehlá, může záviset i na zvolené škále (např. po logaritmické transformaci).
   usage: |
-    - Identifikujeme graficky (boxplot, diagnostické grafy modelu).
+    - Identifikujeme graficky (krabicový graf, diagnostické grafy modelu).
     - Nikdy je neodstraňujeme automaticky; vždy prověřujeme příčinu.
-    - Z diagnostického pohledu rozlišujeme: *outlier* (extrémy v hodnotách) vs. *vlivný bod* (leverage/Cook's distance - bod silně ovlivňující parametry modelu).
-  synonyms: "*Extrémy* (obecnější termín). V kurzu preferujeme 'odlehlá pozorování' před 'extrémy'."
+    - Rozlišujeme tři různé věci: *odlehlé pozorování* (neobvyklá hodnota nebo velké residuum), [pákový efekt](#pakovy-efekt) (neobvyklé hodnoty prediktoru) a [vlivné pozorování](#vlivne-pozorovani) (pozorování, jehož vynechání výrazně změní model).
+  synonyms: "*Odlehlá hodnota*, *extrém* (obecnější, v kurzu jen jako vedlejší synonymum). Anglicky *outlier*."
   see_also:
-    - "diagnostika-modelu"
-    - "boxplot"
+    - "vlivne-pozorovani"
     - "pakovy-efekt"
     - "cookova-vzdalenost"
+    - "diagnostika-modelu"
+    - "boxplot"
+  avoid: "extrém (jako hlavní termín)"
 
 - id: "opakovana-mereni"
   cz: "Opakovaná měření"
@@ -578,19 +618,21 @@
     - "nahodny-faktor"
 
 - id: "p-hodnota"
-  cz: "P-hodnota"
+  cz: "p-hodnota"
   en: "p-value"
   def_short: "Pravděpodobnost, že bychom při platnosti nulové hypotézy pozorovali data alespoň tak extrémní jako naše skutečná data."
   def_full: |
     Pravděpodobnost, že bychom při platnosti nulové hypotézy pozorovali data alespoň tak extrémní, jako jsou naše skutečná data. Není to pravděpodobnost, že nulová hypotéza je pravdivá.
   usage: |
-    - Interpretujeme věcně a opatrně: malé p slouží jako signál, ne jako důkaz.
-    - Nikdy neříkáme 'p-hodnota je pravda' ani 'výsledek je signifikantní, tedy efekt existuje'.
+    - Interpretujeme věcně a opatrně: malá p-hodnota svědčí proti nulové hypotéze, ale sama nic nedokazuje.
+    - Nikdy neříkáme 'p-hodnota je pravda' ani 'výsledek je statisticky významný, tedy efekt existuje'.
     - Vždy doplňujeme [efektem](#efekt) a [intervalem spolehlivosti](#interval-spolehlivosti).
+    - Zápis: „p-hodnota“ (malé p, i na začátku věty v rovnicích); velmi malé hodnoty uvádíme jako „p < 0,001“.
   synonyms: "*p* (malé písmeno, kurzíva v textu). Někdy *pravděpodobnost náhody* - nevhodné zjednodušení, používat jen v lidovém vysvětlení."
   see_also:
     - "nulova-hypoteza"
     - "hladina-vyznamnosti"
+    - "statisticky-vyznamny"
     - "interval-spolehlivosti"
 
 - id: "parametry-modelu"
@@ -601,7 +643,8 @@
     Číselné hodnoty odhadnuté z dat, které definují tvar modelu. V lineárním modelu jsou to [intercept](#intercept) (a) a [sklon/sklony](#sklon) (b). Dohromady tvoří rovnici predikce.
   usage: |
     - Ve výstupu `summary(lm(...))`: sekce `Coefficients`, sloupec `Estimate`.
-    - Každý parametr má svůj odhad, směrodatnou chybu, t-statistiku a p-hodnotu.
+    - Každý koeficient má svůj odhad, standardní chybu, [t-statistiku](#t-statistika) a p-hodnotu.
+    - Model odhaduje i [residuální směrodatnou odchylku](#rezidualni-smerodatna-odchylka); proto ji např. AIC započítává mezi odhadované veličiny.
   synonyms: "*Koeficienty modelu*, *regresní koeficienty* (pro sklony). Termíny 'parametr' a 'koeficient' používáme v kurzu zaměnitelně."
   see_also:
     - "intercept"
@@ -616,8 +659,8 @@
     Faktor v modelu, jehož konkrétní úrovně jsou pro analýzu relevantní a vyčerpávají (nebo reprezentují) všechny zájmové kategorie (např. léčebný postup, druh).
   usage: |
     - Ve smíšeném modelu kombinujeme pevné a náhodné efekty.
-    - Většina prediktorů v kurzu je pevných faktorů.
-  synonyms: "*Pevný vliv*. Opakem je [náhodný faktor](#nahodny-faktor)."
+    - Kategoriální prediktory v běžných lineárních modelech kurzu (druh, pohlaví) jsou pevné faktory.
+  synonyms: "Opakem je [náhodný faktor](#nahodny-faktor)."
   see_also:
     - "nahodny-faktor"
     - "hierarchicka-data"
@@ -639,44 +682,50 @@
 - id: "porovnani-modelu"
   cz: "Porovnání modelů"
   en: "model comparison, model selection"
-  def_short: "Postup výběru nejlepšího modelu z množiny kandidátů pomocí kritérií jako AIC nebo likelihood ratio test."
+  def_short: "Postup, kterým na stejných datech srovnáváme předem určené kandidátní modely, například pomocí AIC, adjustovaného R² nebo F-testu vnořených modelů."
   def_full: |
-    Postup výběru nejlepšího modelu z množiny kandidátů. Kritéria: AIC (informační přístup), likelihood ratio test (LRT, pro vhnízděné modely), křížová validace.
+    Postup, kterým na stejných datech a se stejnou odezvou srovnáváme předem určené [kandidátní modely](#kandidatni-model). Kritéria: [AIC](#aic) (informační přístup), [adjustované R²](#adjustovane-r2), F-test pro [vnořené modely](#vnorene-modely) (`anova(m1, m2)`), mimo kurz např. test poměrem věrohodností (LRT) nebo křížová validace.
   usage: |
-    - Primárně používáme [AIC](#aic) a LRT.
-    - Výsledek vždy interpretujeme věcně: proč je daný model lepší?
+    - V kurzu používáme hlavně AIC (L09) a F-test vnořených modelů (L06–L07).
+    - Výsledek vždy interpretujeme věcně: proč je daný model lepší a co z rozdílu plyne pro biologickou otázku?
   see_also:
     - "aic"
-    - "min-adekvat-model"
+    - "kandidatni-model"
+    - "vnorene-modely"
+    - "princip-uspornosti"
 
 - id: "post-hoc-test"
   cz: "Post-hoc test"
   en: "post-hoc test, multiple comparison test"
-  def_short: "Test prováděný po signifikantní ANOVA k identifikaci, které konkrétní páry skupin se od sebe liší; opravuje p-hodnoty pro mnohonásobné porovnávání."
+  def_short: "Párová porovnání skupin, která společně vyhodnotí celou rodinu otázek typu 'liší se skupina A od B?' a upraví p-hodnoty i intervaly pro mnohonásobné porovnávání."
   def_full: |
-    Test prováděný po ANOVA (když globální F-test je signifikantní), který identifikuje, které konkrétní páry skupin se od sebe liší. Opravuje p-hodnoty pro mnohonásobné porovnávání.
+    Párová porovnání skupin, která společně vyhodnotí celou rodinu otázek typu 'liší se skupina A od B?'. Upravují p-hodnoty a intervaly spolehlivosti ([simultánní intervaly](#simultanni-interval)) tak, aby s rostoucím počtem porovnání nerostla šance na náhodně extrémní výsledek ([mnohonásobné testování](#mnohonasobne-testovani)).
   usage: |
-    - Nejčastěji: Tukeyův HSD test.
-    - V R: balíček `multcomp` nebo `emmeans`.
-    - Varování: post-hoc testy bez předchozí signifikantní ANOVA (data dredging) jsou metodologicky nevhodné.
+    - Nejčastěji: Tukeyho úprava (Tukeyho HSD).
+    - V R: balíček `emmeans` nebo `multcomp`.
+    - Párová porovnání plánujeme podle otázky studie; nejsou podmíněna statisticky významnou celkovou ANOVA a nenahrazují ji.
+    - Varování: hledat po datech, „kde něco vyjde“ (data dredging), je metodologicky nevhodné.
+  synonyms: "*Párová porovnání*, *mnohonásobná porovnání*. V kurzu píšeme „Tukeyho úprava“ (ne *korekce*)."
   see_also:
     - "anova"
+    - "simultanni-interval"
+    - "mnohonasobne-testovani"
     - "p-hodnota"
 
 - id: "prediktor"
   cz: "Prediktor"
-  en: "predictor, explanatory variable, independent variable, covariate"
+  en: "predictor, explanatory variable"
   def_short: "Proměnná, pomocí níž vysvětlujeme variabilitu odezvy; v notaci `y ~ x` je prediktor `x`."
   def_full: |
     Proměnná, pomocí níž vysvětlujeme variabilitu odezvy. V notaci `y ~ x` je prediktor `x`.
   usage: |
     - **Preferovaný termín v kurzu je 'prediktor'** - vyhýbáme se 'nezávislá proměnná' (implikuje experimentální nezávislost, která nemusí platit).
-    - Prediktor může být numerický nebo kategoriální; model může mít více prediktorů.
-  synonyms: "*Nezávislá proměnná* (nevhodný v observačních studiích), *kovariát* (v kontextu ANCOVA), *explorativní proměnná*. V R syntaxi je prediktor vpravo od `~`."
+    - Prediktor může být [numerický](#numericka-promenna) nebo [kategoriální](#kategoricka-promenna); model může mít více prediktorů.
+  synonyms: "*Vysvětlující proměnná*. *Nezávislá proměnná* (anglicky *independent variable*; nevhodný v observačních studiích) a *kovariát* (*covariate*, v kontextu ANCOVA) v kurzu nepoužíváme. V R syntaxi je prediktor vpravo od `~`."
   see_also:
     - "odezva"
     - "linearni-model"
-  avoid: "nezávislá proměnná"
+  avoid: "nezávislá proměnná; kovariát, kovariáta"
 
 - id: "prumer"
   cz: "Průměr"
@@ -688,26 +737,32 @@
     - Vhodný pro symetrická rozdělení bez odlehlých hodnot.
     - Pro šikmá rozdělení nebo data s extrémy preferujeme [medián](#median).
     - V R: `mean(x)`.
-  synonyms: "*Aritmetický průměr* (plný název). Průměr ≠ medián (liší se v případě asymetrického rozdělení)."
+  synonyms: "*Aritmetický průměr* (plný název; používáme jen tam, kde zdůrazňujeme typ průměru, např. vedle [geometrického průměru](#geometricky-prumer)). Průměr ≠ medián (liší se v případě šikmého rozdělení)."
   see_also:
     - "median"
     - "smerodatna-odchylka"
+    - "geometricky-prumer"
+  avoid: "aritmetický průměr (jako běžný termín)"
 
 - id: "residuum"
   cz: "Residuum"
-  en: "residual, error term"
-  def_short: "Rozdíl mezi pozorovanou hodnotou odezvy a hodnotou predikovanou modelem: eᵢ = yᵢ − ŷᵢ."
+  en: "residual"
+  def_short: "Rozdíl mezi pozorovanou hodnotou odezvy a hodnotou odhadnutou modelem: eᵢ = yᵢ − ŷᵢ."
   def_full: |
-    Rozdíl mezi pozorovanou hodnotou odezvy a hodnotou predikovanou modelem: eᵢ = yᵢ − ŷᵢ. Reziua jsou 'to, co model nevysvětlil'.
+    Rozdíl mezi pozorovanou hodnotou odezvy a [odhadnutou hodnotou](#odhadnuta-hodnota) z modelu: eᵢ = yᵢ − ŷᵢ. Residua jsou 'to, co model nezachytil'. Residuum je vypočtené z dat; nezaměňujeme ho s teoretickou náhodnou chybou modelu (ε).
   usage: |
-    - Analýza reziduí je základem [diagnostiky modelu](#diagnostika-modelu).
-    - Reziua by měla být přibližně normálně rozložena a nezávislá na predikovaných hodnotách.
+    - Analýza residuí je základem [diagnostiky modelu](#diagnostika-modelu).
+    - Residua by měla mít přibližně normální rozdělení a jejich rozptýlení by se nemělo měnit s odhadnutými hodnotami.
     - V R: `residuals(model)` nebo automaticky v `plot(model)`.
-  synonyms: "*Reziduum* (singulár), *reziua* (plurál). Anglický termín *residual* se v češtině také přímo používá."
+    - Pravopis v kurzu: **residuum, residua, residuí, residuální** (vždy s „s“).
+  synonyms: "Varianta se „z“ (*reziduum*, *rezidua*, *reziduální*) je v češtině také běžná, v kurzu ji však nepoužíváme. Anglický termín *residual* se v češtině také přímo používá. *Chyba modelu* je dvojznačné a v kurzu ho pro residuum nepoužíváme."
   see_also:
+    - "odhadnuta-hodnota"
+    - "soucet-ctvercu-residui"
+    - "graf-residui"
     - "diagnostika-modelu"
-    - "linearni-model"
     - "heteroskedasticita"
+  avoid: "reziduum, rezidua, reziduální; chyba modelu"
 
 - id: "rozdeleni"
   cz: "Rozdělení hodnot"
@@ -718,21 +773,25 @@
   usage: |
     - Rozdělení pozorovaných hodnot posuzujeme grafem a souhrnnými statistikami.
     - Pravděpodobnostní rozdělení popisuje proces, z něhož mohou hodnoty vznikat.
-    - Normální rozdělení se používá mimo jiné při formulaci některých předpokladů lineárního modelu.
+    - [Normální rozdělení](#normalni-rozdeleni) se používá mimo jiné při formulaci některých předpokladů lineárního modelu.
+  synonyms: "*Rozložení* (hovorově); v kurzu píšeme **rozdělení**. *Distribuce* je anglicismus."
   see_also:
-    - "glm"
-    - "linearni-model"
-  avoid: "distribuce"
+    - "normalni-rozdeleni"
+    - "t-rozdeleni"
+    - "sikmost"
+    - "graf-hustoty"
+  avoid: "distribuce; rozložení"
 
 - id: "rozptyl"
   cz: "Rozptyl"
   en: "variance"
-  def_short: "Průměr čtverců odchylek od průměru; míra variability dat. Odmocnina rozptylu je směrodatná odchylka."
+  def_short: "Součet čtverců odchylek od průměru dělený n − 1; míra variability dat. Odmocnina rozptylu je směrodatná odchylka."
   def_full: |
-    Průměr čtverců odchylek od průměru. Míra variability dat. Odmocnina rozptylu je [směrodatná odchylka](#smerodatna-odchylka).
+    Míra variability dat: součet čtverců odchylek hodnot od průměru dělený počtem hodnot minus jedna (n − 1). Takto počítaný výběrový rozptyl je téměř průměrem čtverců odchylek; dělení n − 1 místo n vyrovnává to, že průměr jsme odhadli ze stejných dat. Odmocnina rozptylu je [směrodatná odchylka](#smerodatna-odchylka).
   usage: |
-    - V R: `var(x)`.
+    - V R: `var(x)` (dělí n − 1).
     - Přímou interpretací v původních jednotkách slouží lépe SD (rozptyl je v jednotkách²).
+    - Pro vizuální „roztažení“ bodů (např. residuí v grafu) píšeme raději *rozptýlení*; *rozptyl* rezervujeme pro tuto statistiku.
   see_also:
     - "smerodatna-odchylka"
     - "prumer"
@@ -741,30 +800,31 @@
 - id: "sklon"
   cz: "Sklon (regresní koeficient)"
   en: "slope, regression coefficient"
-  def_short: "Parametr lineárního modelu udávající, o kolik se změní odezva, pokud prediktor vzroste o jednu jednotku (při zachování ostatních prediktorů)."
+  def_short: "Parametr lineárního modelu udávající, o kolik se v průměru liší odezva dvou pozorování, jejichž prediktor se liší o jednu jednotku (při stejných hodnotách ostatních prediktorů)."
   def_full: |
-    Parametr lineárního modelu udávající, o kolik se změní odezva, pokud prediktor vzroste o jednu jednotku (při zachování ostatních prediktorů na konstantní hodnotě).
+    Parametr lineárního modelu udávající, o kolik se v průměru liší odezva dvou pozorování, jejichž prediktor se liší o jednu jednotku (při stejných hodnotách ostatních prediktorů). Popisuje vztah v datech; sám o sobě netvrdí, že změna prediktoru odezvu způsobí.
   usage: |
     - Ve výstupu `summary(lm(...))`: odpovídá řádkům pod `(Intercept)` v sekci `Coefficients`.
     - Jednotky: jednotky odezvy / jednotka prediktoru.
-    - Interpretace: 'Každý dodatečný centimetr délky těla odpovídá změně hmotnosti o b gramů.'
-  synonyms: "*Regresní koeficient*, *regresní sklon*, *gradient*. Termíny 'sklon' a 'regresní koeficient' jsou v kurzu zaměnitelné."
+    - Interpretace: 'Jedinci delší o 1 cm jsou v průměru o b gramů těžší.'
+  synonyms: "*Regresní koeficient*, *regresní sklon*. Termíny 'sklon' a 'regresní koeficient' jsou v kurzu zaměnitelné; *gradient* nepoužíváme."
   see_also:
     - "intercept"
     - "efekt"
     - "parametry-modelu"
+  avoid: "gradient"
 
 - id: "smerodatna-odchylka"
-  cz: "Směrodatná odchylka"
+  cz: "Směrodatná odchylka (SD)"
   en: "standard deviation (SD)"
-  def_short: "Odmocnina rozptylu; vyjadřuje průměrnou vzdálenost hodnot od průměru ve stejných jednotkách jako původní data."
+  def_short: "Odmocnina rozptylu; vyjadřuje typickou vzdálenost hodnot od průměru ve stejných jednotkách jako původní data."
   def_full: |
-    Odmocnina rozptylu; vyjadřuje průměrnou vzdálenost hodnot od průměru. Má stejné jednotky jako původní data.
+    Odmocnina rozptylu; vyjadřuje typickou vzdálenost hodnot od průměru. Má stejné jednotky jako původní data.
   usage: |
     - Standardní míra variability pro symetrická rozdělení.
     - Zkratka **SD** je přípustná ve všech kontextech (tabulky, grafy, text).
     - V R: `sd(x)`.
-  synonyms: "*Standardní odchylka* (anglicismus, méně doporučený). **SD ≠ SE/SEM**: SD je odhad variability dat (jak moc jsou hodnoty rozptýleny kolem průměru); SE/SEM ([standardní chyba](#standardni-chyba)) je míra kvality odhadu parametru (jak přesně odhadujeme průměr nebo koeficient modelu z omezeného vzorku)."
+  synonyms: "*Standardní odchylka* (anglicismus, méně doporučený). **SD ≠ SE/SEM**: SD je odhad variability dat (jak moc jsou hodnoty rozptýleny kolem průměru); SE/SEM ([standardní chyba](#standardni-chyba)) je míra kvality odhadu parametru (jak přesně odhadujeme průměr nebo koeficient modelu z omezeného výběru)."
   see_also:
     - "rozptyl"
     - "iqr"
@@ -773,23 +833,26 @@
   avoid: "standardní odchylka"
 
 - id: "standardni-chyba"
-  cz: "Standardní chyba"
+  cz: "Standardní chyba (SE)"
   en: "standard error (SE), standard error of the mean (SEM)"
-  def_short: "Míra přesnosti odhadu parametru (typicky průměru) z dat; udává, jak moc by se odhadnutý parametr lišil při opakovaném vzorkování ze stejné populace."
+  def_short: "Míra přesnosti odhadu parametru (průměru, sklonu…); odhaduje z jediného výběru, jak moc by se odhady typicky lišily mezi opakovanými výběry stejné velikosti."
   def_full: |
-    Míra přesnosti odhadu parametru (typicky průměru) z dat. Udává, jak moc by se odhadnutý parametr lišil při opakovaném vzorkování ze stejné populace. Pro průměr platí: SEM = SD / √n — čím větší vzorek, tím přesnější odhad.
+    Míra přesnosti odhadu parametru (průměru, sklonu nebo jiného koeficientu). Odhaduje z jediného výběru, jak moc by se odhady typicky lišily mezi opakovanými výběry stejné velikosti ze stejné populace nebo procesu, tedy typickou velikost [výběrové variability](#vyberova-variabilita) odhadu. Pro průměr platí: SEM = SD / √n — čím větší výběr, tím přesnější odhad.
   usage: |
-    - **SE ≠ SD**: SD popisuje variabilitu dat (spread hodnot v souboru); SE popisuje kvalitu odhadu parametru (jak přesně odhadujeme průměr nebo koeficient modelu).
+    - **SE ≠ SD**: SD popisuje variabilitu dat (rozptýlení hodnot ve výběru); SE popisuje kvalitu odhadu parametru (jak přesně odhadujeme průměr nebo koeficient modelu).
     - SE koeficientů modelu se zobrazuje ve výstupu `summary(lm(...))` ve sloupci `Std. Error`.
     - Preferujeme reportovat [interval spolehlivosti](#interval-spolehlivosti) (odvozený ze SE) místo samotné SE.
-  synonyms: "*SEM* (standard error of the mean) = SE průměru. *Standardní chyba průměru*. SE je obecnější termín — platí i pro SE koeficientu modelu, SE predikce atd."
+    - Výsledek zapisujeme jako „odhad sklonu = 13,3, SE = 0,7, 95% CI [12,0; 14,6]“; zápis „13,3 ± 0,7“ nepoužíváme, protože ± jedna SE není interval spolehlivosti.
+  synonyms: "*SEM* (standard error of the mean) = SE průměru. *Standardní chyba průměru*. SE je obecnější termín — platí i pro SE koeficientu modelu, SE predikce atd. Výraz *směrodatná chyba* v kurzu nepoužíváme: svádí k záměně se směrodatnou odchylkou."
   see_also:
     - "smerodatna-odchylka"
+    - "vyberova-variabilita"
     - "interval-spolehlivosti"
     - "nejistota"
+  avoid: "směrodatná chyba; střední chyba průměru"
 
 - id: "stupne-volnosti"
-  cz: "Stupně volnosti"
+  cz: "Stupně volnosti (df)"
   en: "degrees of freedom (df)"
   def_short: "Počet nezávislých informací dostupných pro odhad parametru; počet pozorování minus počet odhadovaných parametrů."
   def_full: |
@@ -803,34 +866,39 @@
     - "f-statistika"
 
 - id: "t-test"
-  cz: "T-test"
+  cz: "t-test"
   en: "t-test"
-  def_short: "Statistický test porovnávající průměry dvou skupin (nebo průměr s konstantou); ekvivalent lineárního modelu se dvěma úrovněmi faktoru."
+  def_short: "Test založený na t-statistice (odhad dělený standardní chybou); nejčastěji porovnává průměry dvou skupin nebo testuje, zda je koeficient modelu nulový."
   def_full: |
-    Statistický test porovnávající průměry dvou skupin (nebo průměr s konstantou). Pracuje s t-statistikou a její distribucí se stupni volnosti.
+    Test založený na [t-statistice](#t-statistika) a [t-rozdělení](#t-rozdeleni) s příslušnými stupni volnosti. Nejčastěji porovnává průměry dvou skupin (dvouvýběrový t-test) nebo průměr s konstantou; stejný princip používá `summary(lm(...))` pro test každého koeficientu.
   usage: |
-    - Prezentován jako speciální případ lineárního modelu: `lm(y ~ skupina)` se dvěma úrovněmi dává ekvivalentní výsledek.
-    - V R: `t.test(y1, y2)` nebo `t.test(y ~ skupina)`.
+    - Prezentován jako speciální případ lineárního modelu: `lm(y ~ skupina)` se dvěma úrovněmi dává stejný výsledek jako `t.test(y ~ skupina, var.equal = TRUE)`.
+    - Výchozí `t.test()` v R provádí [Welchův t-test](#welchuv-t-test), který nepředpokládá shodné rozptyly, a dává proto mírně odlišný výsledek.
     - Typy: jednovýběrový, dvouvýběrový, párový.
   see_also:
+    - "t-statistika"
+    - "t-rozdeleni"
+    - "welchuv-t-test"
     - "linearni-model"
-    - "anova"
     - "neparametricky-test"
 
 - id: "transformace"
   cz: "Transformace"
   en: "transformation (data transformation)"
-  def_short: "Matematická operace použitá na hodnoty proměnné s cílem splnit předpoklady modelu nebo zlepšit linearitu vztahu."
+  def_short: "Matematická operace použitá na hodnoty proměnné (např. logaritmus); mění tvar rozdělení i to, jaký vztah model popisuje, například násobný místo součtového."
   def_full: |
-    Matematická operace použitá na hodnoty proměnné (nejčastěji odezvy nebo prediktoru) s cílem splnit předpoklady modelu nebo zlepšit linearitu vztahu.
+    Matematická operace použitá na hodnoty proměnné (nejčastěji odezvy nebo prediktoru). Mění tvar rozdělení a s ním i význam modelu: po logaritmické transformaci popisuje model násobné (relativní) rozdíly místo součtových. Volbu transformace proto zdůvodňujeme hlavně biologickou otázkou a tvarem vztahu; zlepšení diagnostických grafů je vítaný důsledek, ne jediný cíl.
   usage: |
-    - Nejčastější: logaritmická transformace `log(x)` (přirozený logaritmus) - 'narovnává' pravostranně šikmá data.
+    - Nejčastější: logaritmická transformace `log(x)` (přirozený logaritmus) - 'narovnává' pravostranně šikmá data a násobné vztahy.
     - Také: odmocninová transformace `sqrt(x)` pro počty; logit transformace pro proporce.
     - Transformace mění interpretaci parametrů - vždy uvést, co bylo transformováno.
+    - Lineární změny jednotek, [centrování](#centrovani) a [z-skóre](#z-skore) tvar rozdělení nemění; mění jen polohu a měřítko.
   synonyms: "*Datová transformace*. Pozor: log v R je přirozený logaritmus (ln); `log10(x)` je dekadický."
   see_also:
     - "nelinearita"
     - "heteroskedasticita"
+    - "logaritmicka-skala"
+    - "sikmost"
     - "glm"
 
 - id: "variabilita"
@@ -838,9 +906,9 @@
   en: "variability, variation"
   def_short: "Obecný termín pro rozsah, v němž se hodnoty proměnné liší od sebe navzájem; kvantifikuje se pomocí rozptylu, SD, IQR nebo rozsahu."
   def_full: |
-    Obecný termín pro rozsah, v němž se hodnoty proměnné liší od sebe navzájem. Kvantifikuje se pomocí [rozptylu](#rozptyl), [SD](#smerodatna-odchylka), [IQR](#iqr) nebo rozsahu (range).
+    Obecný termín pro rozsah, v němž se hodnoty proměnné liší od sebe navzájem. Kvantifikuje se pomocí [rozptylu](#rozptyl), [SD](#smerodatna-odchylka), [IQR](#iqr) nebo rozpětí (rozdíl maxima a minima, anglicky *range*).
   usage: |
-    - Ústřední pojem kurzu: statistická analýza je v jádru o dekompozici variability na 'vysvětlenou' a 'nevysvětlenou' složku.
+    - Ústřední pojem kurzu: statistická analýza je v jádru o rozkladu variability na složku zachycenou modelem a složku, která zůstala v residuích.
   see_also:
     - "rozptyl"
     - "smerodatna-odchylka"
@@ -856,20 +924,11 @@
   usage: |
     - V R: `table(x)` nebo `dplyr::count()`.
     - Vizualizace: `barplot(table(x))` nebo `ggplot2::geom_bar()`.
-  synonyms: "*Frekvence* (anglicismus, nepoužívat jako primární termín). Relativní četnost = podíl (proportion)."
+  synonyms: "*Frekvence* (anglicismus, nepoužívat jako primární termín ani v popiscích os). Relativní četnost = podíl (proportion). V popisech hojnosti organismů („četnost jedinců“) raději píšeme *počet* nebo *hojnost*."
   see_also:
     - "kategoricka-promenna"
     - "histogram"
   avoid: "frekvence"
-
-- id: "zobecneny-linearni-model"
-  cz: "Zobecněný lineární model"
-  en: "Generalised Linear Model"
-  def_short: "Viz heslo GLM."
-  def_full: |
-    Viz heslo [GLM](#glm).
-  see_also:
-    - "glm"
 
 - id: "bodovy-graf"
   cz: "Bodový graf"
@@ -881,24 +940,27 @@
     - Bodový graf je obvyklý první krok před výpočtem korelace nebo fitováním lineárního modelu.
     - V R: `plot(x, y)` nebo `ggplot2::geom_point()`.
     - Barva, tvar nebo panely mohou doplnit třetí proměnnou, ale nemají být pouhou dekorací.
-  synonyms: "Anglicky *scatter plot*. Jednorozměrný *beeswarm plot* také používá body, ale není totéž co bodový graf vztahu dvou proměnných."
+  synonyms: "Anglicky *scatter plot*; *rozptylový graf* (méně časté). Jednorozměrný graf jednotlivých hodnot (*beeswarm*, *dot plot*) také používá body, ale není to bodový graf - viz [graf jednotlivých hodnot](#graf-jednotlivych-hodnot). Shluk bodů v grafu nazýváme *oblak bodů*."
   see_also:
     - "numericka-promenna"
     - "korelace"
+    - "graf-jednotlivych-hodnot"
     - "odlehla-pozorovani"
+  avoid: "bodový graf (pro graf hodnot jediné proměnné)"
 
 - id: "cookova-vzdalenost"
   cz: "Cookova vzdálenost"
   en: "Cook's distance"
   def_short: "Míra vlivu jednoho pozorování na model: vyjadřuje, jak moc by se změnily odhadnuté hodnoty, kdybychom toto pozorování vynechali."
   def_full: |
-    Míra vlivu jednoho pozorování na odhadnutý model. Vyjadřuje, jak moc by se změnily odhadnuté hodnoty všech pozorování, kdybychom dané pozorování vynechali a model odhadli znovu. Velkou hodnotu mívá hlavně pozorování, které má zároveň velké residuum a velký pákový efekt.
+    Míra vlivu jednoho pozorování na odhadnutý model. Vyjadřuje, jak moc by se změnily odhadnuté hodnoty všech pozorování, kdybychom dané pozorování vynechali a model odhadli znovu. Velkou hodnotu mívá hlavně pozorování, které má zároveň velké residuum a velký pákový efekt. Takové pozorování nazýváme [vlivné pozorování](#vlivne-pozorovani).
   usage: |
     - V R: `cooks.distance(model)`.
     - Orientační hodnota \(4/n\) pouze upozorňuje na pozorování, která si zaslouží bližší kontrolu; není to test ani pravidlo pro mazání dat.
     - Citlivost závěru ověříme tak, že model odhadneme s pozorováním i bez něj a porovnáme koeficienty.
   synonyms: "Anglicky *Cook's distance* nebo *Cook's D*."
   see_also:
+    - "vlivne-pozorovani"
     - "pakovy-efekt"
     - "odlehla-pozorovani"
     - "residuum"
@@ -927,7 +989,7 @@
   usage: |
     - Vyšší hladina při stejných datech vytváří širší interval.
     - Běžné volby jsou 90 %, 95 % a 99 %.
-  synonyms: "*Konfidenční hladina*; v kurzu preferujeme **hladinu spolehlivosti**."
+  synonyms: "*Konfidenční hladina*; v kurzu preferujeme **hladinu spolehlivosti** a píšeme ji celou (ne jen „hladina“). Souvisí s [hladinou významnosti](#hladina-vyznamnosti): hladina spolehlivosti = 1 − α."
   see_also:
     - "interval-spolehlivosti"
     - "pokryti-intervalu"
@@ -942,7 +1004,7 @@
   usage: |
     - Jednotku pozorování určujeme dříve, než počítáme souhrny nebo volíme model.
     - Nezaměňujeme ji automaticky s řádkem tabulky ani s jednotlivým měřením.
-  synonyms: "*Pozorovací jednotka*, *statistická jednotka*."
+  synonyms: "*Pozorovací jednotka*, *statistická jednotka*; v kurzu píšeme **jednotka pozorování**."
   see_also:
     - "pozorovani"
     - "promenna"
@@ -968,11 +1030,12 @@
 - id: "kriticka-hodnota"
   cz: "Kritická hodnota"
   en: "critical value"
-  def_short: "Násobek standardní chyby použitý při konstrukci intervalu nebo testu; závisí například na hladině spolehlivosti, stupních volnosti a zvoleném rozdělení."
+  def_short: "Násobitel standardní chyby použitý při konstrukci intervalu, nebo hranice testové statistiky v testu; závisí na hladině, stupních volnosti a zvoleném rozdělení."
   def_full: |
-    Číslo určující, kolik standardních chyb přidáme na každou stranu odhadu při konstrukci intervalu spolehlivosti. Kritická hodnota závisí na zvolené hladině spolehlivosti, stupních volnosti a použitém pravděpodobnostním rozdělení, například t-rozdělení. Vyšší požadovaná hladina obvykle znamená větší kritickou hodnotu a širší interval.
+    Číslo určující, kolik standardních chyb přidáme na každou stranu odhadu při konstrukci intervalu spolehlivosti. V testu stejné číslo slouží jako hranice: překročí-li absolutní hodnota [t-statistiky](#t-statistika) kritickou hodnotu, je p-hodnota menší než α. Kritická hodnota závisí na zvolené hladině, stupních volnosti a použitém pravděpodobnostním rozdělení, například [t-rozdělení](#t-rozdeleni). Vyšší požadovaná hladina spolehlivosti obvykle znamená větší kritickou hodnotu a širší interval.
   usage: |
     - Polovina šířky intervalu se často vypočte jako kritická hodnota × standardní chyba.
+    - V R pro 95% interval: `qt(0.975, df)`.
     - Kritická hodnota není odhad efektu ani míra variability původních dat.
   see_also:
     - "standardni-chyba"
@@ -989,6 +1052,7 @@
   usage: |
     - Mez chyby popisuje nejistotu odhadu, nikoli chybu měření jednotlivého pozorování.
     - Při stejných datech roste s požadovanou hladinou spolehlivosti.
+    - Krajní body intervalu nazýváme **hranice**, ne *meze*, aby se nepletly s mezí chyby.
   synonyms: "*Polovina šířky intervalu*, anglicky *margin of error*."
   see_also:
     - "interval-spolehlivosti"
@@ -1015,10 +1079,10 @@
   en: "estimate, point estimate"
   def_short: "Číslo vypočtené z pozorovaných dat jako přiblížení neznámé vlastnosti nebo parametru; jiný srovnatelný výběr může dát jiný odhad."
   def_full: |
-    Číslo vypočtené z pozorovaných dat jako přiblížení neznámé vlastnosti nebo parametru širšího procesu. Průměr výběru může odhadovat průměr populace a sklon fitovaného modelu může odhadovat velikost vztahu. Jeden takový výsledek se nazývá bodový odhad. Jiný srovnatelný výběr obvykle poskytne trochu jiný odhad.
+    Číslo vypočtené z pozorovaných dat jako přiblížení neznámé vlastnosti nebo parametru širšího procesu. Průměr výběru může odhadovat průměr [populace](#populace) a sklon fitovaného modelu může odhadovat velikost vztahu. Jeden takový výsledek se nazývá bodový odhad. Jiný srovnatelný výběr obvykle poskytne trochu jiný odhad.
   usage: |
     - Odhad vždy uvádíme v příslušných jednotkách a s informací o nejistotě.
-    - Nezaměňujeme odhad parametru s odhadnutou hodnotou jednotlivého pozorování.
+    - Nezaměňujeme odhad parametru s [odhadnutou hodnotou](#odhadnuta-hodnota) jednotlivého pozorování ani s [predikcí](#predikce) pro nové pozorování; holé „odhad“ pro hodnotu na přímce nepoužíváme.
   see_also:
     - "vyber"
     - "vyberova-variabilita"
@@ -1031,11 +1095,14 @@
   en: "fitted value"
   def_short: "Hodnota odezvy, kterou fitovaný model přiřadí pozorování na základě jeho hodnot prediktorů; značí se často ŷ."
   def_full: |
-    Hodnota odezvy, kterou fitovaný model přiřadí konkrétnímu pozorování na základě jeho hodnot prediktorů. V lineárním modelu leží odhadnutá hodnota na modelové přímce a často se značí \(\hat{y}_i\). Rozdíl mezi naměřenou a odhadnutou hodnotou je residuum.
+    Hodnota odezvy, kterou fitovaný model přiřadí konkrétnímu pozorování na základě jeho hodnot prediktorů. U modelu s numerickým prediktorem leží na odhadnuté přímce, u modelu s kategoriálním prediktorem je to odhadnutý průměr skupiny. Často se značí \(\hat{y}_i\). Rozdíl mezi naměřenou a odhadnutou hodnotou je residuum.
   usage: |
     - V R: `fitted(model)` nebo `predict(model)` pro data použitá při fitování.
-    - Pro nové nebo dosud nepozorované případy používáme termín **predikovaná hodnota**.
-  synonyms: "*Fitovaná hodnota*; v kurzu preferujeme **odhadnutá hodnota** pro pozorování použitá k odhadu modelu."
+    - Pro nové nebo dosud nepozorované případy používáme termín [predikce](#predikce) (predikovaná hodnota).
+    - V konkrétním textu může stát „odhadnutá výška“, „odhadnuté čekání“ apod.; samotné „odhad“ ani „předpověď“ pro ni nepoužíváme.
+    - Čáru tvořenou odhadnutými hodnotami nazýváme **odhadnutá přímka**.
+  synonyms: "*Fitovaná hodnota* (anglicky *fitted value*); v kurzu preferujeme **odhadnutá hodnota** pro pozorování použitá k odhadu modelu."
+  avoid: "predikovaná hodnota (pro pozorování použitá k fitování); fitted hodnota"
   see_also:
     - "odhad"
     - "residuum"
@@ -1063,9 +1130,10 @@
   usage: |
     - V R: `hatvalues(model)`.
     - Pákový efekt nemá jednotky.
-    - Velký pákový efekt sám neznamená problém; silně vlivné bývá hlavně pozorování, které má zároveň velké residuum (viz [Cookova vzdálenost](#cookova-vzdalenost)).
-  synonyms: "Anglicky *leverage*; v R také *hat values*."
+    - Velký pákový efekt sám neznamená problém; [vlivné](#vlivne-pozorovani) bývá hlavně pozorování, které má zároveň velké residuum (viz [Cookova vzdálenost](#cookova-vzdalenost)).
+  synonyms: "Anglicky *leverage*; v R také *hat values*. Obrazně „dlouhá páka“."
   see_also:
+    - "vlivne-pozorovani"
     - "cookova-vzdalenost"
     - "prediktor"
     - "odlehla-pozorovani"
@@ -1076,17 +1144,18 @@
   en: "confidence band"
   def_short: "Pás kolem odhadnuté přímky, který pro každou hodnotu prediktoru ukazuje interval spolehlivosti pro průměrnou hodnotu odezvy; neukazuje, kde leží 95 % pozorování."
   def_full: |
-    Pás kolem odhadnuté přímky (nebo křivky) modelu. Pro každou hodnotu prediktoru ukazuje interval spolehlivosti pro **průměrnou** hodnotu odezvy, kterou model odhaduje. Vyjadřuje tedy nejistotu polohy průměrného trendu, nikoli rozptýlení jednotlivých pozorování kolem něj. U lineárního modelu s jedním numerickým prediktorem je pás nejužší u průměrné hodnoty prediktoru a směrem k okrajům se rozšiřuje, protože nejistota sklonu se tam projeví nejvíc.
+    Pás kolem odhadnuté přímky (nebo křivky) modelu. Pro každou hodnotu prediktoru ukazuje interval spolehlivosti pro **průměrnou** hodnotu odezvy, kterou model odhaduje. Vyjadřuje tedy nejistotu polohy [průměrného trendu](#prumerny-trend), nikoli rozptýlení jednotlivých pozorování kolem něj. U lineárního modelu s jedním numerickým prediktorem je pás nejužší u průměrné hodnoty prediktoru a směrem k okrajům se rozšiřuje, protože nejistota sklonu se tam projeví nejvíc.
   usage: |
     - V R: `predict(model, newdata = ..., interval = "confidence")` vrací sloupce `fit`, `lwr` a `upr`; v `{ggplot2}` jej vykreslí `geom_smooth(method = "lm", se = TRUE)`.
     - Většina pozorování obvykle leží **mimo** pás; to není chyba modelu.
-    - Rozsah pro jedno nové pozorování musí zahrnout i jeho rozptýlení kolem trendu, a je proto širší (anglicky *prediction interval*).
-  synonyms: "Anglicky *confidence band*; v grafech také *pás nejistoty* (neformálně)."
+    - Rozsah pro jedno nové pozorování musí zahrnout i jeho rozptýlení kolem trendu, a je proto širší ([predikční interval](#predikcni-interval)).
+  synonyms: "Anglicky *confidence band*. Neformální *pás nejistoty* v kurzu nepoužíváme; píšeme **pás spolehlivosti**."
   see_also:
     - "interval-spolehlivosti"
-    - "odhadnuta-hodnota"
+    - "prumerny-trend"
+    - "predikcni-interval"
     - "nejistota"
-  avoid: "konfidenční pás"
+  avoid: "konfidenční pás; pás nejistoty"
 
 - id: "pokryti-intervalu"
   cz: "Pokrytí intervalu"
@@ -1097,6 +1166,7 @@
   usage: |
     - Vyšší požadované pokrytí při stejných datech vede k širším intervalům.
     - Pokrytí hodnotíme napříč mnoha intervaly, ne jako vlastnost jediného realizovaného intervalu.
+    - V simulacích říkáme, že interval skutečnou hodnotu „zachytil“; podíl takových intervalů pojmenujeme jako **pokrytí**.
   see_also:
     - "hladina-spolehlivosti"
     - "interval-spolehlivosti"
@@ -1166,20 +1236,23 @@
     - "sloupcovy-graf"
 
 - id: "rezidualni-smerodatna-odchylka"
-  cz: "Reziduální směrodatná odchylka"
+  cz: "Residuální směrodatná odchylka"
   en: "residual standard error (RSE), residual standard deviation"
   def_short: "Odhad typické velikosti residuí v jednotkách odezvy; popisuje rozptýlení pozorování kolem hodnot odhadnutých modelem."
   def_full: |
-    Odhad typické velikosti residuí v jednotkách odezvy. V lineárním modelu se získá jako odmocnina součtu čtverců residuí děleného příslušným počtem stupňů volnosti. Popisuje, jak daleko bývají pozorované hodnoty od hodnot odhadnutých modelem.
+    Odhad typické velikosti residuí v jednotkách odezvy, značený \(\hat{\sigma}\). V lineárním modelu se získá jako odmocnina [součtu čtverců residuí](#soucet-ctvercu-residui) (RSS) děleného residuálními stupni volnosti (u přímky n − 2). Popisuje, jak daleko bývají pozorované hodnoty od hodnot odhadnutých modelem.
   usage: |
-    - V R se ve výstupu `summary(lm(...))` označuje jako `Residual standard error`.
-    - Není to standardní chyba koeficientu: RSE popisuje residuální rozptýlení, zatímco SE koeficientu přesnost jeho odhadu.
-  synonyms: "*Reziduální standardní chyba* je doslovný překlad RSE; v kurzu preferujeme **reziduální směrodatná odchylka**, protože jde o odhad směrodatné odchylky residuí."
+    - V R se ve výstupu `summary(lm(...))` označuje jako `Residual standard error`; samotnou hodnotu vrací `sigma(model)`.
+    - Při prvním použití v každé části textu uvádíme český termín spolu s popiskem z výstupu R: „residuální směrodatná odchylka (ve výstupu R *Residual standard error*, RSE)“. Dále lze používat český termín nebo zkratku RSE.
+    - Není to standardní chyba koeficientu: residuální směrodatná odchylka popisuje rozptýlení residuí, zatímco SE koeficientu přesnost jeho odhadu. Anglický popisek z R je zavádějící; nápověda `?sigma` ho sama označuje za nepřesný název (*misnomer*), který se v R jen historicky drží.
+    - V jednoduchém výkladu lze termín doplnit opisem „typická velikost residua“.
+  synonyms: "*Residuální standardní chyba* je doslovný překlad popisku z R; v kurzu preferujeme **residuální směrodatná odchylka**, protože jde o odhad směrodatné odchylky residuí. Také *směrodatná odchylka residuí*."
   see_also:
     - "residuum"
     - "soucet-ctvercu-residui"
     - "standardni-chyba"
     - "stupne-volnosti"
+  avoid: "reziduální směrodatná odchylka (pravopis se z); residuální standardní chyba"
 
 - id: "sloupcovy-graf"
   cz: "Sloupcový graf"
@@ -1199,21 +1272,23 @@
     - "histogram"
 
 - id: "soucet-ctvercu-residui"
-  cz: "Součet čtverců residuí"
-  en: "residual sum of squares (RSS), sum of squared errors (SSE)"
-  def_short: "Součet druhých mocnin všech residuí; vyjadřuje celkovou čtvercovou odchylku pozorovaných hodnot od hodnot odhadnutých modelem."
+  cz: "Součet čtverců residuí (RSS)"
+  en: "residual sum of squares (RSS)"
+  def_short: "Součet druhých mocnin všech residuí (RSS); vyjadřuje celkovou čtvercovou odchylku pozorovaných hodnot od hodnot odhadnutých modelem."
   def_full: |
-    Součet druhých mocnin všech residuí. Každé residuum je rozdíl mezi pozorovanou a odhadnutou hodnotou; umocnění zabrání rušení kladných a záporných rozdílů a více zvýrazní velké odchylky. Metoda nejmenších čtverců volí parametry lineárního modelu tak, aby byl tento součet co nejmenší.
+    Součet druhých mocnin všech residuí. Každé residuum je rozdíl mezi pozorovanou a odhadnutou hodnotou; umocnění zabrání rušení kladných a záporných rozdílů a více zvýrazní velké odchylky. [Metoda nejmenších čtverců](#metoda-nejmensich-ctvercu) volí parametry lineárního modelu tak, aby byl tento součet co nejmenší.
   usage: |
-    - Zkratka **RSS** odpovídá *residual sum of squares* a je v kurzu preferovaná.
-    - Zkratka **SSE** (*sum of squared errors*) se často používá pro stejný výpočet; zde „error“ označuje residuum, nikoli známou chybu měření.
+    - V kurzu používáme zkratku **RSS** (*residual sum of squares*); stejně ji označuje i R ve výstupu `anova(m1, m2)`. Hodnotu vrací `deviance(model)` nebo `sum(residuals(model)^2)`.
+    - Ve vzorcích s jinými součty čtverců ji lze zapsat i jako \(SS_{\mathrm{res}}\).
     - Hodnota je v druhé mocnině jednotek odezvy a roste s počtem pozorování, proto ji neporovnáváme bez kontextu.
-  synonyms: "*Reziduální součet čtverců*, *součet čtvercových chyb*; preferujeme formulaci s residui."
+  synonyms: "Zkratka **SSE** (*sum of squared errors*) označuje v literatuře stejný výpočet; v kurzu ji nepoužíváme (snadno se plete se SE). *Residuální součet čtverců*, *součet čtvercových chyb*; preferujeme formulaci s residui."
   see_also:
     - "residuum"
-    - "odhadnuta-hodnota"
+    - "celkovy-soucet-ctvercu"
+    - "metoda-nejmensich-ctvercu"
     - "rezidualni-smerodatna-odchylka"
-    - "linearni-model"
+    - "r2"
+  avoid: "SSE"
 
 - id: "spojita-promenna"
   cz: "Spojitá proměnná"
@@ -1236,13 +1311,17 @@
   def_full: |
     Soubor pozorování použitý pro výpočet statistik a odhadů. Výběr obvykle představuje jen část širší populace nebo procesu, o kterém chceme něco zjistit. Způsob získání výběru rozhoduje o tom, kam lze výsledky zobecnit; označení „výběr“ samo o sobě neznamená, že pozorování byla vybrána náhodně.
   usage: |
-    - Česky se používá také **výběrový soubor** nebo méně formálně **vzorek**.
-    - Velikost výběru se často značí \(n\).
-  synonyms: "*Výběrový soubor*, *vzorek*; anglicky *sample*."
+    - Česky se používá také **výběrový soubor**.
+    - Velikost výběru se často značí \(n\); v textu píšeme „velikost výběru“ nebo „počet pozorování“.
+    - Slovo *vzorek* ponecháváme pro fyzické vzorky (vzorek vody, horniny); pro statistický výběr ho nepoužíváme.
+  synonyms: "*Výběrový soubor*; anglicky *sample*. Hovorově *vzorek*."
   see_also:
     - "pozorovani"
+    - "populace"
+    - "nahodny-vyber"
     - "odhad"
     - "vyberova-variabilita"
+  avoid: "vzorek (pro statistický výběr)"
 
 - id: "vyberova-variabilita"
   cz: "Výběrová variabilita"
@@ -1259,3 +1338,761 @@
     - "variabilita"
     - "standardni-chyba"
     - "pokryti-intervalu"
+
+# ----------------------------------------------------------------
+# Hesla doplněná podle terminologické revize kurzu (2026-10-20)
+# ----------------------------------------------------------------
+
+- id: "absolutni-hodnota"
+  cz: "Absolutní hodnota"
+  en: "absolute value"
+  def_short: "Velikost čísla bez ohledu na znaménko; zapisuje se |x|, například |−3| = 3."
+  def_full: |
+    Velikost čísla bez ohledu na znaménko, zapisovaná |x|. Absolutní hodnota kladného čísla je číslo samo, absolutní hodnota záporného čísla je číslo s opačným znaménkem, například |−3| = 3.
+  usage: |
+    - Používáme, když nás zajímá velikost odchylky, ne její směr: např. „největší residuum v absolutní hodnotě“.
+    - V R: `abs(x)`.
+  see_also:
+    - "residuum"
+
+- id: "aditivni-model"
+  cz: "Aditivní model"
+  en: "additive model (model without interaction)"
+  def_short: "Model s více prediktory bez interakce: příspěvky prediktorů se sčítají, takže vztah odezvy k jednomu prediktoru je stejný při všech hodnotách ostatních."
+  def_full: |
+    Lineární model s více prediktory, jejichž příspěvky se k odezvě pouze sčítají; neobsahuje [interakci](#interakce-predikatoru). Vztah odezvy k jednomu prediktoru je proto stejný při všech hodnotách ostatních prediktorů. S numerickým a kategoriálním prediktorem dává rovnoběžné přímky pro jednotlivé skupiny.
+  usage: |
+    - V R: `lm(y ~ x1 + x2)`.
+    - Koeficient každého prediktoru popisuje vztah při stejné hodnotě ostatních prediktorů.
+    - Srovnáváme ho s modelem s interakcí (`y ~ x1 * x2`).
+  synonyms: "*Model bez interakce*. Nezaměňovat s *generalizovaným aditivním modelem* (GAM), který je mimo rozsah kurzu."
+  see_also:
+    - "interakce-predikatoru"
+    - "hlavni-efekt"
+    - "vnorene-modely"
+
+- id: "adjustovane-r2"
+  cz: "Adjustované R²"
+  en: "adjusted R-squared"
+  def_short: "Úprava R², která přihlíží k počtu pozorování a koeficientů; na rozdíl od obyčejného R² může po přidání zbytečného koeficientu klesnout."
+  def_full: |
+    Úprava [koeficientu determinace](#r2), která přihlíží k počtu pozorování a odhadovaných koeficientů. Obyčejné R² se po přidání koeficientu nikdy nezmenší; adjustované R² vzroste jen tehdy, když nový koeficient zachytí víc variability, než by se dalo čekat od náhodného prediktoru.
+  usage: |
+    - Ve výstupu `summary(lm(...))` jako `Adjusted R-squared`.
+    - Hodí se pro hrubé srovnání modelů s různým počtem koeficientů na stejných datech; nemá interpretaci jako podíl zachycené variability.
+  synonyms: "*Upravené R²*, anglicky *adjusted R²*."
+  see_also:
+    - "r2"
+    - "aic"
+    - "porovnani-modelu"
+
+- id: "alternativni-hypoteza"
+  cz: "Alternativní hypotéza"
+  en: "alternative hypothesis (H_A)"
+  def_short: "Tvrzení, které připouští to, co nulová hypotéza vylučuje - typicky 'efekt není nulový' nebo 'skupiny se liší'; značí se H_A."
+  def_full: |
+    Tvrzení, které připouští to, co [nulová hypotéza](#nulova-hypoteza) vylučuje - typicky „sklon není nulový“ nebo „skupiny se v průměru liší“. Test hodnotí, jak dobře jsou data slučitelná s nulovou hypotézou; alternativa tím není přímo dokázána.
+  usage: |
+    - Zápis v kurzu: $H_A$; v komentářích R kódu HA.
+    - V kurzu pracujeme s oboustrannou alternativou („liší se“, ne „je větší“), pokud není řečeno jinak.
+  synonyms: "*H₁*, *Hₐ* v jiných textech; v kurzu píšeme $H_A$."
+  see_also:
+    - "nulova-hypoteza"
+    - "p-hodnota"
+    - "sila-testu"
+
+- id: "celkovy-soucet-ctvercu"
+  cz: "Celkový součet čtverců"
+  en: "total sum of squares (SST)"
+  def_short: "Součet druhých mocnin odchylek pozorovaných hodnot odezvy od jejich průměru; popisuje celkovou variabilitu odezvy před použitím prediktorů."
+  def_full: |
+    Součet druhých mocnin odchylek pozorovaných hodnot odezvy od jejich průměru. Popisuje celkovou variabilitu odezvy předtím, než použijeme jakýkoli prediktor; je to [součet čtverců residuí](#soucet-ctvercu-residui) [nulového modelu](#nulovy-model), který předpovídá všem pozorováním průměr.
+  usage: |
+    - Ve vzorcích značíme \(SS_{\mathrm{total}}\); [R²](#r2) = 1 − RSS / SS_total.
+    - V analýze rozptylu se rozkládá na součet čtverců mezi skupinami a součet čtverců uvnitř skupin (= RSS modelu se skupinami).
+  synonyms: "Anglicky *total sum of squares*, zkratka *SST* nebo *TSS*; v kurzu píšeme celý český název nebo \\(SS_{\\mathrm{total}}\\)."
+  see_also:
+    - "soucet-ctvercu-residui"
+    - "r2"
+    - "anova"
+    - "prumerny-ctverec"
+
+- id: "centrovani"
+  cz: "Centrování"
+  en: "centring"
+  def_short: "Odečtení průměru (nebo jiné zvolené hodnoty) od všech hodnot proměnné; posune polohu, ale nezmění tvar rozdělení ani rozptyl."
+  def_full: |
+    Odečtení průměru (nebo jiné zvolené referenční hodnoty) od všech hodnot proměnné. Nula pak znamená „průměrné“ pozorování. Centrování mění jen polohu: tvar rozdělení, rozptyl i sklon v lineárním modelu zůstávají stejné, mění se však význam interceptu.
+  usage: |
+    - Centrováním prediktoru získá intercept smysluplný výklad (odezva při průměrné hodnotě prediktoru).
+    - V R: `x - mean(x)`.
+  see_also:
+    - "z-skore"
+    - "intercept"
+    - "transformace"
+
+- id: "chyba-i-typu"
+  cz: "Chyba I. typu"
+  en: "type I error (false positive)"
+  def_short: "Zamítnutí nulové hypotézy, která ve skutečnosti platí; její pravděpodobnost je rovna zvolené hladině významnosti α."
+  def_full: |
+    Zamítnutí [nulové hypotézy](#nulova-hypoteza), která ve skutečnosti platí - tedy „nalezení“ efektu, který neexistuje. Pravděpodobnost chyby I. typu je dána zvolenou [hladinou významnosti](#hladina-vyznamnosti) α.
+  usage: |
+    - Při mnoha testech roste šance na alespoň jednu chybu I. typu ([mnohonásobné testování](#mnohonasobne-testovani)).
+  synonyms: "*Falešně pozitivní výsledek*. V kurzu píšeme **chyba I. typu** (ne *chyba I. druhu*)."
+  see_also:
+    - "chyba-ii-typu"
+    - "hladina-vyznamnosti"
+    - "mnohonasobne-testovani"
+  avoid: "chyba I. druhu, chyba I. stupně"
+
+- id: "chyba-ii-typu"
+  cz: "Chyba II. typu"
+  en: "type II error (false negative)"
+  def_short: "Nezamítnutí nulové hypotézy, která ve skutečnosti neplatí - test skutečný efekt nezachytí; její pravděpodobnost se značí β."
+  def_full: |
+    Nezamítnutí [nulové hypotézy](#nulova-hypoteza), která ve skutečnosti neplatí - test skutečný efekt nezachytí. Pravděpodobnost chyby II. typu se značí β a závisí na velikosti efektu, velikosti výběru, variabilitě dat a hladině α. Doplněk 1 − β je [síla testu](#sila-testu).
+  usage: |
+    - Statisticky nevýznamný výsledek proto neznamená, že efekt neexistuje.
+  synonyms: "*Falešně negativní výsledek*. V kurzu píšeme **chyba II. typu** (ne *chyba II. druhu*)."
+  see_also:
+    - "chyba-i-typu"
+    - "sila-testu"
+    - "hladina-vyznamnosti"
+  avoid: "chyba II. druhu, chyba II. stupně"
+
+- id: "collider"
+  cz: "Společný následek (collider)"
+  en: "collider (common effect)"
+  def_short: "Proměnná, kterou ovlivňují dvě jiné proměnné zároveň; zahrneme-li ji do modelu, může mezi nimi vytvořit zdánlivý vztah."
+  def_full: |
+    Proměnná, která je společným následkem dvou jiných proměnných (A → C ← B). Když ji zahrneme do modelu jako prediktor nebo podle ní vybereme data, může mezi A a B vzniknout zdánlivý vztah, který ve skutečnosti neexistuje. Na rozdíl od [matoucí proměnné](#konfundovani) ji proto do modelu nepřidáváme.
+  usage: |
+    - O zahrnutí prediktoru rozhoduje předpokládaná příčinná struktura, ne jen to, zda „zlepší model“.
+  synonyms: "Anglicky *collider*; česky *společný následek*."
+  see_also:
+    - "konfundovani"
+    - "mediator"
+    - "pricinnost"
+
+- id: "delta-aic"
+  cz: "ΔAIC (rozdíl AIC)"
+  en: "delta AIC"
+  def_short: "Rozdíl AIC daného kandidátního modelu od nejnižšího AIC v porovnávané sadě; nejlepší model má ΔAIC = 0."
+  def_full: |
+    Rozdíl [AIC](#aic) daného kandidátního modelu od nejnižšího AIC v porovnávané sadě: ΔAIC = AIC − AIC_min. Nejlépe hodnocený model má ΔAIC = 0. Samotné hodnoty AIC nemají smysl; porovnáváme jen rozdíly mezi modely odhadnutými na stejných datech.
+  usage: |
+    - Malé rozdíly znamenají, že data mezi modely příliš nerozlišují; v kurzu nepoužíváme univerzální hranici (např. „ΔAIC > 2“) jako mechanické pravidlo.
+  synonyms: "*Delta AIC*. AIC je v češtině středního rodu: *nejnižší AIC*."
+  see_also:
+    - "aic"
+    - "kandidatni-model"
+    - "porovnani-modelu"
+
+- id: "deskriptivni-statistika"
+  cz: "Deskriptivní statistika"
+  en: "descriptive statistics"
+  def_short: "Číselné a grafické shrnutí dat, které popisuje jejich polohu, variabilitu a tvar, aniž by z nich vyvozovalo závěry o širší populaci."
+  def_full: |
+    Číselné a grafické shrnutí pozorovaných dat: míry polohy (průměr, medián), míry variability (SD, IQR), četnosti a grafy. Popisuje data, která máme; nevyvozuje z nich závěry o širší [populaci](#populace) ani neodhaduje nejistotu - to je úkolem statistické inference.
+  usage: |
+    - Jednotlivým číslům říkáme *deskriptivní statistiky* (např. průměr a SD).
+  synonyms: "*Popisná statistika*; obojí je správně, v kurzu preferujeme **deskriptivní statistika**."
+  see_also:
+    - "prumer"
+    - "median"
+    - "smerodatna-odchylka"
+    - "iqr"
+
+- id: "extrapolace"
+  cz: "Extrapolace"
+  en: "extrapolation"
+  def_short: "Použití modelu pro hodnoty prediktoru mimo rozsah pozorovaných dat; tvar vztahu tam nemáme ověřený, a predikce proto může být zavádějící."
+  def_full: |
+    Použití modelu pro hodnoty prediktoru (nebo kombinace prediktorů) mimo rozsah, který pokrývají pozorovaná data. Mimo tento rozsah nevíme, zda vztah pokračuje stejným tvarem, a [pás spolehlivosti](#pas-spolehlivosti) navíc rychle roste. Opakem je *interpolace* - predikce uvnitř rozsahu dat.
+  usage: |
+    - Před [predikcí](#predikce) vždy zkontrolujeme rozsah pozorovaných hodnot prediktorů.
+  see_also:
+    - "predikce"
+    - "pas-spolehlivosti"
+    - "nelinearita"
+
+- id: "geometricky-prumer"
+  cz: "Geometrický průměr"
+  en: "geometric mean"
+  def_short: "n-tá odmocnina součinu n kladných hodnot; odpovídá zpětně transformovanému průměru logaritmů a hodí se pro násobné, pravostranně šikmé veličiny."
+  def_full: |
+    n-tá odmocnina součinu n kladných hodnot. Ekvivalentně: zpětně transformovaný (exponenciální) průměr logaritmů hodnot. Hodí se pro násobné veličiny a pravostranně [šikmá](#sikmost) data; je vždy menší nebo roven aritmetickému průměru.
+  usage: |
+    - Po logaritmické transformaci odezvy popisuje zpětně převedený intercept nebo průměr právě geometrický průměr na původní škále.
+    - V R: `exp(mean(log(x)))`.
+  see_also:
+    - "prumer"
+    - "transformace"
+    - "logaritmicka-skala"
+
+- id: "graf-hustoty"
+  cz: "Graf hustoty"
+  en: "density plot"
+  def_short: "Vyhlazená křivka zobrazující rozdělení numerické proměnné; plocha pod křivkou je 1, takže výška ukazuje relativní hustotu hodnot, ne počet."
+  def_full: |
+    Vyhlazená křivka, která zobrazuje [rozdělení](#rozdeleni) numerické proměnné jako spojitou obdobu [histogramu](#histogram). Plocha pod křivkou je rovna 1; výška křivky proto ukazuje, kde jsou hodnoty relativně nahuštěné, nikoli jejich počet. Tvar závisí na zvolené šířce vyhlazení.
+  usage: |
+    - V R: `plot(density(x))` nebo `ggplot2::geom_density()`.
+    - Hodí se pro srovnání tvaru rozdělení několika skupin v jednom grafu.
+  see_also:
+    - "histogram"
+    - "houslovy-graf"
+    - "rozdeleni"
+
+- id: "graf-jednotlivych-hodnot"
+  cz: "Graf jednotlivých hodnot"
+  en: "dot plot, strip plot, beeswarm plot"
+  def_short: "Graf jedné numerické proměnné (případně po skupinách), v němž je každá hodnota vykreslena jako samostatný bod podél jedné osy."
+  def_full: |
+    Graf jedné numerické proměnné, případně rozdělené do skupin, v němž je každé pozorování vykresleno jako samostatný bod podél jedné osy. Body se mohou náhodně rozptýlit (*jitter*) nebo rozestoupit (*beeswarm*), aby se nepřekrývaly. Na rozdíl od [bodového grafu](#bodovy-graf) nezobrazuje vztah dvou proměnných.
+  usage: |
+    - Vhodný pro malé soubory dat; ukazuje všechna pozorování, ne jen souhrn.
+    - V R: `ggplot2::geom_jitter()` nebo balíček `ggbeeswarm`.
+  synonyms: "Anglicky *dot plot*, *strip plot*, *beeswarm plot*. Pro tento graf nepoužíváme název *bodový graf*."
+  see_also:
+    - "bodovy-graf"
+    - "boxplot"
+    - "houslovy-graf"
+
+- id: "graf-residui"
+  cz: "Graf residuí"
+  en: "residual plot (residuals vs fitted)"
+  def_short: "Diagnostický bodový graf residuí proti odhadnutým hodnotám (nebo prediktoru); vzor v něm ukazuje na nelinearitu nebo nekonstantní rozptyl."
+  def_full: |
+    Diagnostický [bodový graf](#bodovy-graf), v němž je na svislé ose [residuum](#residuum) a na vodorovné ose [odhadnutá hodnota](#odhadnuta-hodnota) (nebo prediktor). Pokud model sedí, tvoří residua kolem nuly vodorovný pás bez vzoru. Oblouk ukazuje na [nelinearitu](#nelinearita), vějíř na [heteroskedasticitu](#heteroskedasticita).
+  usage: |
+    - V R: první graf z `plot(model)` (*Residuals vs Fitted*).
+    - Popisujeme ho jako „graf residuí proti odhadnutým hodnotám“ (residua na svislé ose).
+  see_also:
+    - "residuum"
+    - "diagnostika-modelu"
+    - "heteroskedasticita"
+    - "nelinearita"
+
+- id: "hierarchicky-princip-modelu"
+  cz: "Hierarchický princip modelu"
+  en: "hierarchy principle (marginality principle)"
+  def_short: "Pravidlo, že model s interakcí má obsahovat i hlavní efekty všech prediktorů, které v interakci vystupují."
+  def_full: |
+    Pravidlo, že model s [interakcí](#interakce-predikatoru) má obsahovat i [hlavní efekty](#hlavni-efekt) všech prediktorů, které v interakci vystupují. Bez nich by interakční koeficient měnil význam a závisel na tom, kde leží nula prediktorů. V R ho automaticky splňuje zápis s hvězdičkou: `y ~ x1 * x2` = `x1 + x2 + x1:x2`.
+  usage: |
+    - Hlavní efekt neodstraňujeme jen proto, že sám o sobě vychází „nevýznamně“, pokud je v modelu jeho interakce.
+  synonyms: "Anglicky *hierarchy principle* nebo *marginality principle*."
+  see_also:
+    - "interakce-predikatoru"
+    - "hlavni-efekt"
+
+- id: "hlavni-efekt"
+  cz: "Hlavní efekt"
+  en: "main effect"
+  def_short: "Člen modelu pro jeden prediktor samotný (např. x1 v y ~ x1 * x2); v modelu s interakcí popisuje efekt prediktoru v referenční situaci druhého prediktoru."
+  def_full: |
+    Člen modelu pro jeden prediktor samotný, na rozdíl od interakčního členu. V [aditivním modelu](#aditivni-model) popisuje vztah prediktoru k odezvě při stejné hodnotě ostatních prediktorů. V modelu s [interakcí](#interakce-predikatoru) popisuje efekt prediktoru jen v referenční situaci druhého prediktoru (v referenční skupině nebo při jeho nulové hodnotě).
+  usage: |
+    - V kurzu píšeme **hlavní efekt**; jeho odhad je hlavní koeficient.
+  synonyms: "*Hlavní člen* (pro člen modelu); anglicky *main effect*."
+  see_also:
+    - "interakce-predikatoru"
+    - "hierarchicky-princip-modelu"
+    - "aditivni-model"
+    - "referencni-skupina"
+
+- id: "homoskedasticita"
+  cz: "Homoskedasticita"
+  en: "homoscedasticity (constant variance)"
+  def_short: "Předpoklad lineárního modelu, že rozptyl residuí je stejný pro všechny odhadnuté hodnoty (a skupiny); v grafu residuí tvoří vodorovný pás stejné šířky."
+  def_full: |
+    Předpoklad lineárního modelu, že rozptyl residuí je stejný pro všechny odhadnuté hodnoty a všechny skupiny. V [grafu residuí](#graf-residui) se projeví jako vodorovný pás bodů přibližně stejné šířky. Porušení se nazývá [heteroskedasticita](#heteroskedasticita).
+  usage: |
+    - Kontrolujeme graficky; formální testy v kurzu nepoužíváme.
+  synonyms: "*Konstantní rozptyl residuí*, *shodné rozptyly skupin*."
+  see_also:
+    - "heteroskedasticita"
+    - "graf-residui"
+    - "diagnostika-modelu"
+    - "welchuv-t-test"
+
+- id: "houslovy-graf"
+  cz: "Houslový graf"
+  en: "violin plot"
+  def_short: "Graf rozdělení numerické proměnné v jedné nebo více skupinách, který zrcadlově kreslí graf hustoty; šířka 'houslí' ukazuje, kde jsou hodnoty nahuštěné."
+  def_full: |
+    Graf rozdělení numerické proměnné v jedné nebo více skupinách. Každá skupina je zobrazena zrcadlově vykresleným [grafem hustoty](#graf-hustoty); šířka tvaru („houslí“) ukazuje, kde jsou hodnoty nahuštěné. Na rozdíl od [krabicového grafu](#boxplot) ukazuje i vícevrcholová rozdělení.
+  usage: |
+    - Často se kombinuje s krabicovým grafem nebo jednotlivými body.
+    - V R: `ggplot2::geom_violin()`.
+  synonyms: "Anglicky *violin plot*; v kurzu píšeme **houslový graf**."
+  see_also:
+    - "graf-hustoty"
+    - "boxplot"
+    - "graf-jednotlivych-hodnot"
+
+- id: "kandidatni-model"
+  cz: "Kandidátní model"
+  en: "candidate model"
+  def_short: "Jeden z malé sady modelů, které před analýzou formulujeme podle biologických hypotéz a pak porovnáme na stejných datech."
+  def_full: |
+    Jeden z malé sady modelů, které formulujeme předem podle biologických hypotéz a pak porovnáme na stejných datech se stejnou odezvou, například pomocí [AIC](#aic). Každý kandidát odpovídá jiné představě o tom, jak data vznikla (např. společná přímka, posun mezi druhy, různé sklony).
+  usage: |
+    - Sadu kandidátů určujeme před pohledem na výsledky; automatické prohledávání všech kombinací prediktorů nepoužíváme.
+  synonyms: "*Sada kandidátů*, *kandidátní modely*."
+  see_also:
+    - "porovnani-modelu"
+    - "aic"
+    - "delta-aic"
+    - "princip-uspornosti"
+
+- id: "kvadraticky-clen"
+  cz: "Kvadratický člen"
+  en: "quadratic term"
+  def_short: "Druhá mocnina prediktoru přidaná do lineárního modelu (např. y ~ x + I(x^2)); umožní popsat oblouk, a model přitom zůstane lineární v koeficientech."
+  def_full: |
+    Druhá mocnina prediktoru přidaná do lineárního modelu. Umožní popsat zakřivený vztah ve tvaru oblouku ([nelinearita](#nelinearita)); model přitom zůstává [lineárním modelem](#linearni-model), protože je lineární v koeficientech.
+  usage: |
+    - V R: `lm(y ~ x + I(x^2))`.
+    - Koeficienty jednotlivých členů se samostatně špatně vykládají; vztah ukazujeme grafem odhadnuté křivky.
+  see_also:
+    - "nelinearita"
+    - "linearni-model"
+    - "transformace"
+
+- id: "kvartil"
+  cz: "Kvartil"
+  en: "quartile"
+  def_short: "Tři hodnoty, které dělí seřazená data na čtyři stejně početné části: dolní kvartil (Q₁, 25 %), medián (Q₂, 50 %) a horní kvartil (Q₃, 75 %)."
+  def_full: |
+    Tři hodnoty, které dělí seřazená data na čtyři stejně početné části: **dolní kvartil** Q₁ (25% [kvantil](#kvantil)), [medián](#median) Q₂ (50% kvantil) a **horní kvartil** Q₃ (75% kvantil). Rozdíl Q₃ − Q₁ je [mezikvartilové rozpětí](#iqr).
+  usage: |
+    - V kurzu píšeme „dolní/horní kvartil“ a symboly Q₁, Q₃ (v prostém textu Q1, Q3).
+    - V R: `quantile(x, probs = c(0.25, 0.5, 0.75))`.
+  synonyms: "*První/třetí kvartil* = dolní/horní kvartil."
+  see_also:
+    - "kvantil"
+    - "median"
+    - "iqr"
+    - "boxplot"
+
+- id: "logaritmicka-skala"
+  cz: "Logaritmická škála"
+  en: "logarithmic scale (log scale)"
+  def_short: "Škála, na níž stejné vzdálenosti odpovídají stejným násobkům (např. 1, 10, 100); hodí se pro hodnoty rozprostřené přes několik řádů a pro násobné vztahy."
+  def_full: |
+    Škála, na níž stejné vzdálenosti odpovídají stejným násobkům, například 1, 10, 100 nebo 1, 2, 4, 8. Hodí se pro kladné hodnoty rozprostřené přes několik řádů a pro násobné vztahy. Graf s logaritmickou osou zobrazuje stejná data jako graf logaritmicky [transformovaných](#transformace) hodnot, ale popisky os ponechává v původních jednotkách.
+  usage: |
+    - V grafu mluvíme o **logaritmické ose**; obecně o **logaritmické škále**. Slovo *měřítko* rezervujeme pro změnu jednotek a rozpětí (poloha a měřítko).
+    - V R: `ggplot2::scale_x_log10()` / `scale_y_log10()`, nebo transformace `log()`.
+  synonyms: "*Logaritmická osa* (v kontextu grafu)."
+  see_also:
+    - "transformace"
+    - "geometricky-prumer"
+    - "sikmost"
+  avoid: "logaritmické měřítko"
+
+- id: "mediator"
+  cz: "Mediátor (prostřední článek)"
+  en: "mediator"
+  def_short: "Proměnná, přes kterou prediktor ovlivňuje odezvu (A → M → Y); zahrneme-li ji do modelu, koeficient prediktoru popisuje už jen přímou cestu."
+  def_full: |
+    Proměnná, přes kterou prediktor ovlivňuje odezvu (A → M → Y), tedy prostřední článek příčinného řetězce. Když mediátor zahrneme do modelu, koeficient prediktoru A popisuje už jen přímou cestu, která přes M nevede; celkový účinek A tím podhodnotíme. Zda mediátor do modelu zahrnout, proto závisí na otázce, kterou klademe.
+  usage: |
+    - Příklad: hnojení → obsah dusíku v listu → růst.
+  synonyms: "*Prostřední článek*, *zprostředkující proměnná*."
+  see_also:
+    - "konfundovani"
+    - "collider"
+    - "pricinnost"
+
+- id: "metoda-nejmensich-ctvercu"
+  cz: "Metoda nejmenších čtverců"
+  en: "least squares, ordinary least squares (OLS)"
+  def_short: "Postup, který volí koeficienty modelu tak, aby byl součet čtverců residuí (RSS) co nejmenší; takto odhaduje koeficienty funkce lm()."
+  def_full: |
+    Postup odhadu koeficientů, který vybere tu přímku (nebo obecně ty koeficienty), pro kterou je [součet čtverců residuí](#soucet-ctvercu-residui) co nejmenší. Takto odhaduje koeficienty funkce `lm()`.
+  synonyms: "Anglicky *least squares*, *ordinary least squares* (OLS)."
+  see_also:
+    - "soucet-ctvercu-residui"
+    - "linearni-model"
+    - "residuum"
+
+- id: "mnohonasobne-testovani"
+  cz: "Mnohonásobné testování"
+  en: "multiple testing, multiple comparisons"
+  def_short: "Situace, kdy provádíme mnoho testů najednou; s počtem testů roste šance, že alespoň jeden vyjde statisticky významně jen náhodou."
+  def_full: |
+    Situace, kdy na stejných datech provádíme mnoho testů nebo porovnání. S rostoucím počtem testů roste šance, že alespoň jeden vyjde statisticky významně jen náhodou ([chyba I. typu](#chyba-i-typu)). Úpravy p-hodnot a intervalů (např. Tukeyho úprava pro párová porovnání skupin) tuto šanci drží na zvolené hladině pro celou rodinu porovnání.
+  synonyms: "*Mnohonásobná porovnání*, *mnohonásobné porovnávání*."
+  see_also:
+    - "post-hoc-test"
+    - "simultanni-interval"
+    - "chyba-i-typu"
+
+- id: "nahodny-vyber"
+  cz: "Náhodný výběr"
+  en: "random sample"
+  def_short: "Výběr, v němž má každá jednotka populace známou (typicky stejnou) šanci být vybrána; jen u takového výběru lze výsledky zobecnit bez dalších předpokladů."
+  def_full: |
+    [Výběr](#vyber), v němž o zařazení jednotek rozhoduje náhoda, takže každá jednotka [populace](#populace) má známou (typicky stejnou) šanci být vybrána. Náhodný výběr bývá reprezentativní - jeho složení v průměru odpovídá populaci. Standardní chyby a intervaly spolehlivosti předpokládají, že se data chovají jako náhodný výběr.
+  usage: |
+    - U pozorovacích dat (např. pozorování přírodního jevu jen v určitém měsíci) posuzujeme, zda a kam lze výsledky zobecnit.
+  synonyms: "*Reprezentativní výběr* (není totéž, ale náhodný výběr k reprezentativnosti vede)."
+  see_also:
+    - "vyber"
+    - "populace"
+    - "vyberova-variabilita"
+
+- id: "normalni-rozdeleni"
+  cz: "Normální rozdělení"
+  en: "normal (Gaussian) distribution"
+  def_short: "Souměrné zvonovité pravděpodobnostní rozdělení určené průměrem a směrodatnou odchylkou; lineární model předpokládá přibližně normální rozdělení residuí."
+  def_full: |
+    Souměrné zvonovité pravděpodobnostní [rozdělení](#rozdeleni), které je určeno průměrem a směrodatnou odchylkou. Přibližně 95 % hodnot leží do vzdálenosti dvou směrodatných odchylek od průměru. [Lineární model](#linearni-model) předpokládá přibližně normální rozdělení residuí (ne samotné odezvy).
+  usage: |
+    - Normalitu residuí posuzujeme hlavně [Q–Q grafem](#qq-graf).
+  synonyms: "*Gaussovo rozdělení*."
+  see_also:
+    - "rozdeleni"
+    - "qq-graf"
+    - "t-rozdeleni"
+    - "sikmost"
+
+- id: "nulovy-model"
+  cz: "Nulový model (model bez prediktoru)"
+  en: "null model, intercept-only model"
+  def_short: "Model, který obsahuje jen intercept a všem pozorováním předpovídá průměr odezvy; slouží jako výchozí bod pro srovnání ostatních modelů."
+  def_full: |
+    Model, který obsahuje jen intercept, takže všem pozorováním předpovídá stejnou hodnotu - průměr odezvy. Jeho součet čtverců residuí je [celkový součet čtverců](#celkovy-soucet-ctvercu). Slouží jako výchozí bod pro srovnání: [R²](#r2) říká, kolik variability model zachytí navíc oproti němu.
+  usage: |
+    - V R: `lm(y ~ 1)`.
+    - V textu také „model s jediným průměrem“.
+  synonyms: "*Model bez prediktoru*, *průměrový model*, *intercept-only model*; obrazně *predikce průměrem*."
+  see_also:
+    - "celkovy-soucet-ctvercu"
+    - "r2"
+    - "porovnani-modelu"
+
+- id: "populace"
+  cz: "Populace"
+  en: "population"
+  def_short: "Celá množina jednotek nebo širší proces, o kterém chceme pomocí výběru něco zjistit; její vlastnosti (parametry) obvykle neznáme."
+  def_full: |
+    Celá množina jednotek, nebo obecněji širší proces, o kterém chceme něco zjistit. Pozorujeme z ní jen [výběr](#vyber); vlastnosti populace (parametry, např. průměr nebo sklon) proto odhadujeme. Ve statistickém smyslu nemusí jít o biologickou populaci.
+  synonyms: "*Základní soubor*; v kurzu píšeme **populace** nebo „širší proces“."
+  see_also:
+    - "vyber"
+    - "odhad"
+    - "nahodny-vyber"
+
+- id: "predikce"
+  cz: "Predikce"
+  en: "prediction"
+  def_short: "Hodnota odezvy, kterou model odhaduje pro nové pozorování nebo pro zvolenou kombinaci prediktorů, která nebyla mezi daty použitými k odhadu modelu."
+  def_full: |
+    Hodnota odezvy, kterou model odhaduje pro nové pozorování nebo pro zvolenou kombinaci hodnot prediktorů (scénář). Na rozdíl od [odhadnuté hodnoty](#odhadnuta-hodnota) se netýká pozorování použitých k odhadu modelu. Nejistotu průměrné odezvy vyjadřuje [pás spolehlivosti](#pas-spolehlivosti), nejistotu jednoho nového pozorování širší [predikční interval](#predikcni-interval).
+  usage: |
+    - V R: `predict(model, newdata = ...)`.
+    - V kurzu píšeme **predikce** (predikovaná hodnota, predikovat); *předpověď* nepoužíváme jako termín.
+    - Pozor na [extrapolaci](#extrapolace) mimo rozsah dat.
+  synonyms: "*Predikovaná hodnota*. Hovorově *předpověď*."
+  see_also:
+    - "odhadnuta-hodnota"
+    - "predikcni-interval"
+    - "extrapolace"
+    - "pas-spolehlivosti"
+  avoid: "předpověď (jako termín)"
+
+- id: "predikcni-interval"
+  cz: "Predikční interval"
+  en: "prediction interval"
+  def_short: "Interval, ve kterém při dané hodnotě prediktoru očekáváme jedno nové pozorování; je širší než interval spolehlivosti průměru, protože zahrnuje i rozptýlení kolem trendu."
+  def_full: |
+    Interval, ve kterém při dané hodnotě prediktoru očekáváme jedno nové pozorování. Zahrnuje nejistotu polohy [průměrného trendu](#prumerny-trend) i rozptýlení jednotlivých pozorování kolem něj (residuální směrodatnou odchylku). Je proto vždy širší než [pás spolehlivosti](#pas-spolehlivosti) a s rostoucím počtem pozorování se nezužuje k nule.
+  usage: |
+    - V R: `predict(model, newdata = ..., interval = "prediction")`.
+  synonyms: "Anglicky *prediction interval*; spojením intervalů přes všechny hodnoty prediktoru vzniká *predikční pás*."
+  see_also:
+    - "pas-spolehlivosti"
+    - "predikce"
+    - "rezidualni-smerodatna-odchylka"
+
+- id: "pricinnost"
+  cz: "Příčinnost (kauzalita)"
+  en: "causation, causality"
+  def_short: "Vztah, kdy změna jedné proměnné způsobí změnu druhé; samotná korelace nebo koeficient modelu z pozorovacích dat příčinnost nedokazuje."
+  def_full: |
+    Vztah, kdy změna jedné proměnné způsobí změnu druhé. Statistická souvislost ([korelace](#korelace), sklon modelu) na příčinnost ukazovat může, ale z pozorovacích dat ji sama nedokazuje: vztah může vzniknout [konfundováním](#konfundovani), obráceným směrem působení nebo výběrem dat. Příčinný závěr vyžaduje vhodný design (např. experiment s náhodným přiřazením) nebo dobře zdůvodněné předpoklady.
+  usage: |
+    - V textu odlišujeme „liší se / souvisí s“ (popis vztahu) od „způsobuje / vede k“ (příčinné tvrzení).
+  synonyms: "*Kauzalita*, *příčinný vztah*."
+  see_also:
+    - "konfundovani"
+    - "mediator"
+    - "collider"
+    - "korelace"
+
+- id: "princip-uspornosti"
+  cz: "Princip úspornosti"
+  en: "principle of parsimony (Occam's razor)"
+  def_short: "Zásada, že ze dvou modelů, které popisují data podobně dobře, dáváme přednost jednoduššímu."
+  def_full: |
+    Zásada, že ze dvou modelů, které popisují data podobně dobře, dáváme přednost jednoduššímu - s menším počtem odhadovaných koeficientů. Složitější model se vždy lépe přizpůsobí konkrétním datům, ale může zachycovat náhodný šum a hůře se zobecňuje. Kritéria jako [AIC](#aic) nebo [adjustované R²](#adjustovane-r2) tuto zásadu převádějí na číslo.
+  synonyms: "*Princip parsimonie*, *Occamova břitva*; anglicky *parsimony*."
+  see_also:
+    - "min-adekvat-model"
+    - "aic"
+    - "kandidatni-model"
+
+- id: "prumerny-ctverec"
+  cz: "Průměrný čtverec"
+  en: "mean square (MS)"
+  def_short: "Součet čtverců vydělený příslušnými stupni volnosti; podíl dvou průměrných čtverců je F-statistika."
+  def_full: |
+    Součet čtverců vydělený příslušnými [stupni volnosti](#stupne-volnosti). V analýze rozptylu se počítá průměrný čtverec mezi skupinami a uvnitř skupin (residuální); jejich podíl je [F-statistika](#f-statistika). Průměrný čtverec residuí je čtverec [residuální směrodatné odchylky](#rezidualni-smerodatna-odchylka).
+  usage: |
+    - Ve výstupu `anova(model)` je ve sloupci `Mean Sq`.
+  synonyms: "Anglicky *mean square*, zkratka *MS*."
+  see_also:
+    - "f-statistika"
+    - "celkovy-soucet-ctvercu"
+    - "anova"
+
+- id: "prumerny-trend"
+  cz: "Průměrný trend"
+  en: "mean response, expected response"
+  def_short: "Průměrná hodnota odezvy, kterou model odhaduje pro danou hodnotu prediktoru; graficky výška odhadnuté přímky."
+  def_full: |
+    Průměrná hodnota odezvy, kterou model odhaduje pro danou hodnotu (nebo kombinaci hodnot) prediktorů; graficky výška odhadnuté přímky. Jednotlivá pozorování kolem něj kolísají. Nejistotu polohy průměrného trendu ukazuje [pás spolehlivosti](#pas-spolehlivosti); kde očekávat jedno nové pozorování, ukazuje [predikční interval](#predikcni-interval).
+  synonyms: "*Střední odezva*, *očekávaná odezva*, *průměrná odezva*."
+  see_also:
+    - "pas-spolehlivosti"
+    - "predikcni-interval"
+    - "odhadnuta-hodnota"
+
+- id: "pseudoreplikace"
+  cz: "Pseudoreplikace"
+  en: "pseudoreplication"
+  def_short: "Chyba, kdy závislá pozorování (např. opakovaná měření téže jednotky) analyzujeme, jako by byla nezávislá; nadhodnotí se tím množství informace v datech."
+  def_full: |
+    Chyba, kdy pozorování, která nejsou nezávislá (např. opakovaná měření téhož jedince nebo více jedinců z téže lokality), analyzujeme, jako by každé neslo samostatnou informaci. Počet teček v grafu pak převyšuje počet skutečně nezávislých [jednotek pozorování](#jednotka-pozorovani); standardní chyby vycházejí příliš malé a p-hodnoty příliš optimistické.
+  usage: |
+    - Řešením je analyzovat na úrovni správné jednotky nebo použít model pro [hierarchická data](#hierarchicka-data).
+  see_also:
+    - "hierarchicka-data"
+    - "opakovana-mereni"
+    - "jednotka-pozorovani"
+
+- id: "referencni-skupina"
+  cz: "Referenční skupina"
+  en: "reference level, reference group"
+  def_short: "Úroveň kategoriálního prediktoru, vůči které model vyjadřuje rozdíly ostatních skupin; její průměr (při nulových numerických prediktorech) je intercept."
+  def_full: |
+    [Úroveň faktoru](#uroven-faktoru), vůči které lineární model vyjadřuje rozdíly ostatních skupin. Intercept odpovídá referenční skupině (při nulových hodnotách numerických prediktorů) a koeficienty ostatních úrovní jsou rozdíly od ní. R volí jako referenční skupinu standardně první úroveň faktoru (abecedně).
+  usage: |
+    - V R změníme referenční skupinu funkcí `relevel(x, ref = "...")`.
+    - V kurzu píšeme **referenční skupina**; konkrétně také „referenční druh“, „referenční pohlaví“ apod.
+  synonyms: "*Referenční úroveň*, *referenční kategorie*; anglicky *reference level*."
+  see_also:
+    - "uroven-faktoru"
+    - "kategoricka-promenna"
+    - "intercept"
+
+- id: "sikmost"
+  cz: "Šikmost"
+  en: "skewness"
+  def_short: "Nesouměrnost rozdělení: u pravostranně šikmého rozdělení se hodnoty táhnou dlouhým koncem k vysokým hodnotám a průměr bývá větší než medián."
+  def_full: |
+    Nesouměrnost [rozdělení](#rozdeleni). U **pravostranně šikmého** rozdělení je většina hodnot nízkých a menší počet hodnot se táhne dlouhým koncem k vysokým hodnotám; průměr bývá větší než medián. U levostranně šikmého je tomu naopak. Pravostranná šikmost je u biologických veličin (hmotnosti, počty, koncentrace) častá a často ji zmírní [logaritmická transformace](#transformace).
+  usage: |
+    - V textu píšeme „pravostranně / levostranně šikmé rozdělení“; obecné „asymetrické“ jen tam, kde nezáleží na směru.
+  synonyms: "*Asymetrie*, *nesouměrnost*; anglicky *skewness*."
+  see_also:
+    - "rozdeleni"
+    - "transformace"
+    - "median"
+    - "normalni-rozdeleni"
+
+- id: "sila-testu"
+  cz: "Síla testu"
+  en: "statistical power"
+  def_short: "Pravděpodobnost, že test zamítne nulovou hypotézu, když skutečný efekt dané velikosti existuje; je to 1 − β."
+  def_full: |
+    Pravděpodobnost, že test zamítne [nulovou hypotézu](#nulova-hypoteza), když skutečný efekt zvolené velikosti existuje; doplněk pravděpodobnosti [chyby II. typu](#chyba-ii-typu) (1 − β). Roste s velikostí efektu a velikostí výběru a klesá s variabilitou dat a s přísnější hladinou α.
+  usage: |
+    - Sílu testu plánujeme před sběrem dat, často simulací.
+    - Nezaměňujeme ji se „silou důkazu“ ani s velikostí efektu.
+  synonyms: "Anglicky *statistical power*."
+  see_also:
+    - "chyba-ii-typu"
+    - "hladina-vyznamnosti"
+    - "simulace"
+
+- id: "simulace"
+  cz: "Simulace"
+  en: "simulation"
+  def_short: "Opakované vytváření umělých dat podle známého modelu na počítači; ukazuje, jak se odhady, intervaly nebo testy chovají napříč mnoha výběry."
+  def_full: |
+    Opakované vytváření umělých dat na počítači podle známého modelu, kde skutečné hodnoty parametrů známe. Díky tomu vidíme, jak se odhady, [intervaly spolehlivosti](#interval-spolehlivosti) nebo testy chovají napříč mnoha výběry - například jaká je [výběrová variabilita](#vyberova-variabilita) odhadu, [pokrytí](#pokryti-intervalu) intervalu nebo [síla testu](#sila-testu).
+  usage: |
+    - V R: generátory náhodných čísel jako `rnorm()` nebo `sample()`; pro reprodukovatelnost nastavujeme `set.seed()`.
+  see_also:
+    - "vyberova-variabilita"
+    - "pokryti-intervalu"
+    - "sila-testu"
+
+- id: "simultanni-interval"
+  cz: "Simultánní interval spolehlivosti"
+  en: "simultaneous confidence interval"
+  def_short: "Interval z rodiny intervalů upravených tak, aby zvolené pokrytí (např. 95 %) platilo pro všechna porovnání najednou; je širší než samostatný interval."
+  def_full: |
+    Interval z rodiny intervalů (např. pro všechna párová porovnání skupin) upravených tak, aby zvolené [pokrytí](#pokryti-intervalu), například 95 %, platilo pro celou rodinu najednou, ne jen pro každý interval zvlášť. Simultánní intervaly jsou proto širší než samostatné intervaly spolehlivosti.
+  usage: |
+    - Vznikají např. při Tukeyho úpravě párových porovnání ([post-hoc test](#post-hoc-test)).
+  synonyms: "*Simultánní intervaly*, anglicky *simultaneous* nebo *family-wise intervals*."
+  see_also:
+    - "post-hoc-test"
+    - "mnohonasobne-testovani"
+    - "interval-spolehlivosti"
+
+- id: "statisticky-vyznamny"
+  cz: "Statisticky významný"
+  en: "statistically significant"
+  def_short: "Označení výsledku, jehož p-hodnota je nejvýše zvolená hladina významnosti α; neříká nic o tom, zda je efekt velký nebo biologicky důležitý."
+  def_full: |
+    Označení výsledku testu, jehož [p-hodnota](#p-hodnota) je nejvýše zvolená [hladina významnosti](#hladina-vyznamnosti) α. Znamená, že data jsou s nulovou hypotézou špatně slučitelná. Neříká nic o tom, zda je efekt velký nebo biologicky důležitý; to posuzujeme podle odhadu a intervalu spolehlivosti.
+  usage: |
+    - Vždy píšeme celé „statisticky významný“, aby se nepletl s běžným významem slova „významný“ (důležitý).
+    - „Statisticky nevýznamný“ neznamená „efekt neexistuje“ (viz [chyba II. typu](#chyba-ii-typu)).
+  synonyms: "*Signifikantní* (anglicismus, v kurzu jen jako poznámka pro rozpoznání)."
+  see_also:
+    - "p-hodnota"
+    - "hladina-vyznamnosti"
+    - "efekt"
+  avoid: "signifikantní (jako hlavní termín)"
+
+- id: "t-rozdeleni"
+  cz: "t-rozdělení"
+  en: "t-distribution (Student's t)"
+  def_short: "Souměrné rozdělení podobné normálnímu, ale s těžšími konci; jeho tvar určují stupně volnosti a používá se pro t-statistiku a intervaly spolehlivosti."
+  def_full: |
+    Souměrné zvonovité rozdělení podobné [normálnímu](#normalni-rozdeleni), ale s těžšími konci (častějšími extrémními hodnotami). Jeho tvar určují [stupně volnosti](#stupne-volnosti); s rostoucími stupni volnosti se blíží normálnímu rozdělení. Popisuje, jak kolísá [t-statistika](#t-statistika), když platí nulová hypotéza, a dává [kritické hodnoty](#kriticka-hodnota) pro intervaly spolehlivosti.
+  usage: |
+    - V R: `qt()` (kvantily, kritické hodnoty) a `pt()` (pravděpodobnosti, p-hodnoty).
+  synonyms: "*Studentovo t-rozdělení*."
+  see_also:
+    - "t-statistika"
+    - "kriticka-hodnota"
+    - "stupne-volnosti"
+    - "normalni-rozdeleni"
+
+- id: "t-statistika"
+  cz: "t-statistika"
+  en: "t-statistic, t value"
+  def_short: "Testová statistika: rozdíl odhadu od hodnoty v nulové hypotéze (obvykle 0) vydělený standardní chybou; říká, o kolik standardních chyb je odhad od nuly."
+  def_full: |
+    Testová statistika, která vydělí rozdíl odhadu od hodnoty předpokládané nulovou hypotézou (obvykle 0) jeho [standardní chybou](#standardni-chyba): t = (odhad − 0) / SE. Říká, kolik standardních chyb dělí odhad od nulové hodnoty. Z [t-rozdělení](#t-rozdeleni) s příslušnými stupni volnosti se z ní vypočte p-hodnota.
+  usage: |
+    - Ve výstupu `summary(lm(...))` ve sloupci `t value`.
+  synonyms: "*t-hodnota* (z výstupu R *t value*); v kurzu píšeme **t-statistika**."
+  see_also:
+    - "t-rozdeleni"
+    - "standardni-chyba"
+    - "p-hodnota"
+    - "t-test"
+
+- id: "uroven-faktoru"
+  cz: "Úroveň faktoru"
+  en: "factor level"
+  def_short: "Jedna z kategorií kategoriální proměnné uložené v R jako faktor, například jeden druh z proměnné druh."
+  def_full: |
+    Jedna z kategorií [kategoriální proměnné](#kategoricka-promenna) uložené v R jako faktor, například jeden druh z proměnné `druh`. Pořadí úrovní určuje, která je [referenční skupinou](#referencni-skupina) modelu a v jakém pořadí se kreslí v grafech.
+  usage: |
+    - V R: `levels(x)`; pořadí změníme `factor(x, levels = ...)` nebo `relevel()`.
+  synonyms: "Anglicky *factor level*."
+  see_also:
+    - "kategoricka-promenna"
+    - "referencni-skupina"
+
+- id: "vektor"
+  cz: "Vektor"
+  en: "vector"
+  def_short: "Základní datová struktura v R: uspořádaná řada hodnot stejného typu, například všechny délky v jednom sloupci tabulky."
+  def_full: |
+    Základní datová struktura v R: uspořádaná řada hodnot stejného základního typu (čísla, text, logické hodnoty). Každý sloupec datové tabulky je vektor. Vektor vytvoříme např. funkcí `c()`, sloupec z tabulky získáme jako vektor pomocí `tabulka$sloupec` nebo `dplyr::pull()`.
+  usage: |
+    - Mnoho funkcí R (např. `mean()`, `sd()`) pracuje s vektorem hodnot.
+  see_also:
+    - "promenna"
+
+- id: "vif"
+  cz: "VIF (faktor zvětšení rozptylu)"
+  en: "VIF (variance inflation factor)"
+  def_short: "Ukazatel, nakolik je rozptyl (nejistota) odhadu koeficientu zvětšen tím, že prediktor koreluje s ostatními prediktory v modelu."
+  def_full: |
+    Ukazatel, nakolik je rozptyl odhadu koeficientu (a tedy jeho nejistota) zvětšen tím, že prediktor sdílí informaci s ostatními prediktory v modelu. VIF = 1 znamená žádnou [korelaci s ostatními prediktory](#korelace-predikatoru); vyšší hodnoty znamenají větší překryv. Univerzální hranice, nad kterou bychom prediktor automaticky vyřadili, neexistuje.
+  usage: |
+    - V R: `car::vif(model)`.
+  synonyms: "Anglicky *variance inflation factor*."
+  see_also:
+    - "korelace-predikatoru"
+    - "standardni-chyba"
+
+- id: "vlivne-pozorovani"
+  cz: "Vlivné pozorování"
+  en: "influential observation"
+  def_short: "Pozorování, jehož vynechání by výrazně změnilo odhadnutý model; vlivná bývají hlavně pozorování s velkým pákovým efektem i velkým residuem."
+  def_full: |
+    Pozorování, jehož vynechání by výrazně změnilo odhadnutý model - jeho koeficienty a odhadnuté hodnoty. Vlivná bývají hlavně pozorování, která mají zároveň velký [pákový efekt](#pakovy-efekt) (neobvyklé hodnoty prediktoru) a velké [residuum](#residuum). Míru vlivu shrnuje [Cookova vzdálenost](#cookova-vzdalenost).
+  usage: |
+    - Vlivné pozorování automaticky nemažeme; ověříme, zda je správně změřené, a porovnáme závěr s ním i bez něj.
+    - Odlehlé pozorování nemusí být vlivné a vlivné nemusí být odlehlé.
+  synonyms: "*Vlivný bod* (hovorově); v kurzu píšeme **vlivné pozorování**."
+  see_also:
+    - "pakovy-efekt"
+    - "cookova-vzdalenost"
+    - "odlehla-pozorovani"
+    - "diagnostika-modelu"
+  avoid: "vlivný bod"
+
+- id: "vnorene-modely"
+  cz: "Vnořené modely"
+  en: "nested models"
+  def_short: "Dvojice modelů, kde jednodušší vznikne ze složitějšího vynecháním některých členů; jen takové modely lze porovnat F-testem pomocí anova()."
+  def_full: |
+    Dvojice (nebo řada) modelů, kde jednodušší model vznikne ze složitějšího vynecháním některých členů, např. `y ~ x` a `y ~ x + druh`. Složitější model se k datům vždy přizpůsobí alespoň stejně dobře (jeho RSS není větší). Vnořené modely lze porovnat F-testem (`anova(m1, m2)`); [AIC](#aic) lze použít i pro modely, které vnořené nejsou.
+  synonyms: "Anglicky *nested models*."
+  see_also:
+    - "porovnani-modelu"
+    - "f-statistika"
+    - "kandidatni-model"
+
+- id: "welchuv-t-test"
+  cz: "Welchův t-test"
+  en: "Welch's t-test"
+  def_short: "Varianta dvouvýběrového t-testu, která nepředpokládá shodné rozptyly obou skupin; je výchozí volbou funkce t.test() v R."
+  def_full: |
+    Varianta dvouvýběrového [t-testu](#t-test), která nepředpokládá shodné rozptyly obou skupin ([homoskedasticitu](#homoskedasticita)). Upravuje standardní chybu rozdílu průměrů i stupně volnosti. Je výchozí volbou funkce `t.test()` v R, a proto se její výsledek mírně liší od `lm(y ~ skupina)`.
+  usage: |
+    - Klasický t-test se shodnými rozptyly: `t.test(y ~ skupina, var.equal = TRUE)`.
+  see_also:
+    - "t-test"
+    - "homoskedasticita"
+
+- id: "z-skore"
+  cz: "z-skóre (standardizace)"
+  en: "z-score, standardization"
+  def_short: "Hodnota převedená na počet směrodatných odchylek od průměru: z = (x − průměr) / SD; mění polohu a měřítko, ne tvar rozdělení."
+  def_full: |
+    Hodnota převedená na počet směrodatných odchylek od průměru: z = (x − x̄) / SD. Po standardizaci má proměnná průměr 0 a směrodatnou odchylku 1. Standardizace mění polohu a měřítko, ale ne tvar rozdělení; šikmé rozdělení zůstane šikmé.
+  usage: |
+    - V R: `scale(x)` nebo `(x - mean(x)) / sd(x)`.
+    - Standardizované prediktory umožní srovnat koeficienty v jednotkách SD.
+  synonyms: "*Standardizace*, *standardizovaná hodnota*."
+  see_also:
+    - "centrovani"
+    - "smerodatna-odchylka"
+    - "transformace"
