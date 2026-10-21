@@ -3894,7 +3894,7 @@ window.Quarto = {
 <section id="sikmost" class="level3">
 <h3 class="anchored" data-anchor-id="sikmost">Šikmost</h3>
 <p><strong>EN:</strong> <em>skewness</em></p>
-<p><strong>Definice:</strong> Nesouměrnost <a href="#rozdeleni">rozdělení</a>. U <strong>pravostranně šikmého</strong> rozdělení je většina hodnot nízkých a menší počet hodnot se táhne dlouhým koncem k vysokým hodnotám; průměr bývá větší než medián. U levostranně šikmého je tomu naopak. Pravostranná šikmost je u biologických veličin (hmotnosti, počty, koncentrace) častá a často ji zmírní <a href="#transformace">logaritmická transformace</a>.</p>
+<p><strong>Definice:</strong> Nesouměrnost <a href="#rozdeleni">rozdělení</a>. U <strong>pravostranně šikmého</strong> rozdělení je většina hodnot nízkých a menší počet hodnot se táhne dlouhým chvostem vpravo k vysokým hodnotám; průměr bývá větší než medián. U levostranně šikmého je tomu naopak. Pravostranná šikmost je u biologických veličin (hmotnosti, počty, koncentrace) častá a často ji zmírní <a href="#transformace">logaritmická transformace</a>.</p>
 <p><strong>Použití v kurzu:</strong></p>
 <ul>
 <li>V textu píšeme „pravostranně / levostranně šikmé rozdělení“; obecné „asymetrické“ jen tam, kde nezáleží na směru.</li>
@@ -4065,7 +4065,7 @@ window.Quarto = {
 <section id="t-rozdeleni" class="level3">
 <h3 class="anchored" data-anchor-id="t-rozdeleni">t-rozdělení</h3>
 <p><strong>EN:</strong> <em>t-distribution (Student’s t)</em></p>
-<p><strong>Definice:</strong> Souměrné zvonovité rozdělení podobné <a href="#normalni-rozdeleni">normálnímu</a>, ale s těžšími konci (častějšími extrémními hodnotami). Jeho tvar určují <a href="#stupne-volnosti">stupně volnosti</a>; s rostoucími stupni volnosti se blíží normálnímu rozdělení. Popisuje, jak kolísá <a href="#t-statistika">t-statistika</a>, když platí nulová hypotéza, a dává <a href="#kriticka-hodnota">kritické hodnoty</a> pro intervaly spolehlivosti.</p>
+<p><strong>Definice:</strong> Souměrné zvonovité rozdělení podobné <a href="#normalni-rozdeleni">normálnímu</a>, ale s těžšími chvosty (častějšími hodnotami daleko od středu). Jeho tvar určují <a href="#stupne-volnosti">stupně volnosti</a>; s rostoucími stupni volnosti se blíží normálnímu rozdělení. Popisuje, jak kolísá <a href="#t-statistika">t-statistika</a>, když platí nulová hypotéza, a dává <a href="#kriticka-hodnota">kritické hodnoty</a> pro intervaly spolehlivosti.</p>
 <p><strong>Použití v kurzu:</strong></p>
 <ul>
 <li>V R: <code>qt()</code> (kvantily, kritické hodnoty) a <code>pt()</code> (pravděpodobnosti, p-hodnoty).</li>
@@ -4097,6 +4097,17 @@ window.Quarto = {
 <li>Typy: jednovýběrový, dvouvýběrový, párový.</li>
 </ul>
 <p><strong>Viz také:</strong> <a href="#t-statistika">t-statistika</a>, <a href="#t-rozdeleni">t-rozdělení</a>, <a href="#welchuv-t-test">Welchův t-test</a>, <a href="#linearni-model">Lineární model</a>, <a href="#neparametricky-test">Neparametrický test</a></p>
+<hr>
+</section>
+<section id="testova-statistika" class="level3">
+<h3 class="anchored" data-anchor-id="testova-statistika">Testová statistika</h3>
+<p><strong>EN:</strong> <em>test statistic</em></p>
+<p><strong>Definice:</strong> Číslo vypočtené z dat, které shrnuje, jak daleko jsou data od toho, co předpovídá <a href="#nulova-hypoteza">nulová hypotéza</a>. Porovnáváme ji s referenčním <a href="#rozdeleni">rozdělením</a>, které by měla, kdyby nulová hypotéza platila; z tohoto porovnání plyne <a href="#p-hodnota">p-hodnota</a>. Každý test má svou testovou statistiku: t-test a koeficienty lineárního modelu <a href="#t-statistika">t-statistiku</a> s <a href="#t-rozdeleni">t-rozdělením</a>, ANOVA F-statistiku s F-rozdělením.</p>
+<p><strong>Použití v kurzu:</strong></p>
+<ul>
+<li>Ve výstupu R ji najdeme pod názvy <code>t value</code>, <code>F value</code> nebo <code>statistic</code>.</li>
+</ul>
+<p><strong>Viz také:</strong> <a href="#t-statistika">t-statistika</a>, <a href="#nulova-hypoteza">Nulová hypotéza</a>, <a href="#p-hodnota">p-hodnota</a>, <a href="#t-rozdeleni">t-rozdělení</a></p>
 <hr>
 </section>
 <section id="transformace" class="level3">

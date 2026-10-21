@@ -1904,9 +1904,9 @@
 - id: "sikmost"
   cz: "Šikmost"
   en: "skewness"
-  def_short: "Nesouměrnost rozdělení: u pravostranně šikmého rozdělení se hodnoty táhnou dlouhým koncem k vysokým hodnotám a průměr bývá větší než medián."
+  def_short: "Nesouměrnost rozdělení: u pravostranně šikmého rozdělení se hodnoty táhnou dlouhým chvostem vpravo k vysokým hodnotám a průměr bývá větší než medián."
   def_full: |
-    Nesouměrnost [rozdělení](#rozdeleni). U **pravostranně šikmého** rozdělení je většina hodnot nízkých a menší počet hodnot se táhne dlouhým koncem k vysokým hodnotám; průměr bývá větší než medián. U levostranně šikmého je tomu naopak. Pravostranná šikmost je u biologických veličin (hmotnosti, počty, koncentrace) častá a často ji zmírní [logaritmická transformace](#transformace).
+    Nesouměrnost [rozdělení](#rozdeleni). U **pravostranně šikmého** rozdělení je většina hodnot nízkých a menší počet hodnot se táhne dlouhým chvostem vpravo k vysokým hodnotám; průměr bývá větší než medián. U levostranně šikmého je tomu naopak. Pravostranná šikmost je u biologických veličin (hmotnosti, počty, koncentrace) častá a často ji zmírní [logaritmická transformace](#transformace).
   usage: |
     - V textu píšeme „pravostranně / levostranně šikmé rozdělení“; obecné „asymetrické“ jen tam, kde nezáleží na směru.
   synonyms: "*Asymetrie*, *nesouměrnost*; anglicky *skewness*."
@@ -1977,9 +1977,9 @@
 - id: "t-rozdeleni"
   cz: "t-rozdělení"
   en: "t-distribution (Student's t)"
-  def_short: "Souměrné rozdělení podobné normálnímu, ale s těžšími konci; jeho tvar určují stupně volnosti a používá se pro t-statistiku a intervaly spolehlivosti."
+  def_short: "Souměrné rozdělení podobné normálnímu, ale s těžšími chvosty; jeho tvar určují stupně volnosti a používá se pro t-statistiku a intervaly spolehlivosti."
   def_full: |
-    Souměrné zvonovité rozdělení podobné [normálnímu](#normalni-rozdeleni), ale s těžšími konci (častějšími extrémními hodnotami). Jeho tvar určují [stupně volnosti](#stupne-volnosti); s rostoucími stupni volnosti se blíží normálnímu rozdělení. Popisuje, jak kolísá [t-statistika](#t-statistika), když platí nulová hypotéza, a dává [kritické hodnoty](#kriticka-hodnota) pro intervaly spolehlivosti.
+    Souměrné zvonovité rozdělení podobné [normálnímu](#normalni-rozdeleni), ale s těžšími chvosty (častějšími hodnotami daleko od středu). Jeho tvar určují [stupně volnosti](#stupne-volnosti); s rostoucími stupni volnosti se blíží normálnímu rozdělení. Popisuje, jak kolísá [t-statistika](#t-statistika), když platí nulová hypotéza, a dává [kritické hodnoty](#kriticka-hodnota) pro intervaly spolehlivosti.
   usage: |
     - V R: `qt()` (kvantily, kritické hodnoty) a `pt()` (pravděpodobnosti, p-hodnoty).
   synonyms: "*Studentovo t-rozdělení*."
@@ -2003,6 +2003,20 @@
     - "standardni-chyba"
     - "p-hodnota"
     - "t-test"
+
+- id: "testova-statistika"
+  cz: "Testová statistika"
+  en: "test statistic"
+  def_short: "Číslo vypočtené z dat, které porovnáváme s referenčním rozdělením platným při nulové hypotéze; z tohoto porovnání získáme p-hodnotu."
+  def_full: |
+    Číslo vypočtené z dat, které shrnuje, jak daleko jsou data od toho, co předpovídá [nulová hypotéza](#nulova-hypoteza). Porovnáváme ji s referenčním [rozdělením](#rozdeleni), které by měla, kdyby nulová hypotéza platila; z tohoto porovnání plyne [p-hodnota](#p-hodnota). Každý test má svou testovou statistiku: t-test a koeficienty lineárního modelu [t-statistiku](#t-statistika) s [t-rozdělením](#t-rozdeleni), ANOVA F-statistiku s F-rozdělením.
+  usage: |
+    - Ve výstupu R ji najdeme pod názvy `t value`, `F value` nebo `statistic`.
+  see_also:
+    - "t-statistika"
+    - "nulova-hypoteza"
+    - "p-hodnota"
+    - "t-rozdeleni"
 
 - id: "uroven-faktoru"
   cz: "Úroveň faktoru"

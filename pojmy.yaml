@@ -357,7 +357,7 @@ referencni-skupina:
     skupin; její průměr (při nulových numerických prediktorech) je intercept.
 sikmost:
   def: 'Nesouměrnost rozdělení: u pravostranně šikmého rozdělení se hodnoty táhnou
-    dlouhým koncem k vysokým hodnotám a průměr bývá větší než medián.'
+    dlouhým chvostem vpravo k vysokým hodnotám a průměr bývá větší než medián.'
 sila-testu:
   def: Pravděpodobnost, že test zamítne nulovou hypotézu, když skutečný efekt dané
     velikosti existuje; je to 1 − β.
@@ -371,11 +371,14 @@ statisticky-vyznamny:
   def: Označení výsledku, jehož p-hodnota je nejvýše zvolená hladina významnosti α;
     neříká nic o tom, zda je efekt velký nebo biologicky důležitý.
 t-rozdeleni:
-  def: Souměrné rozdělení podobné normálnímu, ale s těžšími konci; jeho tvar určují
+  def: Souměrné rozdělení podobné normálnímu, ale s těžšími chvosty; jeho tvar určují
     stupně volnosti a používá se pro t-statistiku a intervaly spolehlivosti.
 t-statistika:
   def: 'Testová statistika: rozdíl odhadu od hodnoty v nulové hypotéze (obvykle 0)
     vydělený standardní chybou; říká, o kolik standardních chyb je odhad od nuly.'
+testova-statistika:
+  def: Číslo vypočtené z dat, které porovnáváme s referenčním rozdělením platným při
+    nulové hypotéze; z tohoto porovnání získáme p-hodnotu.
 uroven-faktoru:
   def: Jedna z kategorií kategoriální proměnné uložené v R jako faktor, například
     jeden druh z proměnné druh.
